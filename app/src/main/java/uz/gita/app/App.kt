@@ -1,4 +1,6 @@
 package uz.gita.app
 
-class App {
+import android.app.Application
+
+class App : Application(){
 }
