@@ -54,7 +54,7 @@ fun SampleSpinner(
                                 text = (entry.second),
                                 modifier = Modifier
                                     .wrapContentWidth()
-                                    .align(Alignment.Start)
+                                    .align(Alignment.Start),
                             )
                         }
                     )
