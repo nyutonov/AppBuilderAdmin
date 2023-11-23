@@ -32,7 +32,6 @@ fun DemoSpinner(
             OutlinedTextField(
                 value = (selected),
                 onValueChange = { },
-                label = { Text(text = "My List") },
                 modifier = Modifier
                     .padding(horizontal = 15.dp)
                     .fillMaxWidth(),

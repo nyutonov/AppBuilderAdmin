@@ -104,6 +104,7 @@ class RepositoryImpl @Inject constructor() : Repository {
                 this.child("multiSelectorDataAnswers").setValue(component.multiSelectorDataAnswers.joinToString(":"))
 
                 this.child("datePicker").setValue(component.datePicker)
+                this.child("id").setValue(component.id)
             }
     }
 }

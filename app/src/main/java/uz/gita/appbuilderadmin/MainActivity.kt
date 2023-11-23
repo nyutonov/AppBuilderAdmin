@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Navigator (
-                screen = UsersScreen()
+                screen = ConstructorScreen("")
             ){ navigator ->
                 navigationHandler.navigationFlow
                     .onEach {
