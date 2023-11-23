@@ -6,49 +6,48 @@ interface ConstructorContract {
 
     interface ViewModel {
 
-        val uiState : StateFlow<UiState>
+        val uiState: StateFlow<UiState>
 
-        fun onEventDispatchers(intent : Intent)
+        fun onEventDispatchers(intent: Intent)
 
     }
 
 
-    data class UiState (
-        val componentList : List<String> = listOf(
-            "component",
-            "Input" ,
-            "Text" ,
-            "Selector" ,
-            "MultiSelector" ,
+    data class UiState(
+        val componentList: List<String> = listOf(
+            "Input",
+            "Text",
+            "Selector",
+            "MultiSelector",
             "Date Picker"
-        ) ,
-        val inputTypeList : List<String> = listOf(
-            "Type",
+        ),
+        val inputTypeList: List<String> = listOf(
+            "Text",
             "Number",
-            "Email" ,
-            "Text"
-        ) ,
-        val selectedComponent : String = componentList[0] ,
-        val selectedInputType : String = inputTypeList[0] ,
-        val placeHolder : String = "" ,
-        val textValue : String = "" ,
-        val name : String = "" ,
-        val idCheckState : Boolean = false ,
-        val idValue : String = "" ,
-        val visibilityState : Boolean = false
+            "Email",
+            "Phone"
+        ),
+        val selectedComponent: String = componentList[0],
+        val selectedInputType: String = inputTypeList[0],
+        val placeHolder: String = "",
+        val textValue: String = "",
+        val name: String = "",
+        val idCheckState: Boolean = false,
+        val idValue: String = "",
+        val visibilityState: Boolean = false
     )
 
     interface Intent {
         data class ChangingSelectedComponent(
-            val component : String
+            val component: String
         ) : Intent
 
-        data class ChangingIdValue (
-            val idValue : String
+        data class ChangingIdValue(
+            val idValue: String
         ) : Intent
 
         data class EnteringName(
-            val name : String ,
+            val name: String,
         ) : Intent
 
         object ClickCreateButton : Intent
@@ -58,15 +57,15 @@ interface ConstructorContract {
         object ClickCheckBoxID : Intent
 
         data class ChangingSelectedInputType(
-            val type : String
+            val type: String
         ) : Intent
 
         data class ChangingPlaceholder(
-            val placeholder : String
+            val placeholder: String
         ) : Intent
 
         data class ChangingTextValue(
-            val value : String
+            val value: String
         ) : Intent
 
     }

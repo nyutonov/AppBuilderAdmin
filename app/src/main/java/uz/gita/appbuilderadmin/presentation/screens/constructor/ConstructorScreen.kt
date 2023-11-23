@@ -69,14 +69,14 @@ fun ConstructorScreenContent(
     onEventDispatchers: (ConstructorContract.Intent) -> Unit
 ) {
 
-    Box (
+    Box(
         modifier = Modifier
             .fillMaxSize()
-    ){
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF0F1C2E)) ,
+                .background(Color(0xFF0F1C2E)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
@@ -101,13 +101,12 @@ fun ConstructorScreenContent(
 
             Column(
                 modifier = Modifier
+                    .padding(10.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .border(2.dp, Color.LightGray)
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp, vertical = 10.dp),
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 Text(
                     modifier = Modifier
                         .padding(top = 5.dp),
@@ -121,11 +120,10 @@ fun ConstructorScreenContent(
                     )
                 )
                 Spacer(modifier = Modifier.size(10.dp))
-                Log.d("TTT", "selected ${uiState.selectedComponent}")
+
                 when (uiState.selectedComponent) {
 
                     "Input" -> {
-                        Log.d("TTT", "input box")
                         InputComponent(
                             data = ComponentsModel(
                                 type = uiState.selectedInputType,
@@ -141,12 +139,17 @@ fun ConstructorScreenContent(
                             )
                         )
                     }
+
                     "Selector" -> {
                         val list = listOf(
-                            "empty"
+                            "empty1",
+                            "empty2",
+                            "empty3",
+                            "empty4"
                         )
+
                         DemoSpinner(
-                            list = list ,
+                            list = list,
                             preselected = list[0],
                             onSelectionChanged = {},
                             modifier = Modifier
@@ -155,32 +158,32 @@ fun ConstructorScreenContent(
                                 .height(56.dp)
                         )
                     }
+
                     "MultiSelector" -> {
                         val list = listOf(
-                            "empty1" ,
-                            "empty2" ,
-                            "empty3" ,
+                            "empty1",
+                            "empty2",
+                            "empty3",
                             "empty4"
                         )
+
                         MultiSelectorComponent(list = list)
                     }
+
                     "Date Picker" -> {
                         DateComponent()
                     }
-
                 }
-
             }
-            
-            
-            LazyColumn (
+
+            LazyColumn(
                 modifier = Modifier
                     .padding(bottom = 70.dp)
-            ){
+            ) {
                 item {
-                    Column (
+                    Column(
                         horizontalAlignment = Alignment.CenterHorizontally
-                    ){
+                    ) {
                         Text(
                             modifier = Modifier
                                 .padding(vertical = 10.dp)
@@ -200,7 +203,11 @@ fun ConstructorScreenContent(
                             onSelectionChanged = {
                                 Log.d("TTT", it)
 
-                                onEventDispatchers(ConstructorContract.Intent.ChangingSelectedComponent(it))
+                                onEventDispatchers(
+                                    ConstructorContract.Intent.ChangingSelectedComponent(
+                                        it
+                                    )
+                                )
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -225,7 +232,9 @@ fun ConstructorScreenContent(
                                 list = uiState.inputTypeList,
                                 preselected = uiState.selectedInputType,
                                 onSelectionChanged = {
-                                    onEventDispatchers(ConstructorContract.Intent.ChangingSelectedInputType(it))
+                                    onEventDispatchers(
+                                        ConstructorContract.Intent.ChangingSelectedInputType(it)
+                                    )
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -249,9 +258,13 @@ fun ConstructorScreenContent(
                                     .height(58.dp)
                                     .padding(horizontal = 15.dp),
                                 value = uiState.placeHolder,
-
+                                singleLine = true,
                                 onValueChange = {
-                                    onEventDispatchers(ConstructorContract.Intent.ChangingPlaceholder(it))
+                                    onEventDispatchers(
+                                        ConstructorContract.Intent.ChangingPlaceholder(
+                                            it
+                                        )
+                                    )
                                 },
                                 colors = OutlinedTextFieldDefaults.colors(
                                     focusedBorderColor = Color.LightGray,
@@ -304,7 +317,7 @@ fun ConstructorScreenContent(
 //                                )
 //                            }
 
-                        }else if(uiState.selectedComponent == "Text" ) {
+                        } else if (uiState.selectedComponent == "Text") {
                             SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
                             Spacer(modifier = Modifier.size(10.dp))
                             Text(
@@ -325,7 +338,11 @@ fun ConstructorScreenContent(
                                 value = uiState.textValue,
 
                                 onValueChange = {
-                                    onEventDispatchers(ConstructorContract.Intent.ChangingTextValue(it))
+                                    onEventDispatchers(
+                                        ConstructorContract.Intent.ChangingTextValue(
+                                            it
+                                        )
+                                    )
                                 },
                                 colors = OutlinedTextFieldDefaults.colors(
                                     focusedBorderColor = Color.LightGray,
@@ -335,14 +352,14 @@ fun ConstructorScreenContent(
                                 ),
                                 shape = RoundedCornerShape(5.dp)
                             )
+                        } else if (uiState.selectedComponent == "Selector") {
+
                         }
                     }
-                    
+
                     Spacer(modifier = Modifier.size(10.dp))
-                    
                 }
             }
-
         }
         Button(
             modifier = Modifier
@@ -373,7 +390,7 @@ fun ConstructorScreenContent(
 
 @Composable
 fun SetId(
-    uiState : ConstructorContract.UiState ,
+    uiState: ConstructorContract.UiState,
     onEventDispatchers: (ConstructorContract.Intent) -> Unit
 ) {
     Spacer(modifier = Modifier.size(10.dp))
@@ -388,18 +405,18 @@ fun SetId(
         )
     )
     Spacer(modifier = Modifier.size(10.dp))
-    Row (
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 15.dp) ,
+            .padding(horizontal = 15.dp),
         verticalAlignment = Alignment.CenterVertically
-    ){
+    ) {
         Spacer(modifier = Modifier.size(5.dp))
         Checkbox(
             checked = uiState.idCheckState,
             onCheckedChange = {
                 onEventDispatchers(ConstructorContract.Intent.ClickCheckBoxID)
-            } ,
+            },
             colors = CheckboxDefaults.colors(
                 checkedColor = Color(0xff4d648d)
             )
@@ -420,7 +437,7 @@ fun SetId(
                 focusedTextColor = Color.LightGray,
                 unfocusedTextColor = Color.LightGray
             ),
-            shape = RoundedCornerShape(5.dp) ,
+            shape = RoundedCornerShape(5.dp),
             enabled = uiState.idCheckState
         )
         Spacer(modifier = Modifier.size(5.dp))
