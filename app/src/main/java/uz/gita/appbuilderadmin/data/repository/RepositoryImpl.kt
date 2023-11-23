@@ -8,15 +8,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
-import uz.gita.appbuilderadmin.data.model.UserModel
 import uz.gita.appbuilderadmin.domain.param.UserParam
 import uz.gita.appbuilderadmin.domain.repository.Repository
 import uz.gita.appbuilderadmin.utils.extensions.getAll
 import uz.gita.appbuilderadmin.utils.extensions.toModel
-import uz.gita.appbuilderadmin.utils.extensions.toParam
 import java.util.UUID
 import javax.inject.Inject
 
@@ -25,7 +24,7 @@ class RepositoryImpl @Inject constructor() : Repository {
     private val firebasePref = Firebase.firestore
     private val scope = CoroutineScope(Dispatchers.IO + Job())
 
-    override fun addUser(userParam: UserParam) : Flow<Boolean> = callbackFlow {
+    override fun addUser(userParam: UserParam): Flow<Boolean> = callbackFlow {
         val uuid = UUID.randomUUID().toString()
         val userModel = userParam.toModel()
 
@@ -48,7 +47,7 @@ class RepositoryImpl @Inject constructor() : Repository {
         firebasePref
             .collection("users")
             .get().getAll {
-                return@getAll it.data?.getOrDefault("name" , "") as String
+                return@getAll it.data?.getOrDefault("name", "") as String
             }.onEach {
                 it.onSuccess {
                     trySend(it)
@@ -58,7 +57,8 @@ class RepositoryImpl @Inject constructor() : Repository {
 
         awaitClose()
     }
-  override fun getAllData():Flow<List<ComponentsModel>> =flow{
 
-  }
+    override fun getAllData(): Flow<List<ComponentsModel>> = flow {
+
+    }
 }
