@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uz.gita.appbuilderadmin.domain.repository.Repository
@@ -27,9 +28,11 @@ class UserUIViewModel @Inject constructor(
             }
 
             is UserUIContract.Intent.LoadData -> {
-                repository.getAllData(intent.name).onEach { list ->
+                repository.getAllData(intent.name)
+                    .onStart {  uiState.update { it.copy(loader = true) }}
+                    .onEach { list ->
 
-                    uiState.update { it.copy(components = list) }
+                    uiState.update { it.copy(components = list, loader = false) }
                 }.launchIn(viewModelScope)
             }
 

@@ -24,7 +24,8 @@ interface UserUIContract {
 
     data class UIState(
         var name: String = "",
-        val components: List<ComponentsModel> = listOf()
+        val components: List<ComponentsModel> = listOf(),
+        val loader:Boolean=false
     )
 
     interface Direction {
