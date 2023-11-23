@@ -2,8 +2,6 @@ package uz.gita.appbuilderadmin.presentation.screens.user_ui
 
 import kotlinx.coroutines.flow.StateFlow
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
-import uz.gita.appbuilderadmin.utils.navigator.AppNavigator
-import javax.inject.Inject
 
 interface UserUIContract {
     interface ViewModel {
@@ -16,19 +14,18 @@ interface UserUIContract {
         data class ClickAddComponents(
             val name: String
         ) : Intent
+
+        data class SetName(
+            val name: String
+        ) : Intent
     }
 
     data class UIState(
+        val name: String = "",
         val components: List<ComponentsModel> = listOf()
     )
 
     interface Direction {
-        suspend fun moveToConstructor(userName:String)
-        class Direction @Inject constructor(private val appNavigator: AppNavigator):UserUIContract.Direction{
-            override suspend fun moveToConstructor(userName:String) {
-//                appNavigator.navigateTo()
-            }
-
-        }
+        suspend fun moveToConstructor(name: String)
     }
 }
