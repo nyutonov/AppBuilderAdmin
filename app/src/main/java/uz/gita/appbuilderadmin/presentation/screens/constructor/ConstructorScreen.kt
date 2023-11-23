@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,9 +14,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -84,9 +88,9 @@ fun ConstructorScreenContent(
                 Text(
                     modifier = Modifier
                         .align(Alignment.Center),
-                    text = "Constructor",
+                    text = "CONSTRUCTOR",
                     style = TextStyle(
-                        fontSize = 16.sp,
+                        fontSize = 18.sp,
                         lineHeight = 24.sp,
                         fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
                         fontWeight = FontWeight.W400,
@@ -95,14 +99,28 @@ fun ConstructorScreenContent(
                 )
             }
 
-            Box(
+            Column(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
                     .border(2.dp, Color.LightGray)
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp, vertical = 10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
+                Text(
+                    modifier = Modifier
+                        .padding(top = 5.dp),
+                    text = "Preview",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        lineHeight = 24.sp,
+                        fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+                        fontWeight = FontWeight.W400,
+                        color = Color.LightGray
+                    )
+                )
+                Spacer(modifier = Modifier.size(10.dp))
                 Log.d("TTT", "selected ${uiState.selectedComponent}")
                 when (uiState.selectedComponent) {
 
@@ -153,119 +171,176 @@ fun ConstructorScreenContent(
                 }
 
             }
-
-
-            Text(
+            
+            
+            LazyColumn (
                 modifier = Modifier
-                    .padding(vertical = 10.dp)
-                    .padding(start = 10.dp),
-                text = "Components",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    lineHeight = 24.sp,
-                    fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
-                    fontWeight = FontWeight.W400,
-                    color = Color.White
-                )
-            )
+                    .padding(bottom = 70.dp)
+            ){
+                item {
+                    Column (
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ){
+                        Text(
+                            modifier = Modifier
+                                .padding(vertical = 10.dp)
+                                .padding(start = 10.dp),
+                            text = "Components",
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                lineHeight = 24.sp,
+                                fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+                                fontWeight = FontWeight.W400,
+                                color = Color.White
+                            )
+                        )
+                        DemoSpinner(
+                            list = uiState.componentList,
+                            preselected = uiState.selectedComponent,
+                            onSelectionChanged = {
+                                Log.d("TTT", it)
 
+                                onEventDispatchers(ConstructorContract.Intent.ChangingSelectedComponent(it))
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp)
+                        )
 
+                        if (uiState.selectedComponent == "Input") {
+                            SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
+                            Spacer(modifier = Modifier.size(10.dp))
+                            Text(
+                                text = "Set Type",
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                    lineHeight = 24.sp,
+                                    fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+                                    fontWeight = FontWeight.W400,
+                                    color = Color.White
+                                )
+                            )
+                            Spacer(modifier = Modifier.size(10.dp))
+                            DemoSpinner(
+                                list = uiState.inputTypeList,
+                                preselected = uiState.selectedInputType,
+                                onSelectionChanged = {
+                                    onEventDispatchers(ConstructorContract.Intent.ChangingSelectedInputType(it))
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(56.dp)
+                            )
+                            Spacer(modifier = Modifier.size(10.dp))
+                            Text(
+                                text = "Set Place Holder",
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                    lineHeight = 24.sp,
+                                    fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+                                    fontWeight = FontWeight.W400,
+                                    color = Color.White
+                                )
+                            )
+                            Spacer(modifier = Modifier.size(10.dp))
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(58.dp)
+                                    .padding(horizontal = 15.dp),
+                                value = uiState.placeHolder,
 
-            DemoSpinner(
-                list = uiState.componentList,
-                preselected = uiState.selectedComponent,
-                onSelectionChanged = {
-                    Log.d("TTT", it)
+                                onValueChange = {
+                                    onEventDispatchers(ConstructorContract.Intent.ChangingPlaceholder(it))
+                                },
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = Color.LightGray,
+                                    unfocusedBorderColor = Color.LightGray,
+                                    focusedTextColor = Color.LightGray,
+                                    unfocusedTextColor = Color.LightGray
+                                ),
+                                shape = RoundedCornerShape(5.dp)
+                            )
 
-                    onEventDispatchers(ConstructorContract.Intent.ChangingSelectedComponent(it))
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-            )
+                            Spacer(modifier = Modifier.size(10.dp))
+//
+//                            Row (
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .padding(horizontal = 15.dp) ,
+//                                verticalAlignment = Alignment.CenterVertically
+//                            ){
+//                                Checkbox(
+//                                    checked = uiState.visibilityState,
+//                                    onCheckedChange = {
+//                                        onEventDispatchers(ConstructorContract.Intent.ClickVisibilityState)
+//                                    } ,
+//                                    colors = CheckboxDefaults.colors(
+//                                        checkedColor = Color(0xff4d648d)
+//                                    )
+//                                )
+//                                Spacer(modifier = Modifier.size(5.dp))
+//                                Text(
+//                                    text = "Set Visibility",
+//                                    style = TextStyle(
+//                                        fontSize = 16.sp,
+//                                        lineHeight = 24.sp,
+//                                        fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+//                                        fontWeight = FontWeight.W400,
+//                                        color = if (uiState.visibilityState) Color.White else Color.Gray
+//                                    )
+//                                )
+//
+//                                Spacer(modifier = Modifier.size(10.dp))
+//                                Text(
+//                                    text = "",
+//                                    style = TextStyle(
+//                                        fontSize = 16.sp,
+//                                        lineHeight = 24.sp,
+//                                        fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+//                                        fontWeight = FontWeight.W400,
+//                                        color = if (uiState.visibilityState) Color.White else Color.Gray
+//                                    )
+//                                )
+//                            }
 
-            if (uiState.selectedComponent == "Input") {
-                Spacer(modifier = Modifier.size(10.dp))
-                Text(
-                    text = "Type",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
-                        fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
-                        fontWeight = FontWeight.W400,
-                        color = Color.White
-                    )
-                )
-                Spacer(modifier = Modifier.size(10.dp))
-                DemoSpinner(
-                    list = uiState.inputTypeList,
-                    preselected = uiState.selectedInputType,
-                    onSelectionChanged = {
-                        onEventDispatchers(ConstructorContract.Intent.ChangingSelectedInputType(it))
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                )
-                Spacer(modifier = Modifier.size(10.dp))
-                Text(
-                    text = "Place Holder",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
-                        fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
-                        fontWeight = FontWeight.W400,
-                        color = Color.White
-                    )
-                )
-                Spacer(modifier = Modifier.size(10.dp))
-                OutlinedTextField(
-                    modifier = Modifier
-                        .width(310.dp)
-                        .height(58.dp),
-                    value = uiState.placeHolder,
+                        }else if(uiState.selectedComponent == "Text" ) {
+                            SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
+                            Spacer(modifier = Modifier.size(10.dp))
+                            Text(
+                                text = "Text Value",
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                    lineHeight = 24.sp,
+                                    fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+                                    fontWeight = FontWeight.W400,
+                                    color = Color.White
+                                )
+                            )
+                            Spacer(modifier = Modifier.size(10.dp))
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .width(310.dp)
+                                    .height(58.dp),
+                                value = uiState.textValue,
 
-                    onValueChange = {
-                        onEventDispatchers(ConstructorContract.Intent.ChangingPlaceholder(it))
-                    },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.LightGray,
-                        unfocusedBorderColor = Color.LightGray,
-                        focusedTextColor = Color.LightGray,
-                        unfocusedTextColor = Color.LightGray
-                    ),
-                    shape = RoundedCornerShape(5.dp)
-                )
-            }else if(uiState.selectedComponent == "Text" ) {
-                Spacer(modifier = Modifier.size(10.dp))
-                Text(
-                    text = "Text Value",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
-                        fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
-                        fontWeight = FontWeight.W400,
-                        color = Color.White
-                    )
-                )
-                Spacer(modifier = Modifier.size(10.dp))
-                OutlinedTextField(
-                    modifier = Modifier
-                        .width(310.dp)
-                        .height(58.dp),
-                    value = uiState.textValue,
-
-                    onValueChange = {
-                        onEventDispatchers(ConstructorContract.Intent.ChangingTextValue(it))
-                    },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.LightGray,
-                        unfocusedBorderColor = Color.LightGray,
-                        focusedTextColor = Color.LightGray,
-                        unfocusedTextColor = Color.LightGray
-                    ),
-                    shape = RoundedCornerShape(5.dp)
-                )
+                                onValueChange = {
+                                    onEventDispatchers(ConstructorContract.Intent.ChangingTextValue(it))
+                                },
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = Color.LightGray,
+                                    unfocusedBorderColor = Color.LightGray,
+                                    focusedTextColor = Color.LightGray,
+                                    unfocusedTextColor = Color.LightGray
+                                ),
+                                shape = RoundedCornerShape(5.dp)
+                            )
+                        }
+                    }
+                    
+                    Spacer(modifier = Modifier.size(10.dp))
+                    
+                }
             }
 
         }
@@ -293,6 +368,62 @@ fun ConstructorScreenContent(
                 )
             )
         }
+    }
+}
+
+@Composable
+fun SetId(
+    uiState : ConstructorContract.UiState ,
+    onEventDispatchers: (ConstructorContract.Intent) -> Unit
+) {
+    Spacer(modifier = Modifier.size(10.dp))
+    Text(
+        text = "Set ID",
+        style = TextStyle(
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+            fontWeight = FontWeight.W400,
+            color = Color.White
+        )
+    )
+    Spacer(modifier = Modifier.size(10.dp))
+    Row (
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 15.dp) ,
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        Spacer(modifier = Modifier.size(5.dp))
+        Checkbox(
+            checked = uiState.idCheckState,
+            onCheckedChange = {
+                onEventDispatchers(ConstructorContract.Intent.ClickCheckBoxID)
+            } ,
+            colors = CheckboxDefaults.colors(
+                checkedColor = Color(0xff4d648d)
+            )
+        )
+        Spacer(modifier = Modifier.size(5.dp))
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(58.dp),
+            value = uiState.idValue,
+
+            onValueChange = {
+                onEventDispatchers(ConstructorContract.Intent.ChangingIdValue(it))
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.LightGray,
+                unfocusedBorderColor = Color.LightGray,
+                focusedTextColor = Color.LightGray,
+                unfocusedTextColor = Color.LightGray
+            ),
+            shape = RoundedCornerShape(5.dp) ,
+            enabled = uiState.idCheckState
+        )
+        Spacer(modifier = Modifier.size(5.dp))
     }
 }
 

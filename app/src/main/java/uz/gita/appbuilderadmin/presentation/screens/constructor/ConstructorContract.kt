@@ -32,7 +32,10 @@ interface ConstructorContract {
         val selectedInputType : String = inputTypeList[0] ,
         val placeHolder : String = "" ,
         val textValue : String = "" ,
-        val name : String = ""
+        val name : String = "" ,
+        val idCheckState : Boolean = false ,
+        val idValue : String = "" ,
+        val visibilityState : Boolean = false
     )
 
     interface Intent {
@@ -40,11 +43,19 @@ interface ConstructorContract {
             val component : String
         ) : Intent
 
+        data class ChangingIdValue (
+            val idValue : String
+        ) : Intent
+
         data class EnteringName(
             val name : String ,
         ) : Intent
 
         object ClickCreateButton : Intent
+
+        object ClickVisibilityState : Intent
+
+        object ClickCheckBoxID : Intent
 
         data class ChangingSelectedInputType(
             val type : String

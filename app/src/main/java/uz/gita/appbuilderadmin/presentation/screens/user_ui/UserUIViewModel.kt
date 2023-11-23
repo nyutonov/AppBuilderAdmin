@@ -22,13 +22,11 @@ class UserUIViewModel @Inject constructor(
     override fun onEventDispatcher(intent: UserUIContract.Intent) {
         when (intent) {
             is UserUIContract.Intent.ClickAddComponents -> {
-                Log.d("TTT" , "userUIscreen name : ${intent.name}")
                 viewModelScope.launch { direction.moveToConstructor(intent.name) }
             }
 
             is UserUIContract.Intent.LoadData -> {
                 repository.getAllData(intent.name).onEach { list ->
-                    Log.d("TTT" , "list : ${list[0].componentsName}")
                     uiState.update { it.copy(components = list) }
                 }.launchIn(viewModelScope)
             }

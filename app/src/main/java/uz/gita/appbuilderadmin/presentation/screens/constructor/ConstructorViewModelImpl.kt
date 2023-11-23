@@ -49,6 +49,14 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(textValue = intent.value) }
             }
 
+            ConstructorContract.Intent.ClickVisibilityState -> {
+                reduce { it.copy(visibilityState = !uiState.value.visibilityState) }
+            }
+
+            ConstructorContract.Intent.ClickCheckBoxID -> {
+                reduce { it.copy(idCheckState = !uiState.value.idCheckState) }
+            }
+
             ConstructorContract.Intent.ClickCreateButton -> {
                 viewModelScope.launch {
                     uiState.value.apply {
@@ -58,6 +66,7 @@ class ConstructorViewModelImpl @Inject constructor(
                             selectedInputType ,
                             placeHolder ,
                             textValue ,
+                            id = idValue,
                             color = 0xFF0F1C2 ,
                             selectorDataAnswers = listOf(
                                 "empty1" ,
