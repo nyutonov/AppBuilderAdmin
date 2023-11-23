@@ -13,7 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ConstructorViewModelImpl @Inject constructor(
-    private val repository: Repository
+    private val repository: Repository ,
+    private val direction : ConstructorDirection
 ) : ViewModel() , ConstructorContract.ViewModel{
     override val uiState = MutableStateFlow(ConstructorContract.UiState())
     private var name = ""
@@ -32,6 +33,7 @@ class ConstructorViewModelImpl @Inject constructor(
 
             is ConstructorContract.Intent.EnteringName -> {
                 name = intent.name
+                reduce { it.copy(name = intent.name) }
             }
 
             is ConstructorContract.Intent.ChangingSelectedComponent -> {
@@ -66,6 +68,7 @@ class ConstructorViewModelImpl @Inject constructor(
                         )
                         )
                     }
+                    direction.back()
                 }
             }
 

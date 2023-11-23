@@ -1,5 +1,6 @@
 package uz.gita.appbuilderadmin.presentation.screens.users
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +28,10 @@ class UsersViewModel @Inject constructor(
     override fun onEventDispatcher(intent: UsersContract.Intent) {
         when (intent) {
             is UsersContract.Intent.ClickUser -> {
-                //...
+                viewModelScope.launch {
+                    Log.d("TTT" , "userscreen name : ${intent.name}")
+                    direction.moveToUserUI(intent.name)
+                }
             }
 
             UsersContract.Intent.ClickAddUser -> {

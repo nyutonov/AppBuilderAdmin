@@ -1,5 +1,6 @@
 package uz.gita.appbuilderadmin.data.repository
 
+import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -81,6 +82,7 @@ class RepositoryImpl @Inject constructor() : Repository {
     }
 
     override suspend fun addComponent(name: String, component: ComponentsModel): Unit = withContext(Dispatchers.IO) {
+        Log.d("TTT" , "name $name" )
         firebaseDatabase
             .getReference("users")
             .child(name)
@@ -89,9 +91,9 @@ class RepositoryImpl @Inject constructor() : Repository {
             .run {
                 this.child("componentsName").setValue(component.componentsName)
 
-                this.child("placeholder").setValue(component.placeHolder)
                 this.child("input").setValue(component.input)
                 this.child("type").setValue(component.type)
+                this.child("placeholder").setValue(component.placeHolder)
 
                 this.child("text").setValue(component.text)
                 this.child("color").setValue(component.color)
