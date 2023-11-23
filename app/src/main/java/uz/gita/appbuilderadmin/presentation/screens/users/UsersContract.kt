@@ -15,6 +15,7 @@ interface UsersContract {
         ) : Intent
 
         object ClickAddUser : Intent
+        object  Load:Intent
     }
 
     data class UIState(

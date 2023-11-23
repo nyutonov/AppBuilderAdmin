@@ -19,16 +19,18 @@ class UsersViewModel @Inject constructor(
     override val uiState = MutableStateFlow(UsersContract.UIState())
 
     init {
-        uiState.update {
-            it.copy(progressbar = true)
-        }
-        getAllUserUseCase().onEach { users ->
-            uiState.update {
-                it.copy(users = users, progressbar = false)
-            }
-        }.launchIn(viewModelScope)
+       load()
     }
-
+fun load(){
+    uiState.update {
+        it.copy(progressbar = true)
+    }
+    getAllUserUseCase().onEach { users ->
+        uiState.update {
+            it.copy(users = users, progressbar = false)
+        }
+    }.launchIn(viewModelScope)
+}
     override fun onEventDispatcher(intent: UsersContract.Intent) {
         when (intent) {
             is UsersContract.Intent.ClickUser -> {
@@ -37,7 +39,14 @@ class UsersViewModel @Inject constructor(
                     direction.moveToUserUI(intent.name)
                 }
             }
+        UsersContract.Intent.Load->{
 
+            getAllUserUseCase().onEach { users ->
+                uiState.update {
+                    it.copy(users = users, progressbar = false)
+                }
+            }.launchIn(viewModelScope)
+        }
             UsersContract.Intent.ClickAddUser -> {
                 viewModelScope.launch { direction.moveToRegister() }
             }

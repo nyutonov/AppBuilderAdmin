@@ -28,7 +28,7 @@ class UserUIViewModel @Inject constructor(
 
             is UserUIContract.Intent.LoadData -> {
                 repository.getAllData(intent.name).onEach { list ->
-                    Log.d("TTT" , "list : ${list[0].componentsName}")
+
                     uiState.update { it.copy(components = list) }
                 }.launchIn(viewModelScope)
             }

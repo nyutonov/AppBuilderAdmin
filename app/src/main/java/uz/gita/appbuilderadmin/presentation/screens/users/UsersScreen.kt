@@ -51,6 +51,7 @@ private fun MainContent(
     uiState: UsersContract.UIState = UsersContract.UIState(),
     onEventDispatcher: (UsersContract.Intent) -> Unit = {}
 ) {
+    onEventDispatcher.invoke(UsersContract.Intent.Load)
     Box(
         modifier = Modifier
             .fillMaxSize()
