@@ -14,26 +14,39 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UsersViewModel @Inject constructor(
-    private val getAllUserUseCase: GetAllUserUseCase,
-    private val direction: UsersContract.Direction
+    private val getAllUserUseCase: GetAllUserUseCase, private val direction: UsersContract.Direction
 ) : UsersContract.ViewModel, ViewModel() {
     override val uiState = MutableStateFlow(UsersContract.UIState())
 
     init {
-        getAllUserUseCase()
-            .onEach { users -> uiState.update { it.copy(users = users) } }
-            .launchIn(viewModelScope)
+       load()
     }
-
+fun load(){
+    uiState.update {
+        it.copy(progressbar = true)
+    }
+    getAllUserUseCase().onEach { users ->
+        uiState.update {
+            it.copy(users = users, progressbar = false)
+        }
+    }.launchIn(viewModelScope)
+}
     override fun onEventDispatcher(intent: UsersContract.Intent) {
         when (intent) {
             is UsersContract.Intent.ClickUser -> {
                 viewModelScope.launch {
-                    Log.d("TTT" , "userscreen name : ${intent.name}")
+                    Log.d("TTT", "userscreen name : ${intent.name}")
                     direction.moveToUserUI(intent.name)
                 }
             }
+        UsersContract.Intent.Load->{
 
+            getAllUserUseCase().onEach { users ->
+                uiState.update {
+                    it.copy(users = users, progressbar = false)
+                }
+            }.launchIn(viewModelScope)
+        }
             UsersContract.Intent.ClickAddUser -> {
                 viewModelScope.launch { direction.moveToRegister() }
             }

@@ -15,10 +15,12 @@ interface UsersContract {
         ) : Intent
 
         object ClickAddUser : Intent
+        object  Load:Intent
     }
 
     data class UIState(
-        val users: List<String> = listOf()
+        val users: List<String> = listOf(),
+        val progressbar: Boolean = true
     )
 
     interface Direction {

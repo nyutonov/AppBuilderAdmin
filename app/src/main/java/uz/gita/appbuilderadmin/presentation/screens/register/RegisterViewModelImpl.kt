@@ -5,7 +5,10 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uz.gita.appbuilderadmin.domain.param.UserParam
 import uz.gita.appbuilderadmin.domain.usecases.AddUserUseCase
@@ -46,9 +49,14 @@ class RegisterViewModelImpl @Inject constructor(
                 if (name.isNotEmpty() && password.isNotEmpty()) {
                     viewModelScope.launch {
                         addUserUseCase(UserParam(name , password))
+                            .onStart { reduce { it.copy(isLoading = true) } }
                             .onEach {
                                 if (it) {
+                                    reduce { it.copy(isLoading = false, name = "", password = "") }
+
                                     direction.back()
+                                } else {
+                                    reduce { it.copy(isLoading = false) }
                                 }
                             }
                             .collect()
@@ -58,6 +66,4 @@ class RegisterViewModelImpl @Inject constructor(
 
         }
     }
-
-
 }
