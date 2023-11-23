@@ -1,6 +1,7 @@
 package uz.gita.appbuilderadmin.presentation.screens.users
 
 import uz.gita.appbuilderadmin.presentation.screens.register.RegisterScreen
+import uz.gita.appbuilderadmin.presentation.screens.user_ui.UserUIScreen
 import uz.gita.appbuilderadmin.utils.navigator.AppNavigator
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -14,6 +15,6 @@ class UsersDirection @Inject constructor(
     }
 
     override suspend fun moveToUserUI(name: String) {
-        //...
+        appNavigator.navigateTo(UserUIScreen(name))
     }
 }

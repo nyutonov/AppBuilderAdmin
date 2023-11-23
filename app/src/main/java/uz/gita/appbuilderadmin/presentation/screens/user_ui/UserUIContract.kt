@@ -14,13 +14,18 @@ interface UserUIContract {
         data class ClickAddComponents(
             val name: String
         ) : Intent
+
+        data class SetName(
+            val name: String
+        ) : Intent
     }
 
     data class UIState(
+        val name: String = "",
         val components: List<ComponentsModel> = listOf()
     )
 
     interface Direction {
-//        suspend fun moveToConstructor
+        suspend fun moveToConstructor(name: String)
     }
 }

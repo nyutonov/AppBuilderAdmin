@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import uz.gita.appbuilderadmin.presentation.screens.register.RegisterDirection
 import uz.gita.appbuilderadmin.presentation.screens.register.RegisterDirectionImpl
+import uz.gita.appbuilderadmin.presentation.screens.user_ui.UserUIDirection
 import uz.gita.appbuilderadmin.presentation.screens.users.UsersContract
 import uz.gita.appbuilderadmin.presentation.screens.users.UsersDirection
 import javax.inject.Singleton
@@ -19,5 +20,8 @@ interface DirectionsModule {
 
     @Binds
     fun bindUsersDirection(impl: UsersDirection): UsersContract.Direction
+
+    @Binds
+    fun bindUserUiDirection(impl:UserUIDirection):UsersContract.Direction
 
 }
