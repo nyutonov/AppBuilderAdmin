@@ -5,43 +5,44 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.hilt.getViewModel
+import uz.gita.appbuilderadmin.presentation.components.InputComponent
+import uz.gita.appbuilderadmin.presentation.components.TextComponent
 import uz.gita.appbuilderadmin.ui.theme.AppBuilderAdminTheme
 
-class UserUIScreen(private val name: String) : AndroidScreen() {
+class UserUIScreen : AndroidScreen() {
     @Composable
     override fun Content() {
         AppBuilderAdminTheme {
-            val viewModel: UserUIContract.ViewModel = getViewModel<UserUIViewModel>()
-
-            viewModel::onEventDispatcher.invoke(UserUIContract.Intent.SetName(name))
-
-            MainContent(
-                viewModel.uiState.collectAsState().value,
-                viewModel::onEventDispatcher
-            )
+            val vm: UserUIContract.ViewModel = getViewModel<UserUIViewModel>()
+            MainContent(vm.uiState.collectAsState(), vm::onEventDispatcher)
         }
     }
 }
 
 @Composable
 private fun MainContent(
-    uiState: UserUIContract.UIState = UserUIContract.UIState(),
-    onEventDispatcher: (UserUIContract.Intent) -> Unit = {}
+    uiState: State<UserUIContract.UIState>,
+    onEventDipacher: (UserUIContract.Intent) -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        LazyColumn {
-            items(uiState.components) {
-
-            }
-        }
+      LazyColumn{
+          items(uiState.value.components){
+             if (it.componentsName=="TextComponent"){
+                 TextComponent(data = it)
+             }else if (it.componentsName=="InputComponent"){
+                 InputComponent(it)
+             }
+          }
+      }
     }
 }
 
@@ -49,6 +50,6 @@ private fun MainContent(
 @Composable
 private fun MainContentPreview() {
     AppBuilderAdminTheme {
-        MainContent()
+//        MainContent()
     }
 }
