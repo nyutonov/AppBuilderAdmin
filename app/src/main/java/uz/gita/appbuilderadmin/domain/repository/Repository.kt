@@ -6,6 +6,6 @@ import uz.gita.appbuilderadmin.domain.param.UserParam
 interface Repository {
 
     fun addUser(userParam: UserParam) : Flow<Boolean>
-    fun getAllUsers() : Flow<List<UserParam>>
+    fun getAllUsers() : Flow<List<String>>
 
 }

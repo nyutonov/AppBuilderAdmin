@@ -83,7 +83,7 @@ dependencies {
     /*
     *   voyager
     * */
-    val voyagerVersion = "1.0.0-rc05"
+    val voyagerVersion = "1.0.0-rc06"
     implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
     implementation("cafe.adriel.voyager:voyager-androidx:$voyagerVersion")
     implementation("cafe.adriel.voyager:voyager-hilt:$voyagerVersion")

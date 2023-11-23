@@ -9,6 +9,6 @@ import javax.inject.Inject
 class GetAllUserUseCaseImpl @Inject constructor(
     private val repository: Repository
 ) : GetAllUserUseCase {
-    override fun invoke(): Flow<List<UserParam>> = repository.getAllUsers()
+    override fun invoke(): Flow<List<String>> = repository.getAllUsers()
 
 }

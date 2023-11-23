@@ -27,6 +27,7 @@ class RepositoryImpl @Inject constructor() : Repository {
     override fun addUser(userParam: UserParam) : Flow<Boolean> = callbackFlow {
         val uuid = UUID.randomUUID().toString()
         val userModel = userParam.toModel()
+
         firebasePref
             .collection("users")
             .document(uuid)
@@ -41,18 +42,15 @@ class RepositoryImpl @Inject constructor() : Repository {
         awaitClose()
     }
 
-    override fun getAllUsers(): Flow<List<UserParam>> = callbackFlow {
+    override fun getAllUsers(): Flow<List<String>> = callbackFlow {
 
         firebasePref
             .collection("users")
             .get().getAll {
-                return@getAll UserModel(
-                    it.data?.getOrDefault("name" , "") as String,
-                    it.data?.getOrDefault("password" , "") as String
-                )
+                return@getAll it.data?.getOrDefault("name" , "") as String
             }.onEach {
                 it.onSuccess {
-                    trySend(it.map { it.toParam() })
+                    trySend(it)
                 }
             }
             .launchIn(scope)

@@ -5,6 +5,6 @@ import uz.gita.appbuilderadmin.domain.param.UserParam
 
 interface GetAllUserUseCase {
 
-    operator fun invoke() : Flow<List<UserParam>>
+    operator fun invoke() : Flow<List<String>>
 
 }
