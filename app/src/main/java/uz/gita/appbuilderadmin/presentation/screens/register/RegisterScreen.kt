@@ -39,24 +39,23 @@ import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.hilt.getViewModel
 import uz.gita.appbuilderadmin.R
 
-class RegisterScreen : AndroidScreen(){
+class RegisterScreen : AndroidScreen() {
     @Composable
     override fun Content() {
-        val viewModel : RegisterContract.ViewModel = getViewModel<RegisterViewModelImpl>()
+        val viewModel: RegisterContract.ViewModel = getViewModel<RegisterViewModelImpl>()
         RegisterScreenContent(
-            viewModel.uiState.collectAsState().value ,
+            viewModel.uiState.collectAsState().value,
             viewModel::onEventDispatchers
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreenContent(
-    uiState : RegisterContract.UiState ,
-    onEventDispatchers : (RegisterContract.Intent) -> Unit
+    uiState: RegisterContract.UiState,
+    onEventDispatchers: (RegisterContract.Intent) -> Unit
 ) {
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF0F1C2E))
@@ -72,7 +71,7 @@ fun RegisterScreenContent(
                     .width(141.dp)
                     .height(130.dp),
                 painter = painterResource(id = R.drawable.ic_register_screen),
-                colorFilter = ColorFilter.tint(Color(0xff4d648d)) ,
+                colorFilter = ColorFilter.tint(Color(0xff4d648d)),
                 contentDescription = "register icon"
             )
         }
@@ -90,7 +89,7 @@ fun RegisterScreenContent(
                     modifier = Modifier
                         .width(310.dp)
                         .height(58.dp),
-                    value = uiState.name ,
+                    value = uiState.name,
                     placeholder = {
                         Text(
                             text = "Username",
@@ -109,7 +108,7 @@ fun RegisterScreenContent(
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color.LightGray,
                         unfocusedBorderColor = Color.LightGray,
-                        focusedTextColor = Color.LightGray ,
+                        focusedTextColor = Color.LightGray,
                         unfocusedTextColor = Color.LightGray
                     ),
                     shape = RoundedCornerShape(5.dp)
@@ -153,7 +152,7 @@ fun RegisterScreenContent(
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color.LightGray,
                         unfocusedBorderColor = Color.LightGray,
-                        focusedTextColor = Color.LightGray ,
+                        focusedTextColor = Color.LightGray,
                         unfocusedTextColor = Color.LightGray
                     ),
                     shape = RoundedCornerShape(5.dp),
