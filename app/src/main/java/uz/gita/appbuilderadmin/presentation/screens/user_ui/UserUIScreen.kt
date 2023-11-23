@@ -28,7 +28,7 @@ class UserUIScreen : AndroidScreen() {
 @Composable
 private fun MainContent(
     uiState: State<UserUIContract.UIState>,
-    onEventDipacher: (UserUIContract.Intent) -> Unit
+    onEventDispatcher: (UserUIContract.Intent) -> Unit
 ) {
     Box(
         modifier = Modifier
