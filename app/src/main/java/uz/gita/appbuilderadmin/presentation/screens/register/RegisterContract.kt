@@ -15,7 +15,8 @@ interface RegisterContract {
     data class UiState(
         val name : String = "",
         val password : String = "" ,
-        val passwordState : Boolean = false
+        val passwordState : Boolean = false,
+        val isLoading: Boolean = false
     )
 
     interface Intent {

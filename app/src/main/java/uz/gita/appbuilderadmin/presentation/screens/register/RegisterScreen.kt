@@ -4,14 +4,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -90,11 +93,10 @@ fun RegisterScreenContent(
                         .width(310.dp)
                         .height(58.dp),
                     value = uiState.name,
-                    placeholder = {
+                    label = {
                         Text(
                             text = "Username",
                             style = TextStyle(
-                                fontSize = 16.sp,
                                 lineHeight = 24.sp,
                                 fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
                                 fontWeight = FontWeight.W400,
@@ -113,17 +115,17 @@ fun RegisterScreenContent(
                     ),
                     shape = RoundedCornerShape(5.dp)
                 )
+
                 OutlinedTextField(
                     modifier = Modifier
                         .padding(top = 24.dp)
                         .width(310.dp)
                         .height(58.dp),
                     value = uiState.password,
-                    placeholder = {
+                    label = {
                         Text(
                             text = "Password",
                             style = TextStyle(
-                                fontSize = 16.sp,
                                 lineHeight = 24.sp,
                                 fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
                                 fontWeight = FontWeight.W400,
@@ -173,15 +175,32 @@ fun RegisterScreenContent(
                         containerColor = Color(0xff4d648d)
                     )
                 ) {
-                    Text(
-                        text = "Register",
-                        style = TextStyle(
-                            fontSize = 18.sp,
-                            fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
-                            fontWeight = FontWeight.W400,
-                            textAlign = TextAlign.Center
-                        )
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        if (uiState.isLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .align(Alignment.Center),
+                                color = Color.White,
+                                strokeWidth = 3.dp
+                            )
+                        } else {
+                            Text(
+                                modifier = Modifier
+                                    .align(Alignment.Center),
+                                text = "Register",
+                                style = TextStyle(
+                                    fontSize = 18.sp,
+                                    fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                                    fontWeight = FontWeight.W400,
+                                    textAlign = TextAlign.Center
+                                )
+                            )
+                        }
+                    }
                 }
             }
         }

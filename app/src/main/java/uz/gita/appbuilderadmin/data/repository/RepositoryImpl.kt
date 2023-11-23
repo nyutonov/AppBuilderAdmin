@@ -82,7 +82,6 @@ class RepositoryImpl @Inject constructor() : Repository {
     }
 
     override suspend fun addComponent(name: String, component: ComponentsModel): Unit = withContext(Dispatchers.IO) {
-        Log.d("TTT" , "name $name" )
         firebaseDatabase
             .getReference("users")
             .child(name)
