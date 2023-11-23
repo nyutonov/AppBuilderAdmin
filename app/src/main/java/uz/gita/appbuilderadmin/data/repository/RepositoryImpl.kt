@@ -80,15 +80,13 @@ class RepositoryImpl @Inject constructor() : Repository {
                 this.child("text").setValue(component.text)
                 this.child("color").setValue(component.color)
 
-                this.child("component_name").setValue(component.componentsName)
-                this.child("component_name").setValue(component.componentsName)
-                this.child("component_name").setValue(component.componentsName)
+                this.child("selectorDataQuestion").setValue(component.selectorDataQuestion)
+                this.child("selectorDataAnswers").setValue(component.selectorDataAnswers.joinToString(":"))
 
-                this.child("component_name").setValue(component.componentsName)
-                this.child("component_name").setValue(component.componentsName)
+                this.child("multiSelectDataQuestion").setValue(component.multiSelectDataQuestion)
+                this.child("multiSelectorDataAnswers").setValue(component.multiSelectorDataAnswers.joinToString(":"))
 
-                this.child("component_name").setValue(component.componentsName)
-                this.child("component_name").setValue(component.componentsName)
+                this.child("datePicker").setValue(component.datePicker)
             }
     }
 }
