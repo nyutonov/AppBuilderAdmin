@@ -2,9 +2,12 @@ package uz.gita.appbuilderadmin.presentation.screens.constructor
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.domain.repository.Repository
 import javax.inject.Inject
 
@@ -45,7 +48,25 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             ConstructorContract.Intent.ClickCreateButton -> {
-
+                viewModelScope.launch {
+                    uiState.value.apply {
+                        repository.addComponent(name , ComponentsModel(
+                            selectedComponent ,
+                            "" ,
+                            selectedInputType ,
+                            placeHolder ,
+                            textValue ,
+                            color = 0xFF0F1C2 ,
+                            selectorDataAnswers = listOf(
+                                "empty1" ,
+                                "empty2" ,
+                                "empty3" ,
+                                "empty4" ,
+                            )
+                        )
+                        )
+                    }
+                }
             }
 
         }

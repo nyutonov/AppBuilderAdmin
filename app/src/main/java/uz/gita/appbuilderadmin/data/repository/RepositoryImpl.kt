@@ -1,6 +1,7 @@
 package uz.gita.appbuilderadmin.data.repository
 
 import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
@@ -71,6 +72,14 @@ class RepositoryImpl @Inject constructor() : Repository {
               trySend(snapshot.children.map { it.toUserData() })
           }
 
+          override fun onCancelled(error: DatabaseError) {
+
+          }
+      }
+      )
+        awaitClose()
+    }
+
     override suspend fun addComponent(name: String, component: ComponentsModel): Unit = withContext(Dispatchers.IO) {
         firebaseDatabase
             .getReference("users")
@@ -80,6 +89,7 @@ class RepositoryImpl @Inject constructor() : Repository {
             .run {
                 this.child("componentsName").setValue(component.componentsName)
 
+                this.child("placeholder").setValue(component.placeHolder)
                 this.child("input").setValue(component.input)
                 this.child("type").setValue(component.type)
 

@@ -29,7 +29,7 @@ fun SampleSpinner(
     ) {
         Column {
             OutlinedTextField(
-                value = (selected.second),
+                value = (selected),
                 onValueChange = { },
                 label = { Text(text = "List name") },
                 modifier = Modifier.fillMaxWidth(),
@@ -51,7 +51,7 @@ fun SampleSpinner(
                         },
                         text = {
                             Text(
-                                text = (entry.second),
+                                text = (entry),
                                 modifier = Modifier
                                     .wrapContentWidth()
                                     .align(Alignment.Start),
@@ -74,20 +74,3 @@ fun SampleSpinner(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun SampleSpinner_Preview() {
-    MaterialTheme {
-
-        val entry1 = Pair("Key1", "Entry1")
-        val entry2 = Pair("Key2", "Entry2")
-        val entry3 = Pair("Key3", "Entry3")
-
-        SampleSpinner(
-            data = ComponentsModel(
-                preselected = entry1,
-                selectorDataAnswers = listOf(entry1, entry2, entry3)
-            )
-        )
-    }
-}
