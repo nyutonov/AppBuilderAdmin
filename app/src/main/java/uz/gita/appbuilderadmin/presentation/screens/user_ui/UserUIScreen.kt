@@ -11,7 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.hilt.getViewModel
+import uz.gita.appbuilderadmin.presentation.components.DateComponent
 import uz.gita.appbuilderadmin.presentation.components.InputComponent
+import uz.gita.appbuilderadmin.presentation.components.MultiSelectorComponent
+import uz.gita.appbuilderadmin.presentation.components.SampleSpinner
 import uz.gita.appbuilderadmin.presentation.components.TextComponent
 import uz.gita.appbuilderadmin.ui.theme.AppBuilderAdminTheme
 
@@ -20,6 +23,7 @@ class UserUIScreen(private val name: String) : AndroidScreen() {
     override fun Content() {
         AppBuilderAdminTheme {
             val vm: UserUIContract.ViewModel = getViewModel<UserUIViewModel>()
+            vm.onEventDispatcher(UserUIContract.Intent.LoadData(name))
             MainContent(vm.uiState.collectAsState(), vm::onEventDispatcher)
         }
     }
@@ -40,6 +44,12 @@ private fun MainContent(
                  TextComponent(data = it)
              }else if (it.componentsName=="InputComponent"){
                  InputComponent(it)
+             }else if (it.componentsName=="Selector"){
+                 SampleSpinner(it)
+             }else if(it.componentsName=="Multi selector"){
+                 MultiSelectorComponent(list = it.multiSelectorDataAnswers)
+             }else if (it.componentsName=="Date picker"){
+                 DateComponent()
              }
           }
       }

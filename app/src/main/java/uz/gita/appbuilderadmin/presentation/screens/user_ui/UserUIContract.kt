@@ -14,14 +14,16 @@ interface UserUIContract {
         data class ClickAddComponents(
             val name: String
         ) : Intent
-
+       data class LoadData(
+           val name:String
+       ):Intent
         data class SetName(
             val name: String
         ) : Intent
     }
 
     data class UIState(
-        val name: String = "",
+        var name: String = "",
         val components: List<ComponentsModel> = listOf()
     )
 
