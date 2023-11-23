@@ -31,6 +31,22 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(placeHolder = intent.placeholder) }
             }
 
+            is ConstructorContract.Intent.ChangingIdValue -> {
+                reduce { it.copy(idValue = intent.idValue) }
+            }
+
+            is ConstructorContract.Intent.ChangingComponentId -> {
+                reduce { it.copy(componentId = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangingVisibilityValue -> {
+                reduce { it.copy(visibilityValue = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangingOperator -> {
+                reduce { it.copy(operator = intent.value) }
+            }
+
             is ConstructorContract.Intent.EnteringName -> {
                 name = intent.name
                 reduce { it.copy(name = intent.name) }
@@ -73,8 +89,17 @@ class ConstructorViewModelImpl @Inject constructor(
                                 "empty2" ,
                                 "empty3" ,
                                 "empty4" ,
-                            )
+                            ) ,
+                            idVisibility = uiState.value.componentId ,
+                            visibility = uiState.value.componentId.isNotEmpty() ,
+                            operator = uiState.value.operator ,
+                            value = uiState.value.visibilityValue
                         )
+                        )
+                    }
+                    reduce {
+                        it.copy(
+
                         )
                     }
                     direction.back()

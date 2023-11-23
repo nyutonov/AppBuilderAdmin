@@ -34,7 +34,10 @@ interface ConstructorContract {
         val name: String = "",
         val idCheckState: Boolean = false,
         val idValue: String = "",
-        val visibilityState: Boolean = false
+        val visibilityState: Boolean = false ,
+        val componentId : String = "" ,
+        val operator : String = "" ,
+        val visibilityValue : String = ""
     )
 
     interface Intent {
@@ -42,8 +45,20 @@ interface ConstructorContract {
             val component: String
         ) : Intent
 
+        data class ChangingVisibilityValue (
+            val value : String
+        ) : Intent
+
+        data class ChangingOperator(
+            val value : String
+        ) : Intent
+
         data class ChangingIdValue(
             val idValue: String
+        ) : Intent
+
+        data class ChangingComponentId(
+            val value : String
         ) : Intent
 
         data class EnteringName(

@@ -105,13 +105,12 @@ private fun MainContent(
 
                     when (it.componentsName) {
                         "Text" -> {
-                            textTopComponent(text = "Text")
-                            TextComponent(it)
-                            Log.d("TTT", "MainContent: $it")
+                                TextComponent(it)
+                                textTopComponent(text = "Text")
                         }
 
                         "Input" -> {
-                            textTopComponent(text = "Input")
+                            textTopComponent(text = "Input" )
                             InputComponent(it)
                         }
 

@@ -1,7 +1,9 @@
 package uz.gita.appbuilderadmin.presentation.screens.constructor
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -44,13 +46,17 @@ import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.presentation.components.DateComponent
 import uz.gita.appbuilderadmin.presentation.components.InputComponent
 import uz.gita.appbuilderadmin.presentation.components.MultiSelectorComponent
+import uz.gita.appbuilderadmin.presentation.components.MyText
+import uz.gita.appbuilderadmin.presentation.components.MyTextField
 import uz.gita.appbuilderadmin.presentation.components.TextComponent
+import uz.gita.appbuilderadmin.presentation.components.VisibilityComponents
 import uz.gita.appbuilderadmin.presentation.screens.register.RegisterContract
 import uz.mlsoft.mydemosforquiz.ui.components.DemoSpinner
 
 class ConstructorScreen(
     private val name: String
 ) : AndroidScreen() {
+    @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     override fun Content() {
         val viewModel: ConstructorContract.ViewModel = getViewModel<ConstructorViewModelImpl>()
@@ -62,12 +68,15 @@ class ConstructorScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("RememberReturnType")
 @Composable
 fun ConstructorScreenContent(
     uiState: ConstructorContract.UiState,
     onEventDispatchers: (ConstructorContract.Intent) -> Unit
 ) {
+
+
 
     Box(
         modifier = Modifier
@@ -276,46 +285,11 @@ fun ConstructorScreenContent(
                             )
 
                             Spacer(modifier = Modifier.size(10.dp))
-//
-//                            Row (
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .padding(horizontal = 15.dp) ,
-//                                verticalAlignment = Alignment.CenterVertically
-//                            ){
-//                                Checkbox(
-//                                    checked = uiState.visibilityState,
-//                                    onCheckedChange = {
-//                                        onEventDispatchers(ConstructorContract.Intent.ClickVisibilityState)
-//                                    } ,
-//                                    colors = CheckboxDefaults.colors(
-//                                        checkedColor = Color(0xff4d648d)
-//                                    )
-//                                )
-//                                Spacer(modifier = Modifier.size(5.dp))
-//                                Text(
-//                                    text = "Set Visibility",
-//                                    style = TextStyle(
-//                                        fontSize = 16.sp,
-//                                        lineHeight = 24.sp,
-//                                        fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
-//                                        fontWeight = FontWeight.W400,
-//                                        color = if (uiState.visibilityState) Color.White else Color.Gray
-//                                    )
-//                                )
-//
-//                                Spacer(modifier = Modifier.size(10.dp))
-//                                Text(
-//                                    text = "",
-//                                    style = TextStyle(
-//                                        fontSize = 16.sp,
-//                                        lineHeight = 24.sp,
-//                                        fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
-//                                        fontWeight = FontWeight.W400,
-//                                        color = if (uiState.visibilityState) Color.White else Color.Gray
-//                                    )
-//                                )
-//                            }
+
+                            VisibilityComponents(
+                                uiState = uiState,
+                                onEventDispatchers = onEventDispatchers
+                            )
 
                         } else if (uiState.selectedComponent == "Text") {
                             SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
@@ -352,8 +326,13 @@ fun ConstructorScreenContent(
                                 ),
                                 shape = RoundedCornerShape(5.dp)
                             )
-                        } else if (uiState.selectedComponent == "Selector") {
 
+                            Spacer(modifier = Modifier.size(10.dp))
+                            VisibilityComponents(uiState = uiState, onEventDispatchers = onEventDispatchers)
+
+                        } else  {
+                            SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
+                            VisibilityComponents(uiState = uiState, onEventDispatchers = onEventDispatchers)
                         }
                     }
 
