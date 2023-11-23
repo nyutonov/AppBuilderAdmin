@@ -65,7 +65,7 @@ class RepositoryImpl @Inject constructor() : Repository {
     }
 
     override fun getAllData(name:String): Flow<List<ComponentsModel>> = callbackFlow {
-      realtimeDb.getReference("users").addValueEventListener(object :ValueEventListener {
+      realtimeDb.getReference("users").child(name).child("components").addValueEventListener(object :ValueEventListener {
           override fun onDataChange(snapshot: DataSnapshot) {
               trySend(snapshot.children.map { it.toUserData() })
           }
