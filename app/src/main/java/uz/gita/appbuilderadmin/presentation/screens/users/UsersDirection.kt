@@ -14,6 +14,6 @@ class UsersDirection @Inject constructor(
     }
 
     override suspend fun moveToUserUI(name: String) {
-        //...
+
     }
 }
