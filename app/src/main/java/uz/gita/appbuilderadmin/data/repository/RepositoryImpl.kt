@@ -1,5 +1,6 @@
 package uz.gita.appbuilderadmin.data.repository
 
+import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.withContext
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.domain.param.UserParam
 import uz.gita.appbuilderadmin.domain.repository.Repository
@@ -22,6 +24,7 @@ import javax.inject.Inject
 class RepositoryImpl @Inject constructor() : Repository {
 
     private val firebasePref = Firebase.firestore
+    private val firebaseDatabase = Firebase.database
     private val scope = CoroutineScope(Dispatchers.IO + Job())
 
     override fun addUser(userParam: UserParam): Flow<Boolean> = callbackFlow {
@@ -60,5 +63,32 @@ class RepositoryImpl @Inject constructor() : Repository {
 
     override fun getAllData(): Flow<List<ComponentsModel>> = flow {
 
+    }
+
+    override suspend fun addComponent(name: String, component: ComponentsModel): Unit = withContext(Dispatchers.IO) {
+        firebaseDatabase
+            .getReference("users")
+            .child(name)
+            .child("components")
+            .child(UUID.randomUUID().toString())
+            .run {
+                this.child("componentsName").setValue(component.componentsName)
+
+                this.child("input").setValue(component.input)
+                this.child("type").setValue(component.type)
+
+                this.child("text").setValue(component.text)
+                this.child("color").setValue(component.color)
+
+                this.child("component_name").setValue(component.componentsName)
+                this.child("component_name").setValue(component.componentsName)
+                this.child("component_name").setValue(component.componentsName)
+
+                this.child("component_name").setValue(component.componentsName)
+                this.child("component_name").setValue(component.componentsName)
+
+                this.child("component_name").setValue(component.componentsName)
+                this.child("component_name").setValue(component.componentsName)
+            }
     }
 }

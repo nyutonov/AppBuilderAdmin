@@ -8,7 +8,6 @@ interface Repository {
 
     fun addUser(userParam: UserParam) : Flow<Boolean>
     fun getAllUsers() : Flow<List<String>>
-
     fun getAllData():Flow<List<ComponentsModel>>
-
+    suspend fun addComponent(name: String, component: ComponentsModel)
 }
