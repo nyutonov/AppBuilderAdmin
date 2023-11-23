@@ -1,0 +1,18 @@
+package uz.gita.appbuilderadmin.di
+
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+import uz.gita.appbuilderadmin.presentation.screens.register.RegisterDirection
+import uz.gita.appbuilderadmin.presentation.screens.register.RegisterDirectionImpl
+import javax.inject.Singleton
+
+@Module
+@InstallIn(ViewModelComponent::class)
+interface DirectionsModule {
+
+    @Binds
+    fun bindRegisterDirection(impl : RegisterDirectionImpl) : RegisterDirection
+
+}
