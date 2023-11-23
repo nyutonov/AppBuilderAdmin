@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.data.model.UserModel
 import uz.gita.appbuilderadmin.domain.param.UserParam
 import uz.gita.appbuilderadmin.domain.repository.Repository
@@ -57,5 +58,7 @@ class RepositoryImpl @Inject constructor() : Repository {
 
         awaitClose()
     }
+  override fun getAllData():Flow<List<ComponentsModel>> =flow{
 
+  }
 }
