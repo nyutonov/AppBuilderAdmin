@@ -1,5 +1,9 @@
 package uz.gita.appbuilderadmin.data.repository
 
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
@@ -16,6 +20,7 @@ import uz.gita.appbuilderadmin.domain.param.UserParam
 import uz.gita.appbuilderadmin.domain.repository.Repository
 import uz.gita.appbuilderadmin.utils.extensions.getAll
 import uz.gita.appbuilderadmin.utils.extensions.toModel
+import uz.gita.appbuilderadmin.utils.mapper.toUserData
 import java.util.UUID
 import javax.inject.Inject
 
@@ -23,6 +28,7 @@ class RepositoryImpl @Inject constructor() : Repository {
 
     private val firebasePref = Firebase.firestore
     private val scope = CoroutineScope(Dispatchers.IO + Job())
+    private val realtimeDb=FirebaseDatabase.getInstance()
 
     override fun addUser(userParam: UserParam): Flow<Boolean> = callbackFlow {
         val uuid = UUID.randomUUID().toString()
@@ -58,7 +64,17 @@ class RepositoryImpl @Inject constructor() : Repository {
         awaitClose()
     }
 
-    override fun getAllData(): Flow<List<ComponentsModel>> = flow {
+    override fun getAllData(name:String): Flow<List<ComponentsModel>> = callbackFlow {
+      realtimeDb.getReference("users").addValueEventListener(object :ValueEventListener {
+          override fun onDataChange(snapshot: DataSnapshot) {
+              trySend(snapshot.children.map { it.toUserData() })
+          }
 
+          override fun onCancelled(error: DatabaseError) {
+
+          }
+
+      })
+        awaitClose {  }
     }
 }

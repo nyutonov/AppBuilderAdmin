@@ -9,6 +9,6 @@ interface Repository {
     fun addUser(userParam: UserParam) : Flow<Boolean>
     fun getAllUsers() : Flow<List<String>>
 
-    fun getAllData():Flow<List<ComponentsModel>>
+    fun getAllData(name:String):Flow<List<ComponentsModel>>
 
 }
