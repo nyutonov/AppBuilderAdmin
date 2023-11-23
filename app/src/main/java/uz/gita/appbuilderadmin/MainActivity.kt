@@ -10,8 +10,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import uz.gita.appbuilderadmin.presentation.screens.register.RegisterScreen
-import uz.gita.appbuilderadmin.presentation.screens.users.UsersScreen
+import uz.gita.appbuilderadmin.presentation.screens.constructor.ConstructorScreen
 import uz.gita.appbuilderadmin.utils.navigator.NavigationHandler
 import javax.inject.Inject
 
@@ -26,7 +25,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Navigator (
-                screen = UsersScreen()
+                screen = ConstructorScreen("")
             ){ navigator ->
                 navigationHandler.navigationFlow
                     .onEach {
