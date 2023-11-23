@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import uz.gita.appbuilderadmin.ui.theme.AppBuilderAdminTheme
 
@@ -31,7 +32,8 @@ fun MultiSelectorComponent(
                 Text(
                     modifier = Modifier
                         .align(Alignment.CenterVertically),
-                    text = it
+                    text = it ,
+                    color = Color.LightGray
                 )
             }
         }

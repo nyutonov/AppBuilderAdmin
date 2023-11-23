@@ -1,6 +1,7 @@
 package uz.mlsoft.mydemosforquiz.ui.components
 
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,9 +18,9 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun DemoSpinner(
-    list: List<Pair<String, String>>,
-    preselected: Pair<String, String>,
-    onSelectionChanged: (selection: Pair<String, String>) -> Unit,
+    list: List<String>,
+    preselected: String,
+    onSelectionChanged: (selection: String) -> Unit,
     modifier: Modifier
 ) {
 
@@ -29,14 +30,15 @@ fun DemoSpinner(
     Box(modifier = modifier) {
         Column {
             OutlinedTextField(
-                value = (selected.second),
+                value = (selected),
                 onValueChange = { },
                 label = { Text(text = "My List") },
                 modifier = Modifier
                     .padding(horizontal = 15.dp)
                     .fillMaxWidth(),
                 trailingIcon = { Icon(Icons.Outlined.ArrowDropDown, null) },
-                readOnly = true
+                readOnly = true,
+                colors = TextFieldDefaults.colors(Color.White)
             )
             DropdownMenu(
                 modifier = Modifier.fillMaxWidth(),
@@ -49,13 +51,15 @@ fun DemoSpinner(
                         onClick = {
                             selected = entry
                             expanded = false
+
+                            onSelectionChanged.invoke(entry)
                         },
                         text = {
                             Text(
-                                text = (entry.second),
+                                text = entry,
                                 modifier = Modifier
                                     .wrapContentWidth()
-                                    .align(Alignment.Start)
+                                    .align(Alignment.Start),
                             )
                         }
                     )
@@ -76,19 +80,19 @@ fun DemoSpinner(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun SampleSpinner_Preview() {
-    MaterialTheme {
-        val entry1 = Pair("Key1", "Entry1")
-        val entry2 = Pair("Key2", "Entry2")
-        val entry3 = Pair("Key3", "Entry3")
-
-        DemoSpinner(
-            listOf(entry1, entry2, entry3),
-            preselected = entry2,
-            onSelectionChanged = { selected -> /* do something with selected */ },
-            Modifier.wrapContentSize()
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun SampleSpinner_Preview() {
+//    MaterialTheme {
+//        val entry1 = Pair("Key1", "Entry1")
+//        val entry2 = Pair("Key2", "Entry2")
+//        val entry3 = Pair("Key3", "Entry3")
+//
+//        DemoSpinner(
+//            listOf(entry1, entry2, entry3),
+//            preselected = entry2,
+//            onSelectionChanged = { selected -> /* do something with selected */ },
+//            Modifier.wrapContentSize()
+//        )
+//    }
+//}
