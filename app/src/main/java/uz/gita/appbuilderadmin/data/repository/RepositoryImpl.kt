@@ -1,9 +1,8 @@
 package uz.gita.appbuilderadmin.data.repository
 
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
@@ -15,6 +14,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.withContext
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.domain.param.UserParam
 import uz.gita.appbuilderadmin.domain.repository.Repository
@@ -27,8 +27,8 @@ import javax.inject.Inject
 class RepositoryImpl @Inject constructor() : Repository {
 
     private val firebasePref = Firebase.firestore
+    private val firebaseDatabase = Firebase.database
     private val scope = CoroutineScope(Dispatchers.IO + Job())
-    private val realtimeDb=FirebaseDatabase.getInstance()
 
     override fun addUser(userParam: UserParam): Flow<Boolean> = callbackFlow {
         val uuid = UUID.randomUUID().toString()
@@ -65,16 +65,34 @@ class RepositoryImpl @Inject constructor() : Repository {
     }
 
     override fun getAllData(name:String): Flow<List<ComponentsModel>> = callbackFlow {
-      realtimeDb.getReference("users").child(name).child("components").addValueEventListener(object :ValueEventListener {
+      firebaseDatabase.getReference("users").child(name).child("components").addValueEventListener(object :
+          ValueEventListener {
           override fun onDataChange(snapshot: DataSnapshot) {
               trySend(snapshot.children.map { it.toUserData() })
           }
 
-          override fun onCancelled(error: DatabaseError) {
+    override suspend fun addComponent(name: String, component: ComponentsModel): Unit = withContext(Dispatchers.IO) {
+        firebaseDatabase
+            .getReference("users")
+            .child(name)
+            .child("components")
+            .child(UUID.randomUUID().toString())
+            .run {
+                this.child("componentsName").setValue(component.componentsName)
 
-          }
+                this.child("input").setValue(component.input)
+                this.child("type").setValue(component.type)
 
-      })
-        awaitClose {  }
+                this.child("text").setValue(component.text)
+                this.child("color").setValue(component.color)
+
+                this.child("selectorDataQuestion").setValue(component.selectorDataQuestion)
+                this.child("selectorDataAnswers").setValue(component.selectorDataAnswers.joinToString(":"))
+
+                this.child("multiSelectDataQuestion").setValue(component.multiSelectDataQuestion)
+                this.child("multiSelectorDataAnswers").setValue(component.multiSelectorDataAnswers.joinToString(":"))
+
+                this.child("datePicker").setValue(component.datePicker)
+            }
     }
 }
