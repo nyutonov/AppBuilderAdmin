@@ -17,7 +17,7 @@ class UserUIViewModel @Inject constructor(
     override fun onEventDispatcher(intent: UserUIContract.Intent) {
         when (intent) {
             is UserUIContract.Intent.ClickAddComponents -> {
-                viewModelScope.launch { direction.moveToConstructor(uiState.value.name) }
+                viewModelScope.launch { direction.moveToConstructor(intent.name) }
             }
 
             is UserUIContract.Intent.SetName -> {
