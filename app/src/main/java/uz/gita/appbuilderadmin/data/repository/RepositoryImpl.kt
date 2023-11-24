@@ -69,9 +69,11 @@ class RepositoryImpl @Inject constructor() : Repository {
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) { trySend(snapshot.children.map { it.toUserData() }) }
 
-                override fun onCancelled(error: DatabaseError) {  }
-            })
+          override fun onCancelled(error: DatabaseError) {
 
+          }
+      }
+      )
         awaitClose()
     }
 
@@ -85,9 +87,13 @@ class RepositoryImpl @Inject constructor() : Repository {
                 .run {
                     this.child("componentsName").setValue(component.componentsName)
 
-                    this.child("input").setValue(component.input)
-                    this.child("type").setValue(component.type)
-                    this.child("placeHolder").setValue(component.placeHolder)
+                this.child("input").setValue(component.input)
+                this.child("type").setValue(component.type)
+                this.child("placeholder").setValue(component.placeHolder)
+                this.child("visibility").setValue(component.visibility)
+                this.child("idVisibility").setValue(component.idVisibility)
+                this.child("operator").setValue(component.operator)
+                this.child("value").setValue(component.value)
 
                     this.child("text").setValue(component.text)
                     this.child("color").setValue(component.color)
@@ -112,9 +118,6 @@ class RepositoryImpl @Inject constructor() : Repository {
         databaseReference.child(component.id).removeValue()
             .addOnSuccessListener {
                 // Успешно удалено
-            }
-            .addOnFailureListener { error ->
-                // Обработка ошибки
             }
     }
 }

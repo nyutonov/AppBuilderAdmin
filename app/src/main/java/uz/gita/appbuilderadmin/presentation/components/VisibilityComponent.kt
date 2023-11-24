@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,7 +29,7 @@ fun VisibilityComponents(
     onEventDispatchers : (ConstructorContract.Intent) -> Unit
 ) {
 
-    val regexSign = "[^<>|=]".toRegex()
+    val regexSign = "[^<>|=]|<<|>>|<<|=<|=>".toRegex()
 
     Row (
         modifier = Modifier
@@ -88,16 +89,49 @@ fun VisibilityComponents(
                 color = Color.White
             )
         )
+        if (uiState.operator.contains("<|>".toRegex())) {
+            Spacer(modifier = Modifier.size(10.dp))
+            Text(
+                text = "You enter < or >. If you enter this we can check visibility only number. REMEMBER",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    lineHeight = 24.sp,
+                    fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+                    fontWeight = FontWeight.W400,
+                    color = Color.White ,
+                    textAlign = TextAlign.Center
+                )
+            )
+        }
         MyTextField(
             value = uiState.operator,
             listener = {
-                onEventDispatchers(
-                    ConstructorContract.Intent.ChangingOperator(
-                        it
-                            .replace(regexSign , "")
+                if (it.length < 3) {
+                    onEventDispatchers(
+                        ConstructorContract.Intent.ChangingOperator(
+                            it
+                                .replace(regexSign , "")
+                        )
                     )
+                    onEventDispatchers(
+                        ConstructorContract.Intent.ChangeVisibilityCheck
+                    )
+                }
+            } ,
+            outlinedTextFieldColors = if (!uiState.visibilityCheck)
+                OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.Red,
+                    unfocusedBorderColor = Color.Red,
+                    focusedTextColor = Color.Red,
+                    unfocusedTextColor = Color.Red
                 )
-            }
+            else OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.LightGray,
+                unfocusedBorderColor = Color.LightGray,
+                focusedTextColor = Color.LightGray,
+                unfocusedTextColor = Color.LightGray
+            )
+
         )
         MyText(value = "Value")
         MyTextField(
@@ -106,7 +140,24 @@ fun VisibilityComponents(
                 onEventDispatchers(
                     ConstructorContract.Intent.ChangingVisibilityValue(it)
                 )
-            }
+                onEventDispatchers(
+                    ConstructorContract.Intent.ChangeVisibilityCheck
+                )
+            },
+            outlinedTextFieldColors = if (!uiState.visibilityCheck)
+                OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.Red,
+                    unfocusedBorderColor = Color.Red,
+                    focusedTextColor = Color.Red,
+                    unfocusedTextColor = Color.Red
+                )
+            else OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.LightGray,
+                unfocusedBorderColor = Color.LightGray,
+                focusedTextColor = Color.LightGray,
+                unfocusedTextColor = Color.LightGray
+            ) ,
+            check = uiState.operator.contains("<|>".toRegex())
         )
     }
 

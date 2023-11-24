@@ -100,40 +100,85 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(multiSelectorAnswer = intent.text) }
             }
 
+            ConstructorContract.Intent.ChangeVisibilityCheck -> {
+                reduce { it.copy(visibilityCheck = true) }
+            }
+
             ConstructorContract.Intent.ClickCreateButton -> {
-                viewModelScope.launch {
-                    uiState.value.apply {
-                        Log.d("TTT", "apply: $placeHolder")
+                if (!uiState.value.visibilityState) {
+                    viewModelScope.launch {
+                        uiState.value.apply {
+                            Log.d("TTT", "apply: $placeHolder")
 
-                        repository.addComponent(
-                            name, ComponentsModel(
-                                componentsName = selectedComponent,
-                                input = selectedComponent,
-                                placeHolder = placeHolder,
-                                type = selectedInputType,
-                                text = textValue,
-                                id = idValue,
-                                color = 0xFF0F1C2,
-                                selectorDataQuestion = selecterAnswer,
-                                selectorDataAnswers = selectorItems,
-                                idVisibility = componentId,
-                                visibility = componentId.isNotEmpty(),
-                                operator = operator,
-                                value = visibilityValue,
-                                datePicker = selectedDate,
-                                multiSelectDataQuestion = multiSelectorAnswer,
-                                multiSelectorDataAnswers = multiSelectorItems
+                            repository.addComponent(
+                                name, ComponentsModel(
+                                    componentsName = selectedComponent,
+                                    input = selectedComponent,
+                                    placeHolder = placeHolder,
+                                    type = selectedInputType,
+                                    text = textValue,
+                                    id = idValue,
+                                    color = 0xFF0F1C2,
+                                    selectorDataQuestion = selecterAnswer,
+                                    selectorDataAnswers = selectorItems,
+                                    idVisibility = componentId,
+                                    visibility = componentId.isNotEmpty(),
+                                    operator = operator,
+                                    value = visibilityValue,
+                                    datePicker = selectedDate,
+                                    multiSelectDataQuestion = multiSelectorAnswer,
+                                    multiSelectorDataAnswers = multiSelectorItems
+                                )
                             )
-                        )
-                    }
+                        }
 
-                    reduce {
-                        it.copy(
-                            placeHolder = "",
-                            selectedInputType = uiState.value.inputTypeList[0]
-                        )
+                        reduce {
+                            it.copy(
+                                placeHolder = "",
+                                selectedInputType = uiState.value.inputTypeList[0]
+                            )
+                        }
+                        direction.back()
                     }
-                    direction.back()
+                }else if (uiState.value.visibilityState && uiState.value.operator.isNotEmpty() && uiState.value.visibilityValue.isNotEmpty()) {
+                    viewModelScope.launch {
+                        uiState.value.apply {
+                            Log.d("TTT", "apply: $placeHolder")
+
+                            repository.addComponent(
+                                name, ComponentsModel(
+                                    componentsName = selectedComponent,
+                                    input = selectedComponent,
+                                    placeHolder = placeHolder,
+                                    type = selectedInputType,
+                                    text = textValue,
+                                    id = idValue,
+                                    color = 0xFF0F1C2,
+                                    selectorDataQuestion = selecterAnswer,
+                                    selectorDataAnswers = selectorItems,
+                                    idVisibility = componentId,
+                                    visibility = componentId.isNotEmpty(),
+                                    operator = operator,
+                                    value = visibilityValue,
+                                    datePicker = selectedDate,
+                                    multiSelectDataQuestion = multiSelectorAnswer,
+                                    multiSelectorDataAnswers = multiSelectorItems
+                                )
+                            )
+                        }
+
+                        reduce {
+                            it.copy(
+                                placeHolder = "",
+                                selectedInputType = uiState.value.inputTypeList[0]
+                            )
+                        }
+                        direction.back()
+                    }
+                }
+
+                else if(uiState.value.visibilityState && uiState.value.operator.isEmpty() && uiState.value.visibilityValue.isEmpty()) {
+                    reduce { it.copy(visibilityCheck = false) }
                 }
             }
 

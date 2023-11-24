@@ -42,7 +42,8 @@ interface ConstructorContract {
         val visibilityValue : String = "",
         val selectedDate: String = "",
         val selecterAnswer: String = "",
-        val multiSelectorAnswer: String = ""
+        val multiSelectorAnswer: String = "" ,
+        val visibilityCheck : Boolean = true
     )
 
     interface Intent {
@@ -71,6 +72,8 @@ interface ConstructorContract {
         ) : Intent
 
         object ClickCreateButton : Intent
+
+        object ChangeVisibilityCheck : Intent
 
         object ClickVisibilityState : Intent
 
