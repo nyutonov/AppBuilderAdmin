@@ -2,7 +2,6 @@ package uz.gita.appbuilderadmin.presentation.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -29,7 +28,7 @@ fun SampleSpinner(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .combinedClickable(onLongClick = onLongClick){}
+            .combinedClickable(onLongClick = onLongClick) {}
     ) {
         Column {
             OutlinedTextField(
@@ -41,7 +40,8 @@ fun SampleSpinner(
                 readOnly = true
             )
             DropdownMenu(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
             ) {
@@ -71,8 +71,9 @@ fun SampleSpinner(
                 .matchParentSize()
                 .background(Color.Transparent)
                 .padding(10.dp)
-                .clickable(
-                    onClick = { expanded = !expanded }
+                .combinedClickable(
+                    onClick = { expanded = !expanded },
+                    onLongClick = onLongClick
                 )
         )
     }
