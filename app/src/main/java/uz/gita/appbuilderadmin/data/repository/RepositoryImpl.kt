@@ -13,7 +13,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
@@ -87,13 +86,13 @@ class RepositoryImpl @Inject constructor() : Repository {
                 .run {
                     this.child("componentsName").setValue(component.componentsName)
 
-                this.child("input").setValue(component.input)
-                this.child("type").setValue(component.type)
-                this.child("placeholder").setValue(component.placeHolder)
-                this.child("visibility").setValue(component.visibility)
-                this.child("idVisibility").setValue(component.idVisibility)
-                this.child("operator").setValue(component.operator)
-                this.child("value").setValue(component.value)
+                    this.child("input").setValue(component.input)
+                    this.child("type").setValue(component.type)
+                    this.child("placeholder").setValue(component.placeHolder)
+                    this.child("visibility").setValue(component.visibility)
+                    this.child("idVisibility").setValue(component.idVisibility)
+                    this.child("operator").setValue(component.operator)
+                    this.child("value").setValue(component.value)
 
                     this.child("text").setValue(component.text)
                     this.child("color").setValue(component.color)
@@ -108,7 +107,9 @@ class RepositoryImpl @Inject constructor() : Repository {
                         .setValue(component.multiSelectorDataAnswers.joinToString(":"))
 
                     this.child("datePicker").setValue(component.datePicker)
-                    this.child("id").setValue(component.id)
+                    this.child("id").setValue(
+                        component.id.ifEmpty { UUID.randomUUID().toString() }
+                    )
                 }
         }
 
