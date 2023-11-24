@@ -13,7 +13,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
@@ -67,9 +66,11 @@ class RepositoryImpl @Inject constructor() : Repository {
             .child(name)
             .child("components")
             .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) { trySend(snapshot.children.map { it.toUserData() }) }
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    trySend(snapshot.children.map { it.toUserData() })
+                }
 
-                override fun onCancelled(error: DatabaseError) {  }
+                override fun onCancelled(error: DatabaseError) {}
             })
 
         awaitClose()
@@ -107,9 +108,10 @@ class RepositoryImpl @Inject constructor() : Repository {
         }
 
     override suspend fun deleteComponent(component: ComponentsModel, name: String) {
-        val databaseReference = firebaseDatabase.getReference("users").child(name).child("components")
-        Log.d("TTT", "deleteComponent components id:${component.id} ")
-        databaseReference.child(component.id).removeValue()
+        val databaseReference =
+            firebaseDatabase.getReference("users").child(name).child("components")
+        Log.d("TTT", "deleteComponent components id:${component.key} ")
+        databaseReference.child(component.key).removeValue()
             .addOnSuccessListener {
                 // Успешно удалено
             }
