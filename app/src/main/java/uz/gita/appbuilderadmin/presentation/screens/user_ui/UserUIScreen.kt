@@ -58,7 +58,7 @@ class UserUIScreen(private val name: String) : AndroidScreen() {
 private fun MainContent(
     uiState: State<UserUIContract.UIState>,
     name: String,
-    onEventDispatcher: (UserUIContract.Intent) -> Unit
+    onEventDispatcher: (UserUIContract.Intent) -> Unit,
 ) {
     var loaderText by remember {
         mutableStateOf(false)
@@ -148,6 +148,7 @@ private fun MainContent(
                         "Selector" -> {
                             textTopComponent(text = "Selector")
                             SampleSpinner(
+                                question = it.selectorDataQuestion,
                                 it,
                                 onLongClick = {
                                     onEventDispatcher.invoke(
@@ -175,7 +176,17 @@ private fun MainContent(
 
                         "Date Picker" -> {
                             textTopComponent(text = "Date Picker")
-                            DateComponent(it.datePicker,listener = {}, onLongClick = {onEventDispatcher.invoke(UserUIContract.Intent.DeleteComponents(it, name))})
+                            DateComponent(
+                                it.datePicker,
+                                listener = {},
+                                onLongClick = {
+                                    onEventDispatcher.invoke(
+                                        UserUIContract.Intent.DeleteComponents(
+                                            it,
+                                            name
+                                        )
+                                    )
+                                })
                         }
                     }
                 }
@@ -195,7 +206,7 @@ private fun MainContentPreview() {
 
 @Composable
 fun textTopComponent(
-    text: String
+    text: String,
 ) {
     Row(
         modifier = Modifier

@@ -19,62 +19,72 @@ import uz.gita.appbuilderadmin.data.model.ComponentsModel
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SampleSpinner(
+    question: String = "",
     data: ComponentsModel,
-    onLongClick: () -> Unit
+    onLongClick: () -> Unit,
 ) {
 
     var selected by remember { mutableStateOf(data.preselected) }
     var expanded by remember { mutableStateOf(false) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .combinedClickable(onLongClick = onLongClick){}
-    ) {
-        Column {
-            OutlinedTextField(
-                value = (selected),
-                onValueChange = { },
-                label = { Text(text = "List name") },
-                modifier = Modifier.fillMaxWidth(),
-                trailingIcon = { Icon(Icons.Outlined.ArrowDropDown, null) },
-                readOnly = true
-            )
-            DropdownMenu(
-                modifier = Modifier.fillMaxWidth(),
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-            ) {
-                data.selectorDataAnswers.forEach { entry ->
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text(
+            text = question,
+            color = Color.White,
+            modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .combinedClickable(onLongClick = onLongClick) {}
+        ) {
+            Column {
+                OutlinedTextField(
+                    value = (selected),
+                    onValueChange = { },
+                    label = { Text(text = "List name") },
+                    modifier = Modifier.fillMaxWidth(),
+                    trailingIcon = { Icon(Icons.Outlined.ArrowDropDown, null) },
+                    readOnly = true,
+                    colors = TextFieldDefaults.colors(Color.White)
+                )
+                DropdownMenu(
+                    modifier = Modifier.fillMaxWidth(),
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                ) {
+                    data.selectorDataAnswers.forEach { entry ->
 
-                    DropdownMenuItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            selected = entry
-                            expanded = false
-                        },
-                        text = {
-                            Text(
-                                text = (entry),
-                                modifier = Modifier
-                                    .wrapContentWidth()
-                                    .align(Alignment.Start),
-                            )
-                        }
-                    )
+                        DropdownMenuItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                selected = entry
+                                expanded = false
+                            },
+                            text = {
+                                Text(
+                                    text = (entry),
+                                    modifier = Modifier
+                                        .wrapContentWidth()
+                                        .align(Alignment.Start),
+                                    color = Color.White
+                                )
+                            }
+                        )
+                    }
                 }
             }
-        }
 
-        Spacer(
-            modifier = Modifier
-                .matchParentSize()
-                .background(Color.Transparent)
-                .padding(10.dp)
-                .clickable(
-                    onClick = { expanded = !expanded }
-                )
-        )
+            Spacer(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(Color.Transparent)
+                    .padding(10.dp)
+                    .clickable(
+                        onClick = { expanded = !expanded }
+                    )
+            )
+        }
     }
 }
 
