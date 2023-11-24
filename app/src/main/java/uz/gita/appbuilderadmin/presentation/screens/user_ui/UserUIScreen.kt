@@ -1,6 +1,8 @@
 package uz.gita.appbuilderadmin.presentation.screens.user_ui
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -43,16 +45,19 @@ import uz.gita.appbuilderadmin.presentation.components.TextComponent
 import uz.gita.appbuilderadmin.ui.theme.AppBuilderAdminTheme
 
 class UserUIScreen(private val name: String) : AndroidScreen() {
+    @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     override fun Content() {
         AppBuilderAdminTheme {
             val vm: UserUIContract.ViewModel = getViewModel<UserUIViewModel>()
-            vm.onEventDispatcher(UserUIContract.Intent.LoadData(name))
+            vm::onEventDispatcher.invoke(UserUIContract.Intent.LoadData(name))
+
             MainContent(vm.uiState.collectAsState(), name , vm::onEventDispatcher)
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun MainContent(
     uiState: State<UserUIContract.UIState>,
@@ -75,9 +80,10 @@ private fun MainContent(
         if (!(uiState.value.loader) && loaderText) {
             Text(text = "Empty", fontSize = 18.sp, modifier = Modifier.align(Alignment.Center), color = Color.White)
         }
-        Column(modifier = Modifier
-
-            .background(Color(0xFF0F1C2E))) {
+        Column(
+            modifier = Modifier
+                .background(Color(0xFF0F1C2E))
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -93,9 +99,15 @@ private fun MainContent(
                     color = Color.White
                 )
                 Text(
-                    text = "+", fontSize = 25.sp, modifier = Modifier.align(
-                        Alignment.CenterEnd
-                    ).clickable { onEventDispatcher.invoke(UserUIContract.Intent.ClickAddComponents(name)) },
+                    text = "+", fontSize = 25.sp, modifier = Modifier
+                        .align(
+                            Alignment.CenterEnd
+                        )
+                        .clickable {
+                            onEventDispatcher.invoke(
+                                UserUIContract.Intent.ClickAddComponents(name)
+                            )
+                        },
                     color = Color.White
                 )
             }
@@ -126,7 +138,9 @@ private fun MainContent(
 
                         "Date Picker" -> {
                             textTopComponent(text = "Date Picker")
-                            DateComponent()
+                            DateComponent(it.datePicker) {
+
+                            }
                         }
                     }
                 }

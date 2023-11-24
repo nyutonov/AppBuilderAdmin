@@ -54,57 +54,55 @@ class RepositoryImpl @Inject constructor() : Repository {
 
         firebasePref
             .collection("users")
-            .get().getAll {
-                return@getAll it.data?.getOrDefault("name", "") as String
-            }.onEach {
-                it.onSuccess {
-                    trySend(it)
-                }
-            }
+            .get().getAll { return@getAll it.data?.getOrDefault("name", "") as String }
+            .onEach { it.onSuccess { trySend(it) } }
             .launchIn(scope)
 
         awaitClose()
     }
 
-    override fun getAllData(name:String): Flow<List<ComponentsModel>> = callbackFlow {
-      firebaseDatabase.getReference("users").child(name).child("components").addValueEventListener(object :
-          ValueEventListener {
-          override fun onDataChange(snapshot: DataSnapshot) {
-              trySend(snapshot.children.map { it.toUserData() })
-          }
-
-          override fun onCancelled(error: DatabaseError) {
-
-          }
-      }
-      )
-        awaitClose()
-    }
-
-    override suspend fun addComponent(name: String, component: ComponentsModel): Unit = withContext(Dispatchers.IO) {
+    override fun getAllData(name: String): Flow<List<ComponentsModel>> = callbackFlow {
         firebaseDatabase
             .getReference("users")
             .child(name)
             .child("components")
-            .child(UUID.randomUUID().toString())
-            .run {
-                this.child("componentsName").setValue(component.componentsName)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) { trySend(snapshot.children.map { it.toUserData() }) }
 
-                this.child("input").setValue(component.input)
-                this.child("type").setValue(component.type)
-                this.child("placeholder").setValue(component.placeHolder)
+                override fun onCancelled(error: DatabaseError) {  }
+            })
 
-                this.child("text").setValue(component.text)
-                this.child("color").setValue(component.color)
-
-                this.child("selectorDataQuestion").setValue(component.selectorDataQuestion)
-                this.child("selectorDataAnswers").setValue(component.selectorDataAnswers.joinToString(":"))
-
-                this.child("multiSelectDataQuestion").setValue(component.multiSelectDataQuestion)
-                this.child("multiSelectorDataAnswers").setValue(component.multiSelectorDataAnswers.joinToString(":"))
-
-                this.child("datePicker").setValue(component.datePicker)
-                this.child("id").setValue(component.id)
-            }
+        awaitClose()
     }
+
+    override suspend fun addComponent(name: String, component: ComponentsModel): Unit =
+        withContext(Dispatchers.IO) {
+            firebaseDatabase
+                .getReference("users")
+                .child(name)
+                .child("components")
+                .child(UUID.randomUUID().toString())
+                .run {
+                    this.child("componentsName").setValue(component.componentsName)
+
+                    this.child("input").setValue(component.input)
+                    this.child("type").setValue(component.type)
+                    this.child("placeHolder").setValue(component.placeHolder)
+
+                    this.child("text").setValue(component.text)
+                    this.child("color").setValue(component.color)
+
+                    this.child("selectorDataQuestion").setValue(component.selectorDataQuestion)
+                    this.child("selectorDataAnswers")
+                        .setValue(component.selectorDataAnswers.joinToString(":"))
+
+                    this.child("multiSelectDataQuestion")
+                        .setValue(component.multiSelectDataQuestion)
+                    this.child("multiSelectorDataAnswers")
+                        .setValue(component.multiSelectorDataAnswers.joinToString(":"))
+
+                    this.child("datePicker").setValue(component.datePicker)
+                    this.child("id").setValue(component.id)
+                }
+        }
 }

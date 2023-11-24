@@ -9,6 +9,7 @@ fun DataSnapshot.toUserData(): ComponentsModel = ComponentsModel(
 
     input = child("input").getValue(String::class.java) ?: "",
     type = child("type").getValue(String::class.java) ?: "",
+    placeHolder = child("placeHolder").getValue(String::class.java) ?: "",
 
     text = child("text").getValue(String::class.java) ?: "",
     color = child("color").getValue(Int::class.java) ?: 0,

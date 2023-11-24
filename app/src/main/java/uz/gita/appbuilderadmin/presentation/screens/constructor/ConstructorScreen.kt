@@ -28,6 +28,10 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -75,7 +79,6 @@ fun ConstructorScreenContent(
     uiState: ConstructorContract.UiState,
     onEventDispatchers: (ConstructorContract.Intent) -> Unit
 ) {
-
 
 
     Box(
@@ -150,16 +153,9 @@ fun ConstructorScreenContent(
                     }
 
                     "Selector" -> {
-                        val list = listOf(
-                            "empty1",
-                            "empty2",
-                            "empty3",
-                            "empty4"
-                        )
-
                         DemoSpinner(
-                            list = list,
-                            preselected = list[0],
+                            list = uiState.selectorItems,
+                            preselected = uiState.selectorItems[0],
                             onSelectionChanged = {},
                             modifier = Modifier
                                 .padding(vertical = 10.dp)
@@ -169,18 +165,13 @@ fun ConstructorScreenContent(
                     }
 
                     "MultiSelector" -> {
-                        val list = listOf(
-                            "empty1",
-                            "empty2",
-                            "empty3",
-                            "empty4"
-                        )
-
-                        MultiSelectorComponent(list = list)
+                        MultiSelectorComponent(list = uiState.multiSelectorItems)
                     }
 
                     "Date Picker" -> {
-                        DateComponent()
+                        DateComponent {
+                            onEventDispatchers.invoke(ConstructorContract.Intent.SetSelectedDate(it))
+                        }
                     }
                 }
             }
@@ -328,11 +319,141 @@ fun ConstructorScreenContent(
                             )
 
                             Spacer(modifier = Modifier.size(10.dp))
-                            VisibilityComponents(uiState = uiState, onEventDispatchers = onEventDispatchers)
+                            VisibilityComponents(
+                                uiState = uiState,
+                                onEventDispatchers = onEventDispatchers
+                            )
 
-                        } else  {
+                        } else if (uiState.selectedComponent == "Selector") {
+                            var text by remember { mutableStateOf("") }
+
+                            Text(text = "Question", color = Color.White)
+
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(58.dp)
+                                    .padding(horizontal = 15.dp),
+                                value = uiState.selecterAnswer,
+                                singleLine = true,
+                                onValueChange = {
+                                    onEventDispatchers.invoke(ConstructorContract.Intent.ChangeSelectorAnswer(it))
+                                },
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = Color.LightGray,
+                                    unfocusedBorderColor = Color.LightGray,
+                                    focusedTextColor = Color.LightGray,
+                                    unfocusedTextColor = Color.LightGray
+                                ),
+                                shape = RoundedCornerShape(5.dp)
+                            )
+
+                            Text(text = "Item", color = Color.White)
+
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(58.dp)
+                                    .padding(horizontal = 15.dp),
+                                value = text,
+                                singleLine = true,
+                                onValueChange = { text = it },
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = Color.LightGray,
+                                    unfocusedBorderColor = Color.LightGray,
+                                    focusedTextColor = Color.LightGray,
+                                    unfocusedTextColor = Color.LightGray
+                                ),
+                                shape = RoundedCornerShape(5.dp)
+                            )
+
+                            Button(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(56.dp),
+                                onClick = {
+                                    onEventDispatchers.invoke(
+                                        ConstructorContract.Intent.AddItemToSelector(
+                                            text
+                                        )
+                                    )
+                                }) {
+                                Text(text = "Add")
+                            }
+
+                            Spacer(modifier = Modifier.size(10.dp))
+                            VisibilityComponents(
+                                uiState = uiState,
+                                onEventDispatchers = onEventDispatchers
+                            )
+                        } else if (uiState.selectedComponent == "MultiSelector") {
+                            var text by remember { mutableStateOf("") }
+
+                            Text(text = "Question", color = Color.White)
+
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(58.dp)
+                                    .padding(horizontal = 15.dp),
+                                value = uiState.selecterAnswer,
+                                singleLine = true,
+                                onValueChange = {
+                                    onEventDispatchers.invoke(ConstructorContract.Intent.ChangeSelectorAnswer(it))
+                                },
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = Color.LightGray,
+                                    unfocusedBorderColor = Color.LightGray,
+                                    focusedTextColor = Color.LightGray,
+                                    unfocusedTextColor = Color.LightGray
+                                ),
+                                shape = RoundedCornerShape(5.dp)
+                            )
+
+                            Text(text = "Item", color = Color.White)
+
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(58.dp)
+                                    .padding(horizontal = 15.dp),
+                                value = text,
+                                singleLine = true,
+                                onValueChange = { text = it },
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = Color.LightGray,
+                                    unfocusedBorderColor = Color.LightGray,
+                                    focusedTextColor = Color.LightGray,
+                                    unfocusedTextColor = Color.LightGray
+                                ),
+                                shape = RoundedCornerShape(5.dp)
+                            )
+
+                            Button(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(56.dp),
+                                onClick = {
+                                    onEventDispatchers.invoke(
+                                        ConstructorContract.Intent.AddItemToMultiSelector(
+                                            text
+                                        )
+                                    )
+                                }) {
+                                Text(text = "Add")
+                            }
+
+                            Spacer(modifier = Modifier.size(10.dp))
+                            VisibilityComponents(
+                                uiState = uiState,
+                                onEventDispatchers = onEventDispatchers
+                            )
+                        } else {
                             SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
-                            VisibilityComponents(uiState = uiState, onEventDispatchers = onEventDispatchers)
+                            VisibilityComponents(
+                                uiState = uiState,
+                                onEventDispatchers = onEventDispatchers
+                            )
                         }
                     }
 

@@ -1,6 +1,7 @@
 package uz.gita.appbuilderadmin.presentation.components
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,11 +13,17 @@ import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DateComponent() {
+fun DateComponent(
+    date: String = "",
+    listener: (String) -> Unit
+) {
+    val list = if (date.isNotEmpty()) date.split(" ") else listOf()
+
     WheelDatePicker(
+        startDate = if (list.isEmpty()) LocalDate.now() else LocalDate.of(list[0].toInt(), list[1].toInt(), list[2].toInt()),
         textColor = Color.LightGray,
         onSnappedDate = {
-
+            listener("${it.year} ${it.monthValue} ${it.dayOfMonth}")
         }
     )
 }

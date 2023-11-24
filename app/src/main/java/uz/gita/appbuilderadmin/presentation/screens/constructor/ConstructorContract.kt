@@ -27,6 +27,8 @@ interface ConstructorContract {
             "Email",
             "Phone"
         ),
+        val selectorItems: List<String> = listOf("empty"),
+        val multiSelectorItems: List<String> = listOf("empty"),
         val selectedComponent: String = componentList[0],
         val selectedInputType: String = inputTypeList[0],
         val placeHolder: String = "",
@@ -34,10 +36,13 @@ interface ConstructorContract {
         val name: String = "",
         val idCheckState: Boolean = false,
         val idValue: String = "",
-        val visibilityState: Boolean = false ,
-        val componentId : String = "" ,
-        val operator : String = "" ,
-        val visibilityValue : String = ""
+        val visibilityState: Boolean = false,
+        val componentId : String = "",
+        val operator : String = "",
+        val visibilityValue : String = "",
+        val selectedDate: String = "",
+        val selecterAnswer: String = "",
+        val multiSelectorAnswer: String = ""
     )
 
     interface Intent {
@@ -83,5 +88,24 @@ interface ConstructorContract {
             val value: String
         ) : Intent
 
+        data class SetSelectedDate(
+            val date: String
+        ) : Intent
+
+        data class AddItemToSelector(
+            val text: String
+        ) : Intent
+
+        data class AddItemToMultiSelector(
+            val text: String
+        ) : Intent
+
+        data class ChangeSelectorAnswer(
+            val text: String
+        ) : Intent
+
+        data class ChangeMultiSelectorAnswer(
+            val text: String
+        ) : Intent
     }
 }

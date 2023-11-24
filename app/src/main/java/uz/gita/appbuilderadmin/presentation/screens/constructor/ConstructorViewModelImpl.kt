@@ -13,19 +13,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ConstructorViewModelImpl @Inject constructor(
-    private val repository: Repository ,
-    private val direction : ConstructorDirection
-) : ViewModel() , ConstructorContract.ViewModel{
+    private val repository: Repository,
+    private val direction: ConstructorDirection
+) : ViewModel(), ConstructorContract.ViewModel {
     override val uiState = MutableStateFlow(ConstructorContract.UiState())
     private var name = ""
 
-    private fun reduce(block : (ConstructorContract.UiState) -> ConstructorContract.UiState) {
+    private fun reduce(block: (ConstructorContract.UiState) -> ConstructorContract.UiState) {
         val oldValue = uiState.value
         uiState.value = block(oldValue)
     }
 
     override fun onEventDispatchers(intent: ConstructorContract.Intent) {
-        when(intent) {
+        when (intent) {
 
             is ConstructorContract.Intent.ChangingPlaceholder -> {
                 reduce { it.copy(placeHolder = intent.placeholder) }
@@ -57,12 +57,31 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.ChangingSelectedInputType -> {
-                Log.d("TTT", intent.type)
                 reduce { it.copy(selectedInputType = intent.type) }
             }
 
             is ConstructorContract.Intent.ChangingTextValue -> {
                 reduce { it.copy(textValue = intent.value) }
+            }
+
+            is ConstructorContract.Intent.SetSelectedDate -> {
+                reduce { it.copy(selectedDate = intent.date) }
+            }
+
+            is ConstructorContract.Intent.AddItemToSelector -> {
+                val list = uiState.value.selectorItems.toMutableList()
+
+                list.add(intent.text)
+
+                reduce { it.copy(selectorItems = list) }
+            }
+
+            is ConstructorContract.Intent.AddItemToMultiSelector -> {
+                val list = uiState.value.multiSelectorItems.toMutableList()
+
+                list.add(intent.text)
+
+                reduce { it.copy(multiSelectorItems = list) }
             }
 
             ConstructorContract.Intent.ClickVisibilityState -> {
@@ -73,33 +92,45 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(idCheckState = !uiState.value.idCheckState) }
             }
 
+            is ConstructorContract.Intent.ChangeSelectorAnswer -> {
+                reduce { it.copy(selecterAnswer = intent.text) }
+            }
+
+            is ConstructorContract.Intent.ChangeMultiSelectorAnswer -> {
+                reduce { it.copy(multiSelectorAnswer = intent.text) }
+            }
+
             ConstructorContract.Intent.ClickCreateButton -> {
                 viewModelScope.launch {
                     uiState.value.apply {
-                        repository.addComponent(name , ComponentsModel(
-                            selectedComponent ,
-                            "" ,
-                            selectedInputType ,
-                            placeHolder ,
-                            textValue ,
-                            id = idValue,
-                            color = 0xFF0F1C2 ,
-                            selectorDataAnswers = listOf(
-                                "empty1" ,
-                                "empty2" ,
-                                "empty3" ,
-                                "empty4" ,
-                            ) ,
-                            idVisibility = uiState.value.componentId ,
-                            visibility = uiState.value.componentId.isNotEmpty() ,
-                            operator = uiState.value.operator ,
-                            value = uiState.value.visibilityValue
-                        )
+                        Log.d("TTT", "apply: $placeHolder")
+
+                        repository.addComponent(
+                            name, ComponentsModel(
+                                componentsName = selectedComponent,
+                                input = selectedComponent,
+                                placeHolder = placeHolder,
+                                type = selectedInputType,
+                                text = textValue,
+                                id = idValue,
+                                color = 0xFF0F1C2,
+                                selectorDataQuestion = selecterAnswer,
+                                selectorDataAnswers = selectorItems,
+                                idVisibility = componentId,
+                                visibility = componentId.isNotEmpty(),
+                                operator = operator,
+                                value = visibilityValue,
+                                datePicker = selectedDate,
+                                multiSelectDataQuestion = multiSelectorAnswer,
+                                multiSelectorDataAnswers = multiSelectorItems
+                            )
                         )
                     }
+
                     reduce {
                         it.copy(
-
+                            placeHolder = "",
+                            selectedInputType = uiState.value.inputTypeList[0]
                         )
                     }
                     direction.back()
