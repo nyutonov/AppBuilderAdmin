@@ -1,6 +1,7 @@
 package uz.gita.appbuilderadmin.presentation.screens.users
 
 import kotlinx.coroutines.flow.StateFlow
+import uz.gita.appbuilderadmin.data.model.UserModel
 
 interface UsersContract {
     interface ViewModel {
@@ -19,7 +20,7 @@ interface UsersContract {
     }
 
     data class UIState(
-        val users: List<String> = listOf(),
+        val users: List<UserModel> = listOf(),
         val progressbar: Boolean = true
     )
 

@@ -1,6 +1,7 @@
 package uz.gita.appbuilderadmin.data.model
 
 data class UserModel(
-    val name : String = "",
-    val password : String = ""
+    var id: Int,
+    val name : String,
+    val password : String
 )

@@ -6,14 +6,6 @@ import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import uz.gita.appbuilderadmin.data.model.UserModel
-import uz.gita.appbuilderadmin.domain.param.UserParam
-
-fun UserParam.toModel() : UserModel =
-    UserModel(name, password)
-
-fun UserModel.toParam() : UserParam =
-    UserParam(name, password)
 
 suspend fun <T> Task<QuerySnapshot>.getAllSync(mapper: (DocumentSnapshot) -> T): Result<List<T>> {
     val deferred = CompletableDeferred<Result<List<T>>>()

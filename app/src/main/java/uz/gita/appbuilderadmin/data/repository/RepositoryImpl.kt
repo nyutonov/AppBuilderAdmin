@@ -17,44 +17,56 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
-import uz.gita.appbuilderadmin.domain.param.UserParam
+import uz.gita.appbuilderadmin.data.model.UserModel
 import uz.gita.appbuilderadmin.domain.repository.Repository
 import uz.gita.appbuilderadmin.utils.extensions.getAll
-import uz.gita.appbuilderadmin.utils.extensions.toModel
 import uz.gita.appbuilderadmin.utils.mapper.toUserData
 import java.util.UUID
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor() : Repository {
-
     private val firebasePref = Firebase.firestore
     private val firebaseDatabase = Firebase.database
     private val scope = CoroutineScope(Dispatchers.IO + Job())
 
-    override fun addUser(userParam: UserParam): Flow<Boolean> = callbackFlow {
+    override fun addUser(userModel: UserModel): Flow<Boolean> = callbackFlow {
         val uuid = UUID.randomUUID().toString()
-        val userModel = userParam.toModel()
+        val user = userModel
 
-        firebasePref
-            .collection("users")
-            .document(uuid)
-            .set(userModel)
-            .addOnSuccessListener {
-                trySend(true)
-            }
-            .addOnFailureListener {
-                trySend(false)
-            }
+        firebaseDatabase.getReference("id").get().addOnSuccessListener {
+            var id = it.child("userId").getValue(Int::class.java) ?: 0
+
+            user.id = id
+            id += 1
+
+            firebaseDatabase.getReference("id").child("userId").setValue(id)
+
+            firebasePref
+                .collection("users")
+                .document(uuid)
+                .set(user)
+                .addOnSuccessListener {
+                    trySend(true)
+                }
+                .addOnFailureListener {
+                    trySend(false)
+                }
+        }
 
         awaitClose()
     }
 
-    override fun getAllUsers(): Flow<List<String>> = callbackFlow {
-
+    override fun getAllUsers(): Flow<List<UserModel>> = callbackFlow {
         firebasePref
             .collection("users")
-            .get().getAll { return@getAll it.data?.getOrDefault("name", "") as String }
-            .onEach { it.onSuccess { trySend(it) } }
+            .get().getAll {
+                return@getAll UserModel(
+                    0,
+                    it.data?.getOrDefault("name", "") as String,
+                    it.data?.getOrDefault("password", "") as String
+                )
+            }
+            .onEach { it.onSuccess { send(it) } }
             .launchIn(scope)
 
         awaitClose()
@@ -107,9 +119,7 @@ class RepositoryImpl @Inject constructor() : Repository {
                         .setValue(component.multiSelectorDataAnswers.joinToString(":"))
 
                     this.child("datePicker").setValue(component.datePicker)
-                    this.child("id").setValue(
-                        component.id.ifEmpty { UUID.randomUUID().toString() }
-                    )
+                    this.child("id").setValue(component.id.ifEmpty { UUID.randomUUID().toString() })
                 }
         }
 

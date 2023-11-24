@@ -5,32 +5,30 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import uz.gita.appbuilderadmin.domain.param.UserParam
+import uz.gita.appbuilderadmin.data.model.UserModel
 import uz.gita.appbuilderadmin.domain.usecases.AddUserUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModelImpl @Inject constructor(
-    private val addUserUseCase: AddUserUseCase ,
+    private val addUserUseCase: AddUserUseCase,
     private val direction: RegisterDirection
-) : RegisterContract.ViewModel , ViewModel(){
+) : RegisterContract.ViewModel, ViewModel() {
 
     override val uiState = MutableStateFlow(RegisterContract.UiState())
     private var name = ""
     private var password = ""
 
-    fun reduce(block : (RegisterContract.UiState) -> RegisterContract.UiState) {
+    fun reduce(block: (RegisterContract.UiState) -> RegisterContract.UiState) {
         val oldValue = uiState.value
         uiState.value = block(oldValue)
     }
 
     override fun onEventDispatchers(intent: RegisterContract.Intent) {
-        when(intent) {
+        when (intent) {
             is RegisterContract.Intent.ChangingName -> {
                 name = intent.name
                 reduce { it.copy(name = name) }
@@ -48,7 +46,7 @@ class RegisterViewModelImpl @Inject constructor(
             RegisterContract.Intent.ClickRegisterButton -> {
                 if (name.isNotEmpty() && password.isNotEmpty()) {
                     viewModelScope.launch {
-                        addUserUseCase(UserParam(name , password))
+                        addUserUseCase(UserModel(0, name, password))
                             .onStart { reduce { it.copy(isLoading = true) } }
                             .onEach {
                                 if (it) {

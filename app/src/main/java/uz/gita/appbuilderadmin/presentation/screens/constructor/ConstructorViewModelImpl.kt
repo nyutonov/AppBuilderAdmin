@@ -105,8 +105,6 @@ class ConstructorViewModelImpl @Inject constructor(
                 if (!uiState.value.visibilityState) {
                     viewModelScope.launch {
                         uiState.value.apply {
-                            Log.d("TTT", "apply: $placeHolder")
-
                             repository.addComponent(
                                 name, ComponentsModel(
                                     componentsName = selectedComponent,
@@ -146,37 +144,37 @@ class ConstructorViewModelImpl @Inject constructor(
                                 ),
                                 selectorItems = listOf("empty"),
 
-                            multiSelectorItems = listOf("empty"),
+                                multiSelectorItems = listOf("empty"),
 
-                            selectedComponent = uiState.value.componentList[0],
+                                selectedComponent = uiState.value.componentList[0],
 
-                            selectedInputType= uiState.value.inputTypeList[0],
+                                selectedInputType = uiState.value.inputTypeList[0],
 
-                            placeHolder= "",
+                                placeHolder = "",
 
-                            textValue = "",
+                                textValue = "",
 
-                            name= "",
+                                name = "",
 
-                            idCheckState = false,
+                                idCheckState = false,
 
-                            idValue = "",
+                                idValue = "",
 
-                            visibilityState = false,
+                                visibilityState = false,
 
-                            componentId  = "",
+                                componentId = "",
 
-                            operator = "",
+                                operator = "",
 
-                            visibilityValue  = "",
+                                visibilityValue = "",
 
-                            selectedDate= "",
+                                selectedDate = "",
 
-                            selecterAnswer = "",
+                                selecterAnswer = "",
 
-                            multiSelectorAnswer = "" ,
+                                multiSelectorAnswer = "",
 
-                            visibilityCheck= true
+                                visibilityCheck = true
                             )
                         }
 
@@ -191,8 +189,6 @@ class ConstructorViewModelImpl @Inject constructor(
                 } else if (uiState.value.visibilityState && uiState.value.operator.isNotEmpty() && uiState.value.visibilityValue.isNotEmpty()) {
                     viewModelScope.launch {
                         uiState.value.apply {
-                            Log.d("TTT", "apply: $placeHolder")
-
                             repository.addComponent(
                                 name, ComponentsModel(
                                     componentsName = selectedComponent,
@@ -256,11 +252,8 @@ class ConstructorViewModelImpl @Inject constructor(
                         }
 
                         direction.back()
-
-
                     }
-                }
-                else if(uiState.value.visibilityState && uiState.value.operator.isEmpty() && uiState.value.visibilityValue.isEmpty()) {
+                } else if (uiState.value.visibilityState && uiState.value.operator.isEmpty() && uiState.value.visibilityValue.isEmpty()) {
                     reduce { it.copy(visibilityCheck = false) }
                 }
             }
