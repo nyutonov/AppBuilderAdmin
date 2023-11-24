@@ -22,7 +22,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.DatePicker
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -48,17 +47,14 @@ import cafe.adriel.voyager.hilt.getViewModel
 import uz.gita.appbuilderadmin.R
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.presentation.components.DateComponent
+import uz.gita.appbuilderadmin.presentation.components.DemoSpinner
 import uz.gita.appbuilderadmin.presentation.components.InputComponent
 import uz.gita.appbuilderadmin.presentation.components.MultiSelectorComponent
-import uz.gita.appbuilderadmin.presentation.components.MyText
-import uz.gita.appbuilderadmin.presentation.components.MyTextField
 import uz.gita.appbuilderadmin.presentation.components.TextComponent
 import uz.gita.appbuilderadmin.presentation.components.VisibilityComponents
-import uz.gita.appbuilderadmin.presentation.screens.register.RegisterContract
-import uz.mlsoft.mydemosforquiz.ui.components.DemoSpinner
 
 class ConstructorScreen(
-    private val name: String
+    private val name: String,
 ) : AndroidScreen() {
     @RequiresApi(Build.VERSION_CODES.O)
     @Composable
@@ -77,7 +73,7 @@ class ConstructorScreen(
 @Composable
 fun ConstructorScreenContent(
     uiState: ConstructorContract.UiState,
-    onEventDispatchers: (ConstructorContract.Intent) -> Unit
+    onEventDispatchers: (ConstructorContract.Intent) -> Unit,
 ) {
 
 
@@ -141,7 +137,7 @@ fun ConstructorScreenContent(
                                 type = uiState.selectedInputType,
                                 placeHolder = uiState.placeHolder
                             )
-                        ){}
+                        ) {}
                     }
 
                     "Text" -> {
@@ -149,7 +145,7 @@ fun ConstructorScreenContent(
                             data = ComponentsModel(
                                 text = uiState.textValue
                             )
-                        ){}
+                        ) {}
                     }
 
                     "Selector" -> {
@@ -161,17 +157,21 @@ fun ConstructorScreenContent(
                                 .padding(vertical = 10.dp)
                                 .fillMaxWidth()
                                 .height(56.dp)
-                        )
+                        ) {}
                     }
 
                     "MultiSelector" -> {
-                        MultiSelectorComponent(list = uiState.multiSelectorItems)
+                        MultiSelectorComponent(list = uiState.multiSelectorItems) {}
                     }
 
                     "Date Picker" -> {
-                        DateComponent {
-                            onEventDispatchers.invoke(ConstructorContract.Intent.SetSelectedDate(it))
-                        }
+                        DateComponent(date = "", listener = {
+                            onEventDispatchers(
+                                ConstructorContract.Intent.SetSelectedDate(
+                                    it
+                                )
+                            )
+                        }) {}
                     }
                 }
             }
@@ -212,7 +212,7 @@ fun ConstructorScreenContent(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(56.dp)
-                        )
+                        ) {}
 
                         if (uiState.selectedComponent == "Input") {
                             SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
@@ -239,7 +239,7 @@ fun ConstructorScreenContent(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(56.dp)
-                            )
+                            ) {}
                             Spacer(modifier = Modifier.size(10.dp))
                             Text(
                                 text = "Set Place Holder",
@@ -337,7 +337,11 @@ fun ConstructorScreenContent(
                                 value = uiState.selecterAnswer,
                                 singleLine = true,
                                 onValueChange = {
-                                    onEventDispatchers.invoke(ConstructorContract.Intent.ChangeSelectorAnswer(it))
+                                    onEventDispatchers.invoke(
+                                        ConstructorContract.Intent.ChangeSelectorAnswer(
+                                            it
+                                        )
+                                    )
                                 },
                                 colors = OutlinedTextFieldDefaults.colors(
                                     focusedBorderColor = Color.LightGray,
@@ -399,7 +403,11 @@ fun ConstructorScreenContent(
                                 value = uiState.selecterAnswer,
                                 singleLine = true,
                                 onValueChange = {
-                                    onEventDispatchers.invoke(ConstructorContract.Intent.ChangeSelectorAnswer(it))
+                                    onEventDispatchers.invoke(
+                                        ConstructorContract.Intent.ChangeSelectorAnswer(
+                                            it
+                                        )
+                                    )
                                 },
                                 colors = OutlinedTextFieldDefaults.colors(
                                     focusedBorderColor = Color.LightGray,
@@ -491,7 +499,7 @@ fun ConstructorScreenContent(
 @Composable
 fun SetId(
     uiState: ConstructorContract.UiState,
-    onEventDispatchers: (ConstructorContract.Intent) -> Unit
+    onEventDispatchers: (ConstructorContract.Intent) -> Unit,
 ) {
     Spacer(modifier = Modifier.size(10.dp))
     Text(

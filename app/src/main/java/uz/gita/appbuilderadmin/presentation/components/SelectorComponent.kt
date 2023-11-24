@@ -1,7 +1,9 @@
 package uz.gita.appbuilderadmin.presentation.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
@@ -10,14 +12,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SampleSpinner(
-    data: ComponentsModel
+    data: ComponentsModel,
+    onLongClick: () -> Unit
 ) {
 
     var selected by remember { mutableStateOf(data.preselected) }
@@ -26,6 +29,7 @@ fun SampleSpinner(
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .combinedClickable(onLongClick = onLongClick){}
     ) {
         Column {
             OutlinedTextField(
