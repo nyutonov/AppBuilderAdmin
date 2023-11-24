@@ -21,7 +21,7 @@ import uz.gita.appbuilderadmin.data.model.ComponentsModel
 fun SampleSpinner(
     question: String = "",
     data: ComponentsModel,
-    onLongClick: () -> Unit,
+    onLongClick: () -> Unit
 ) {
 
     var selected by remember { mutableStateOf(data.preselected) }
@@ -67,7 +67,6 @@ fun SampleSpinner(
                                     modifier = Modifier
                                         .wrapContentWidth()
                                         .align(Alignment.Start),
-                                    color = Color.White
                                 )
                             }
                         )
