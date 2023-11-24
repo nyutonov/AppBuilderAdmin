@@ -142,7 +142,8 @@ private fun MainContent(
                                             name
                                         )
                                     )
-                                })
+                                }
+                            )
                         }
 
                         "Selector" -> {

@@ -114,7 +114,7 @@ class RepositoryImpl @Inject constructor() : Repository {
 
                                 this.child("input").setValue(component.input)
                                 this.child("type").setValue(component.type)
-                                this.child("placeholder").setValue(component.placeHolder)
+                                this.child("placeHolder").setValue(component.placeHolder)
                                 this.child("visibility").setValue(component.visibility)
                                 this.child("idVisibility").setValue(component.idVisibility)
                                 this.child("operator").setValue(component.operator)

@@ -42,7 +42,7 @@ fun SampleSpinner(
                 OutlinedTextField(
                     value = (selected),
                     onValueChange = { },
-                    label = { Text(text = "List name") },
+                    placeholder = { Text(text = "List name") },
                     modifier = Modifier.fillMaxWidth(),
                     trailingIcon = { Icon(Icons.Outlined.ArrowDropDown, null) },
                     readOnly = true,
