@@ -175,7 +175,7 @@ private fun MainContent(
 
                         "Date Picker" -> {
                             textTopComponent(text = "Date Picker")
-                            //DateComponent(it.datePicker,listener = {}, onLongClick = onEventDispatcher.invoke(UserUIContract.Intent.DeleteComponents(it, name)))
+                            DateComponent(it.datePicker,listener = {}, onLongClick = {onEventDispatcher.invoke(UserUIContract.Intent.DeleteComponents(it, name))})
                         }
                     }
                 }

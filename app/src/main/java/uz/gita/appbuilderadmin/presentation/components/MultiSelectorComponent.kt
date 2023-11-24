@@ -43,8 +43,8 @@ fun MultiSelectorComponent(
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun prev() {
-    MultiSelectorComponent(list = listOf("1", "2", "3"))
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun prev() {
+//    MultiSelectorComponent(list = listOf("1", "2", "3"))
+//}

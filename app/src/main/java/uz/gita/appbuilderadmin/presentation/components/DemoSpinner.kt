@@ -37,15 +37,15 @@ fun DemoSpinner(
     preselected: String,
     onSelectionChanged: (selection: String) -> Unit,
     modifier: Modifier,
-    onLongClick: () -> Unit
+    onLongClick: () -> Unit,
 ) {
 
     var selected by remember { mutableStateOf(preselected) }
     var expanded by remember { mutableStateOf(false) } // initial value
 
     Box(modifier = modifier.combinedClickable(
-            onLongClick = onLongClick
-        ) {}) {
+        onLongClick = onLongClick
+    ) {}) {
         Column {
             OutlinedTextField(
                 value = (selected),
@@ -84,7 +84,8 @@ fun DemoSpinner(
             .matchParentSize()
             .background(Color.Transparent)
             .padding(10.dp)
-            .clickable(onClick = { expanded = !expanded }))
+            .clickable(onClick = { expanded = !expanded })
+        )
     }
 }
 
