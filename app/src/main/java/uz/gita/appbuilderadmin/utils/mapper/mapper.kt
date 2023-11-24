@@ -5,9 +5,10 @@ import com.google.firebase.database.getValue
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import java.util.UUID
 
-fun DataSnapshot.toUserData(): ComponentsModel = ComponentsModel(
+fun DataSnapshot.toComponentData(): ComponentsModel = ComponentsModel(
     key = key ?: "",
 
+    componentId = child("componentId").getValue(Int::class.java) ?: 0,
     componentsName = child("componentsName").getValue(String::class.java) ?: "",
 
     input = child("input").getValue(String::class.java) ?: "",

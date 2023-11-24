@@ -31,8 +31,7 @@ class UserUIViewModel @Inject constructor(
                 repository.getAllData(intent.name)
                     .onStart { uiState.update { it.copy(loader = true) } }
                     .onEach { list ->
-
-                        uiState.update { it.copy(components = list, loader = false) }
+                        uiState.update { it.copy(components = list.sortedBy { it.componentId }, loader = false) }
                     }.launchIn(viewModelScope)
             }
 

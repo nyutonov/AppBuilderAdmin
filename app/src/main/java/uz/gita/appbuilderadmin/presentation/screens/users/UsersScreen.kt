@@ -52,13 +52,14 @@ private fun MainContent(
     onEventDispatcher: (UsersContract.Intent) -> Unit = {}
 ) {
     onEventDispatcher.invoke(UsersContract.Intent.Load)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF0F1C2E))
     ) {
 
-        if (uiState.users.size == 0 && !uiState.progressbar) {
+        if (uiState.users.isEmpty() && !uiState.progressbar) {
             Image(
                 painter = painterResource(id = R.drawable.ic_emptynote),
                 contentDescription = null,
@@ -68,7 +69,7 @@ private fun MainContent(
             )
         }
 
-        if (uiState.progressbar) {
+        if (uiState.progressbar && uiState.users.isEmpty()) {
             Column(modifier = Modifier.align(Alignment.Center)) {
                 LinearProgressIndicator()
                 Text(
@@ -110,7 +111,7 @@ private fun MainContent(
         
         LazyColumn(modifier = Modifier.padding(top = 56.dp)) {
             items(uiState.users) {
-                UserItem(name = it.name) {
+                UserItem(user = it) {
                     onEventDispatcher.invoke(UsersContract.Intent.ClickUser(it.name))
                 }
                 Spacer(modifier = Modifier.height(10.dp))

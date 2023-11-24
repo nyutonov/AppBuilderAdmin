@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uz.gita.appbuilderadmin.domain.usecases.GetAllUserUseCase
@@ -18,19 +19,17 @@ class UsersViewModel @Inject constructor(
 ) : UsersContract.ViewModel, ViewModel() {
     override val uiState = MutableStateFlow(UsersContract.UIState())
 
-    init {
-       load()
+    private fun load() {
+        getAllUserUseCase()
+            .onStart { uiState.update { it.copy(progressbar = true) } }
+            .onEach { users ->
+                uiState.update {
+                    it.copy(users = users.sortedBy { it.id }, progressbar = false)
+                }
+            }
+            .launchIn(viewModelScope)
     }
-fun load(){
-    uiState.update {
-        it.copy(progressbar = true)
-    }
-    getAllUserUseCase().onEach { users ->
-        uiState.update {
-            it.copy(users = users, progressbar = false)
-        }
-    }.launchIn(viewModelScope)
-}
+
     override fun onEventDispatcher(intent: UsersContract.Intent) {
         when (intent) {
             is UsersContract.Intent.ClickUser -> {
@@ -39,14 +38,11 @@ fun load(){
                     direction.moveToUserUI(intent.name)
                 }
             }
-        UsersContract.Intent.Load->{
 
-            getAllUserUseCase().onEach { users ->
-                uiState.update {
-                    it.copy(users = users, progressbar = false)
-                }
-            }.launchIn(viewModelScope)
-        }
+            UsersContract.Intent.Load -> {
+                load()
+            }
+
             UsersContract.Intent.ClickAddUser -> {
                 viewModelScope.launch { direction.moveToRegister() }
             }
