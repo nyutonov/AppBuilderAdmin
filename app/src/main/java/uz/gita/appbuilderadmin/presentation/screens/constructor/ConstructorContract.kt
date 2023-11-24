@@ -45,7 +45,6 @@ interface ConstructorContract {
         val multiSelectorAnswer: String = "" ,
         val visibilityCheck : Boolean = true
     )
-
     interface Intent {
         data class ChangingSelectedComponent(
             val component: String

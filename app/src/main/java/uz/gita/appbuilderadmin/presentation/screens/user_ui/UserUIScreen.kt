@@ -1,7 +1,6 @@
 package uz.gita.appbuilderadmin.presentation.screens.user_ui
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,9 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -29,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,7 +48,7 @@ class UserUIScreen(private val name: String) : AndroidScreen() {
             val vm: UserUIContract.ViewModel = getViewModel<UserUIViewModel>()
             vm::onEventDispatcher.invoke(UserUIContract.Intent.LoadData(name))
 
-            MainContent(vm.uiState.collectAsState(), name , vm::onEventDispatcher)
+            MainContent(vm.uiState.collectAsState(), name, vm::onEventDispatcher)
         }
     }
 }
@@ -61,8 +57,8 @@ class UserUIScreen(private val name: String) : AndroidScreen() {
 @Composable
 private fun MainContent(
     uiState: State<UserUIContract.UIState>,
-    name : String ,
-    onEventDispatcher: (UserUIContract.Intent) -> Unit
+    name: String,
+    onEventDispatcher: (UserUIContract.Intent) -> Unit,
 ) {
     var loaderText by remember {
         mutableStateOf(false)
@@ -78,7 +74,12 @@ private fun MainContent(
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
         if (!(uiState.value.loader) && loaderText) {
-            Text(text = "Empty", fontSize = 18.sp, modifier = Modifier.align(Alignment.Center), color = Color.White)
+            Text(
+                text = "Empty",
+                fontSize = 18.sp,
+                modifier = Modifier.align(Alignment.Center),
+                color = Color.White
+            )
         }
         Column(
             modifier = Modifier
@@ -117,37 +118,82 @@ private fun MainContent(
 
                     when (it.componentsName) {
                         "Text" -> {
-                                TextComponent(it,onLongClick= { onEventDispatcher.invoke(UserUIContract.Intent.DeleteComponents(it,name))})
-                                textTopComponent(text = "Text")
+                            TextComponent(
+                                it,
+                                onLongClick = {
+                                    onEventDispatcher.invoke(
+                                        UserUIContract.Intent.DeleteComponents(
+                                            it,
+                                            name
+                                        )
+                                    )
+                                })
+                            textTopComponent(text = "Text")
                         }
 
                         "Input" -> {
-                            textTopComponent(text = "Input" )
-                            InputComponent(it,onLongClick={ onEventDispatcher.invoke(UserUIContract.Intent.DeleteComponents(it,name))})
+                            textTopComponent(text = "Input")
+                            InputComponent(
+                                it,
+                                onLongClick = {
+                                    onEventDispatcher.invoke(
+                                        UserUIContract.Intent.DeleteComponents(
+                                            it,
+                                            name
+                                        )
+                                    )
+                                })
                         }
 
                         "Selector" -> {
                             textTopComponent(text = "Selector")
-                            SampleSpinner(it)
+                            SampleSpinner(
+                                question = it.selectorDataQuestion,
+                                it,
+                                onLongClick = {
+                                    onEventDispatcher.invoke(
+                                        UserUIContract.Intent.DeleteComponents(
+                                            it,
+                                            name
+                                        )
+                                    )
+                                })
                         }
 
                         "MultiSelector" -> {
                             textTopComponent(text = "MultiSelector")
-                            MultiSelectorComponent(list = it.multiSelectorDataAnswers)
+                            MultiSelectorComponent(
+                                list = it.multiSelectorDataAnswers,
+                                onLongClick = {
+                                    onEventDispatcher.invoke(
+                                        UserUIContract.Intent.DeleteComponents(
+                                            it,
+                                            name
+                                        )
+                                    )
+                                })
                         }
 
                         "Date Picker" -> {
                             textTopComponent(text = "Date Picker")
-                            DateComponent(it.datePicker) {
-
-                            }
+                            DateComponent(
+                                it.datePicker,
+                                listener = {},
+                                onLongClick = {
+                                    onEventDispatcher.invoke(
+                                        UserUIContract.Intent.DeleteComponents(
+                                            it,
+                                            name
+                                        )
+                                    )
+                                })
                         }
                     }
                 }
             }
         }
 
-}
+    }
 }
 
 @Preview(showBackground = true)
@@ -157,35 +203,44 @@ private fun MainContentPreview() {
 //        MainContent()
     }
 }
+
 @Composable
 fun textTopComponent(
-    text:String
-){
-    Row (modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 15.dp, vertical = 10.dp)){
-        Row (modifier = Modifier
-            .weight(1f)
-            .height(2.dp)
-            .background(
-                Color.White
-            )
-            .align(Alignment.CenterVertically)){
+    text: String,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 15.dp, vertical = 10.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .height(2.dp)
+                .background(
+                    Color.White
+                )
+                .align(Alignment.CenterVertically)
+        ) {
         }
         Spacer(modifier = Modifier.size(12.dp))
-        Box(modifier = Modifier.align(Alignment.CenterVertically)){
-            Text(text = text, fontSize = 15.sp, modifier = Modifier.align(
-                Alignment.Center), color = Color.White
+        Box(modifier = Modifier.align(Alignment.CenterVertically)) {
+            Text(
+                text = text, fontSize = 15.sp, modifier = Modifier.align(
+                    Alignment.Center
+                ), color = Color.White
             )
         }
         Spacer(modifier = Modifier.size(12.dp))
-        Row (modifier = Modifier
-            .weight(1f)
-            .height(2.dp)
-            .background(
-                Color.White
-            )
-            .align(Alignment.CenterVertically)){
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .height(2.dp)
+                .background(
+                    Color.White
+                )
+                .align(Alignment.CenterVertically)
+        ) {
         }
     }
 }

@@ -1,5 +1,7 @@
 package uz.gita.appbuilderadmin.presentation.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Checkbox
@@ -13,13 +15,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import uz.gita.appbuilderadmin.ui.theme.AppBuilderAdminTheme
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MultiSelectorComponent(
-    list: List<String>
+    list: List<String>,
+    onLongClick: () -> Unit
 ) {
-    Column {
+    Column(modifier = Modifier.combinedClickable(onLongClick = onLongClick) { }) {
         list.forEach {
             var check by remember { mutableStateOf(false) }
 
@@ -32,7 +35,7 @@ fun MultiSelectorComponent(
                 Text(
                     modifier = Modifier
                         .align(Alignment.CenterVertically),
-                    text = it ,
+                    text = it,
                     color = Color.LightGray
                 )
             }
@@ -40,8 +43,8 @@ fun MultiSelectorComponent(
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun prev(){
-    MultiSelectorComponent(list = listOf("1","2","3"))
-}
+//@Composable
+//@Preview(showBackground = true)
+//fun prev() {
+//    MultiSelectorComponent(list = listOf("1", "2", "3"))
+//}

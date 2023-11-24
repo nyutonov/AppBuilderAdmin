@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.domain.repository.Repository
@@ -100,10 +101,6 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(multiSelectorAnswer = intent.text) }
             }
 
-            ConstructorContract.Intent.ChangeVisibilityCheck -> {
-                reduce { it.copy(visibilityCheck = true) }
-            }
-
             ConstructorContract.Intent.ClickCreateButton -> {
                 if (!uiState.value.visibilityState) {
                     viewModelScope.launch {
@@ -132,6 +129,40 @@ class ConstructorViewModelImpl @Inject constructor(
                             )
                         }
 
+                        uiState.update {
+                            it.copy(
+                                componentList = listOf(
+                                    "Input",
+                                    "Text",
+                                    "Selector",
+                                    "MultiSelector",
+                                    "Date Picker"
+                                ),
+                                inputTypeList = listOf(
+                                    "Text",
+                                    "Number",
+                                    "Email",
+                                    "Phone"
+                                ),
+                                selectorItems = listOf("empty"),
+                                multiSelectorItems = listOf("empty"),
+                                selectedComponent = uiState.value.componentList[0],
+                                selectedInputType = uiState.value.inputTypeList[0],
+                                placeHolder = "",
+                                textValue = "",
+                                name = "",
+                                idCheckState = false,
+                                idValue = "",
+                                visibilityState = false,
+                                componentId = "",
+                                operator = "",
+                                visibilityValue = "",
+                                selectedDate = "",
+                                selecterAnswer = "",
+                                multiSelectorAnswer = ""
+                            )
+                        }
+
                         reduce {
                             it.copy(
                                 placeHolder = "",
@@ -140,7 +171,7 @@ class ConstructorViewModelImpl @Inject constructor(
                         }
                         direction.back()
                     }
-                }else if (uiState.value.visibilityState && uiState.value.operator.isNotEmpty() && uiState.value.visibilityValue.isNotEmpty()) {
+                } else if (uiState.value.visibilityState && uiState.value.operator.isNotEmpty() && uiState.value.visibilityValue.isNotEmpty()) {
                     viewModelScope.launch {
                         uiState.value.apply {
                             Log.d("TTT", "apply: $placeHolder")
@@ -166,6 +197,39 @@ class ConstructorViewModelImpl @Inject constructor(
                                 )
                             )
                         }
+                        uiState.update {
+                            it.copy(
+                                componentList = listOf(
+                                    "Input",
+                                    "Text",
+                                    "Selector",
+                                    "MultiSelector",
+                                    "Date Picker"
+                                ),
+                                inputTypeList = listOf(
+                                    "Text",
+                                    "Number",
+                                    "Email",
+                                    "Phone"
+                                ),
+                                selectorItems = listOf("empty"),
+                                multiSelectorItems = listOf("empty"),
+                                selectedComponent = uiState.value.componentList[0],
+                                selectedInputType = uiState.value.inputTypeList[0],
+                                placeHolder = "",
+                                textValue = "",
+                                name = "",
+                                idCheckState = false,
+                                idValue = "",
+                                visibilityState = false,
+                                componentId = "",
+                                operator = "",
+                                visibilityValue = "",
+                                selectedDate = "",
+                                selecterAnswer = "",
+                                multiSelectorAnswer = ""
+                            )
+                        }
 
                         reduce {
                             it.copy(
@@ -173,15 +237,16 @@ class ConstructorViewModelImpl @Inject constructor(
                                 selectedInputType = uiState.value.inputTypeList[0]
                             )
                         }
+
                         direction.back()
+
+
                     }
                 }
-
                 else if(uiState.value.visibilityState && uiState.value.operator.isEmpty() && uiState.value.visibilityValue.isEmpty()) {
                     reduce { it.copy(visibilityCheck = false) }
                 }
             }
-
         }
     }
 }

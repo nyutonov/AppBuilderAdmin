@@ -14,9 +14,11 @@ interface UserUIContract {
         data class ClickAddComponents(
             val name: String
         ) : Intent
-       data class LoadData(
-           val name:String
-       ):Intent
+
+        data class LoadData(
+            val name: String
+        ) : Intent
+
         data class SetName(
             val name: String
         ) : Intent
@@ -29,7 +31,7 @@ interface UserUIContract {
     data class UIState(
         var name: String = "",
         val components: List<ComponentsModel> = listOf(),
-        val loader:Boolean=false
+        val loader: Boolean = false
     )
 
     interface Direction {
