@@ -18,7 +18,6 @@ class ConstructorViewModelImpl @Inject constructor(
     private val direction: ConstructorDirection
 ) : ViewModel(), ConstructorContract.ViewModel {
     override val uiState = MutableStateFlow(ConstructorContract.UiState())
-    private var name = ""
 
     private fun reduce(block: (ConstructorContract.UiState) -> ConstructorContract.UiState) {
         val oldValue = uiState.value
@@ -49,7 +48,6 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.EnteringName -> {
-                name = intent.name
                 reduce { it.copy(name = intent.name) }
             }
 
@@ -104,8 +102,6 @@ class ConstructorViewModelImpl @Inject constructor(
             ConstructorContract.Intent.ClickCreateButton -> {
                 viewModelScope.launch {
                     uiState.value.apply {
-                        Log.d("TTT", "apply: $placeHolder")
-
                         repository.addComponent(
                             name, ComponentsModel(
                                 componentsName = selectedComponent,
@@ -135,44 +131,44 @@ class ConstructorViewModelImpl @Inject constructor(
                             selectedInputType = uiState.value.inputTypeList[0]
                         )
                     }
-                    uiState.update { it.copy(
-                        componentList= listOf(
-                            "Input",
-                            "Text",
-                            "Selector",
-                            "MultiSelector",
-                            "Date Picker"
-                        ),
-                        inputTypeList= listOf(
-                            "Text",
-                            "Number",
-                            "Email",
-                            "Phone"
-                        ),
-                        selectorItems= listOf("empty"),
 
-                      multiSelectorItems= listOf("empty"),
-                      selectedComponent = uiState.value.componentList[0],
-                      selectedInputType= uiState.value.inputTypeList[0],
-                      placeHolder = "",
-                      textValue = "",
-                      name= "",
-                      idCheckState= false,
-                      idValue = "",
-                      visibilityState= false,
-                      componentId = "",
-                      operator = "",
-                      visibilityValue  = "",
-                      selectedDate = "",
-                      selecterAnswer = "",
-                      multiSelectorAnswer = ""
-                    )
-
+                    uiState.update {
+                        it.copy(
+                            componentList = listOf(
+                                "Input",
+                                "Text",
+                                "Selector",
+                                "MultiSelector",
+                                "Date Picker"
+                            ),
+                            inputTypeList = listOf(
+                                "Text",
+                                "Number",
+                                "Email",
+                                "Phone"
+                            ),
+                            selectorItems = listOf("empty"),
+                            multiSelectorItems = listOf("empty"),
+                            selectedComponent = uiState.value.componentList[0],
+                            selectedInputType = uiState.value.inputTypeList[0],
+                            placeHolder = "",
+                            textValue = "",
+                            name = "",
+                            idCheckState = false,
+                            idValue = "",
+                            visibilityState = false,
+                            componentId = "",
+                            operator = "",
+                            visibilityValue = "",
+                            selectedDate = "",
+                            selecterAnswer = "",
+                            multiSelectorAnswer = ""
+                        )
                     }
+
                     direction.back()
                 }
             }
-
         }
     }
 }

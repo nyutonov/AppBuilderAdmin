@@ -23,25 +23,26 @@ class UserUIViewModel @Inject constructor(
     override fun onEventDispatcher(intent: UserUIContract.Intent) {
         when (intent) {
             is UserUIContract.Intent.ClickAddComponents -> {
-                Log.d("TTT" , "userUIscreen name : ${intent.name}")
+                Log.d("TTT", "userUIscreen name : ${intent.name}")
                 viewModelScope.launch { direction.moveToConstructor(intent.name) }
             }
 
             is UserUIContract.Intent.LoadData -> {
                 repository.getAllData(intent.name)
-                    .onStart {  uiState.update { it.copy(loader = true) }}
+                    .onStart { uiState.update { it.copy(loader = true) } }
                     .onEach { list ->
 
-                    uiState.update { it.copy(components = list, loader = false) }
-                }.launchIn(viewModelScope)
+                        uiState.update { it.copy(components = list, loader = false) }
+                    }.launchIn(viewModelScope)
             }
 
             is UserUIContract.Intent.SetName -> {
                 uiState.update { it.copy(name = intent.name) }
             }
-            is UserUIContract.Intent.DeleteComponents->{
+
+            is UserUIContract.Intent.DeleteComponents -> {
                 viewModelScope.launch {
-                    repository.deleteComponent(intent.componentsModel,intent.name)
+                    repository.deleteComponent(intent.componentsModel, intent.name)
                 }
             }
         }
