@@ -145,21 +145,38 @@ class ConstructorViewModelImpl @Inject constructor(
                                     "Phone"
                                 ),
                                 selectorItems = listOf("empty"),
-                                multiSelectorItems = listOf("empty"),
-                                selectedComponent = uiState.value.componentList[0],
-                                selectedInputType = uiState.value.inputTypeList[0],
-                                placeHolder = "",
-                                textValue = "",
-                                name = "",
-                                idCheckState = false,
-                                idValue = "",
-                                visibilityState = false,
-                                componentId = "",
-                                operator = "",
-                                visibilityValue = "",
-                                selectedDate = "",
-                                selecterAnswer = "",
-                                multiSelectorAnswer = ""
+
+                            multiSelectorItems = listOf("empty"),
+
+                            selectedComponent = uiState.value.componentList[0],
+
+                            selectedInputType= uiState.value.inputTypeList[0],
+
+                            placeHolder= "",
+
+                            textValue = "",
+
+                            name= "",
+
+                            idCheckState = false,
+
+                            idValue = "",
+
+                            visibilityState = false,
+
+                            componentId  = "",
+
+                            operator = "",
+
+                            visibilityValue  = "",
+
+                            selectedDate= "",
+
+                            selecterAnswer = "",
+
+                            multiSelectorAnswer = "" ,
+
+                            visibilityCheck= true
                             )
                         }
 
