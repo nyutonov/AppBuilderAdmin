@@ -20,6 +20,10 @@ interface UserUIContract {
         data class SetName(
             val name: String
         ) : Intent
+        data class DeleteComponents(
+            val componentsModel: ComponentsModel,
+            val name:String
+        ):Intent
     }
 
     data class UIState(

@@ -38,6 +38,11 @@ class UserUIViewModel @Inject constructor(
             is UserUIContract.Intent.SetName -> {
                 uiState.update { it.copy(name = intent.name) }
             }
+            is UserUIContract.Intent.DeleteComponents->{
+                viewModelScope.launch {
+                    repository.deleteComponent(intent.componentsModel,intent.name)
+                }
+            }
         }
     }
 }

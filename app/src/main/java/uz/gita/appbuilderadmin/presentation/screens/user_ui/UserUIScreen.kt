@@ -117,13 +117,13 @@ private fun MainContent(
 
                     when (it.componentsName) {
                         "Text" -> {
-                                TextComponent(it)
+                                TextComponent(it,onLongClick= { onEventDispatcher.invoke(UserUIContract.Intent.DeleteComponents(it,name))})
                                 textTopComponent(text = "Text")
                         }
 
                         "Input" -> {
                             textTopComponent(text = "Input" )
-                            InputComponent(it)
+                            InputComponent(it,onLongClick={ onEventDispatcher.invoke(UserUIContract.Intent.DeleteComponents(it,name))})
                         }
 
                         "Selector" -> {
@@ -158,7 +158,9 @@ private fun MainContentPreview() {
     }
 }
 @Composable
-fun textTopComponent(text:String){
+fun textTopComponent(
+    text:String
+){
     Row (modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = 15.dp, vertical = 10.dp)){

@@ -1,5 +1,8 @@
 package uz.gita.appbuilderadmin.presentation.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,11 +13,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun  TextComponent(
- data:ComponentsModel
+ data:ComponentsModel,
+ onClick: () -> Unit = {},
+ onLongClick:()->Unit
 ) {
-    Box(modifier = Modifier.fillMaxWidth()){
+    Box(modifier = Modifier.fillMaxWidth()
+        .combinedClickable (
+        onLongClick = onLongClick,
+        onClick = onClick
+    )){
      Text(
          text = data.text,
          modifier = Modifier.padding(start = 10.dp) ,

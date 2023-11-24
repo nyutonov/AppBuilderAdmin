@@ -141,7 +141,7 @@ fun ConstructorScreenContent(
                                 type = uiState.selectedInputType,
                                 placeHolder = uiState.placeHolder
                             )
-                        )
+                        ){}
                     }
 
                     "Text" -> {
@@ -149,7 +149,7 @@ fun ConstructorScreenContent(
                             data = ComponentsModel(
                                 text = uiState.textValue
                             )
-                        )
+                        ){}
                     }
 
                     "Selector" -> {

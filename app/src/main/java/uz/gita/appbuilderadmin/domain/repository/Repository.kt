@@ -10,4 +10,6 @@ interface Repository {
     fun getAllUsers() : Flow<List<String>>
     fun getAllData(name : String):Flow<List<ComponentsModel>>
     suspend fun addComponent(name: String, component: ComponentsModel)
+
+    suspend fun deleteComponent(component: ComponentsModel,name:String)
 }
