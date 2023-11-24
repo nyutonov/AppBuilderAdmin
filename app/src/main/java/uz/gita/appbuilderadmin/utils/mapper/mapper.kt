@@ -6,6 +6,8 @@ import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import java.util.UUID
 
 fun DataSnapshot.toUserData(): ComponentsModel = ComponentsModel(
+    key = key ?: "",
+
     componentsName = child("componentsName").getValue(String::class.java) ?: "",
 
     input = child("input").getValue(String::class.java) ?: "",
