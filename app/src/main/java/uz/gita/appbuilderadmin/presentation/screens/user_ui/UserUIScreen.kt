@@ -138,9 +138,7 @@ private fun MainContent(
 
                         "Date Picker" -> {
                             textTopComponent(text = "Date Picker")
-                            DateComponent(it.datePicker) {
-
-                            }
+                            DateComponent(it.datePicker, listener = {},)
                         }
                     }
                 }

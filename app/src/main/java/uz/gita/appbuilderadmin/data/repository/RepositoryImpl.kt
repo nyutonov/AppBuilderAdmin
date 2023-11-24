@@ -108,8 +108,8 @@ class RepositoryImpl @Inject constructor() : Repository {
 
     override suspend fun deleteComponent(component: ComponentsModel, name: String) {
         val databaseReference = firebaseDatabase.getReference("users").child(name).child("components")
-        Log.d("TTT", "deleteComponent components id:${component.id} ")
-        databaseReference.child(component.id).removeValue()
+        Log.d("TTT", "deleteComponent components id:${component.key} ")
+        databaseReference.child(component.key).removeValue()
             .addOnSuccessListener {
                 // Успешно удалено
             }
