@@ -1,10 +1,10 @@
 package uz.gita.appbuilderadmin.domain.usecases
 
 import kotlinx.coroutines.flow.Flow
-import uz.gita.appbuilderadmin.domain.param.UserParam
+import uz.gita.appbuilderadmin.data.model.UserModel
 
 interface AddUserUseCase {
 
-    operator fun invoke(userParam: UserParam) : Flow<Boolean>
+    operator fun invoke(userParam: UserModel) : Flow<Boolean>
 
 }
