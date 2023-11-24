@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.domain.repository.Repository
@@ -125,6 +126,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                 multiSelectorDataAnswers = multiSelectorItems
                             )
                         )
+
                     }
 
                     reduce {
@@ -132,6 +134,40 @@ class ConstructorViewModelImpl @Inject constructor(
                             placeHolder = "",
                             selectedInputType = uiState.value.inputTypeList[0]
                         )
+                    }
+                    uiState.update { it.copy(
+                        componentList= listOf(
+                            "Input",
+                            "Text",
+                            "Selector",
+                            "MultiSelector",
+                            "Date Picker"
+                        ),
+                        inputTypeList= listOf(
+                            "Text",
+                            "Number",
+                            "Email",
+                            "Phone"
+                        ),
+                        selectorItems= listOf("empty"),
+
+                      multiSelectorItems= listOf("empty"),
+                      selectedComponent = uiState.value.componentList[0],
+                      selectedInputType= uiState.value.inputTypeList[0],
+                      placeHolder = "",
+                      textValue = "",
+                      name= "",
+                      idCheckState= false,
+                      idValue = "",
+                      visibilityState= false,
+                      componentId = "",
+                      operator = "",
+                      visibilityValue  = "",
+                      selectedDate = "",
+                      selecterAnswer = "",
+                      multiSelectorAnswer = ""
+                    )
+
                     }
                     direction.back()
                 }
