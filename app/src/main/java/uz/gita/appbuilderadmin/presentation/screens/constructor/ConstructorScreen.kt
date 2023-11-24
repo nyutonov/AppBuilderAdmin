@@ -22,7 +22,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.DatePicker
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -50,12 +49,9 @@ import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.presentation.components.DateComponent
 import uz.gita.appbuilderadmin.presentation.components.InputComponent
 import uz.gita.appbuilderadmin.presentation.components.MultiSelectorComponent
-import uz.gita.appbuilderadmin.presentation.components.MyText
-import uz.gita.appbuilderadmin.presentation.components.MyTextField
 import uz.gita.appbuilderadmin.presentation.components.TextComponent
 import uz.gita.appbuilderadmin.presentation.components.VisibilityComponents
-import uz.gita.appbuilderadmin.presentation.screens.register.RegisterContract
-import uz.mlsoft.mydemosforquiz.ui.components.DemoSpinner
+import uz.gita.appbuilderadmin.presentation.components.DemoSpinner
 
 class ConstructorScreen(
     private val name: String

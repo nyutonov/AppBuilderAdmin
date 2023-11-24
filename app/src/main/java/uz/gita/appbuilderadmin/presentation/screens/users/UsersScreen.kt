@@ -107,7 +107,7 @@ private fun MainContent(
                 tint = Color.White
             )
         }
-
+        
         LazyColumn(modifier = Modifier.padding(top = 56.dp)) {
             items(uiState.users) {
                 UserItem(name = it) {
