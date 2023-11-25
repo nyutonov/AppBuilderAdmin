@@ -27,8 +27,8 @@ interface ConstructorContract {
             "Email",
             "Phone"
         ),
-        val selectorItems: List<String> = listOf("empty"),
-        val multiSelectorItems: List<String> = listOf("empty"),
+        val selectorItems: List<String> = listOf(),
+        val multiSelectorItems: List<String> = listOf(),
         val selectedComponent: String = componentList[0],
         val selectedInputType: String = inputTypeList[0],
         val placeHolder: String = "",

@@ -149,9 +149,15 @@ fun ConstructorScreenContent(
                     }
 
                     "Selector" -> {
+                        Text(
+                            text = uiState.selecterAnswer,
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp)
+                        )
+
                         DemoSpinner(
                             list = uiState.selectorItems,
-                            preselected = uiState.selectorItems[0],
+                            preselected = "Enter",
                             onSelectionChanged = {},
                             modifier = Modifier
                                 .padding(vertical = 10.dp)
@@ -161,7 +167,7 @@ fun ConstructorScreenContent(
                     }
 
                     "MultiSelector" -> {
-                        MultiSelectorComponent(list = uiState.multiSelectorItems) {}
+                        MultiSelectorComponent(list = uiState.multiSelectorItems, question = uiState.multiSelectorAnswer) {}
                     }
 
                     "Date Picker" -> {
@@ -325,6 +331,8 @@ fun ConstructorScreenContent(
                             )
 
                         } else if (uiState.selectedComponent == "Selector") {
+                            SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
+
                             var text by remember { mutableStateOf("") }
 
                             Text(text = "Question", color = Color.White)
@@ -391,6 +399,8 @@ fun ConstructorScreenContent(
                                 onEventDispatchers = onEventDispatchers
                             )
                         } else if (uiState.selectedComponent == "MultiSelector") {
+                            SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
+
                             var text by remember { mutableStateOf("") }
 
                             Text(text = "Question", color = Color.White)
@@ -400,11 +410,11 @@ fun ConstructorScreenContent(
                                     .fillMaxWidth()
                                     .height(58.dp)
                                     .padding(horizontal = 15.dp),
-                                value = uiState.selecterAnswer,
+                                value = uiState.multiSelectorAnswer,
                                 singleLine = true,
                                 onValueChange = {
                                     onEventDispatchers.invoke(
-                                        ConstructorContract.Intent.ChangeSelectorAnswer(
+                                        ConstructorContract.Intent.ChangeMultiSelectorAnswer(
                                             it
                                         )
                                     )

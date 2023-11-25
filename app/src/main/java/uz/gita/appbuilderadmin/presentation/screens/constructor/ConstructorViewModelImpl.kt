@@ -142,9 +142,9 @@ class ConstructorViewModelImpl @Inject constructor(
                                     "Email",
                                     "Phone"
                                 ),
-                                selectorItems = listOf("empty"),
+                                selectorItems = listOf(),
 
-                                multiSelectorItems = listOf("empty"),
+                                multiSelectorItems = listOf(),
 
                                 selectedComponent = uiState.value.componentList[0],
 
@@ -225,8 +225,8 @@ class ConstructorViewModelImpl @Inject constructor(
                                     "Email",
                                     "Phone"
                                 ),
-                                selectorItems = listOf("empty"),
-                                multiSelectorItems = listOf("empty"),
+                                selectorItems = listOf(),
+                                multiSelectorItems = listOf(),
                                 selectedComponent = uiState.value.componentList[0],
                                 selectedInputType = uiState.value.inputTypeList[0],
                                 placeHolder = "",

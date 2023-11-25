@@ -165,6 +165,7 @@ private fun MainContent(
                             textTopComponent(text = "MultiSelector")
                             MultiSelectorComponent(
                                 list = it.multiSelectorDataAnswers,
+                                question = it.multiSelectDataQuestion,
                                 onLongClick = {
                                     onEventDispatcher.invoke(
                                         UserUIContract.Intent.DeleteComponents(
