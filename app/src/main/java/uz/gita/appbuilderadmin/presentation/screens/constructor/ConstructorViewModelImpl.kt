@@ -20,7 +20,7 @@ class ConstructorViewModelImpl @Inject constructor(
 ) : ViewModel(), ConstructorContract.ViewModel {
     override val uiState = MutableStateFlow(ConstructorContract.UiState())
     private var name = ""
-    private val list = ArrayList<VisibilityModule>()
+    private var list = ArrayList<VisibilityModule>()
 
     private fun reduce(block: (ConstructorContract.UiState) -> ConstructorContract.UiState) {
         val oldValue = uiState.value
@@ -129,7 +129,6 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             ConstructorContract.Intent.ClickCreateButton -> {
-
                 if (!uiState.value.visibilityState) {
                     viewModelScope.launch {
                         uiState.value.apply {
@@ -214,6 +213,7 @@ class ConstructorViewModelImpl @Inject constructor(
                         }
                         direction.back()
                     }
+                    list = ArrayList<VisibilityModule>()
                 } else if (uiState.value.visibilityState) {
                     viewModelScope.launch {
                         uiState.value.apply {
@@ -229,7 +229,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                     selectorDataQuestion = selecterAnswer,
                                     selectorDataAnswers = selectorItems,
                                     idVisibility = componentId,
-                                    visibility = componentId.isNotEmpty(),
+                                    visibility = true,
                                     operator = operator,
                                     value = visibilityValue,
                                     datePicker = selectedDate,
@@ -282,6 +282,7 @@ class ConstructorViewModelImpl @Inject constructor(
 
                         direction.back()
                     }
+                    list = ArrayList<VisibilityModule>()
                 }
             }
         }
