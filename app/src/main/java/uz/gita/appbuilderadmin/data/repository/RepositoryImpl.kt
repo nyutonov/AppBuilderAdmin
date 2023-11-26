@@ -122,6 +122,7 @@ class RepositoryImpl @Inject constructor() : Repository {
 
                                 this.child("text").setValue(component.text)
                                 this.child("color").setValue(component.color)
+                                this.child("list").setValue(component.list)
 
                                 this.child("selectorDataQuestion").setValue(component.selectorDataQuestion)
                                 this.child("selectorDataAnswers")
