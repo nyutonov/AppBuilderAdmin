@@ -119,6 +119,8 @@ class RepositoryImpl @Inject constructor() : Repository {
                                 this.child("idVisibility").setValue(component.idVisibility)
                                 this.child("operator").setValue(component.operator)
                                 this.child("value").setValue(component.value)
+                                this.child("maxLength").setValue(component.maxLength)
+                                this.child("isEnableMaxLength").setValue(component.isEnableMaxLength)
 
                                 this.child("text").setValue(component.text)
                                 this.child("color").setValue(component.color)

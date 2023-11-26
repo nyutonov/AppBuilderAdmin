@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -135,7 +137,9 @@ fun ConstructorScreenContent(
                         InputComponent(
                             data = ComponentsModel(
                                 type = uiState.selectedInputType,
-                                placeHolder = uiState.placeHolder
+                                placeHolder = uiState.placeHolder,
+                                maxLength = uiState.maxLength,
+                                isEnableMaxLength = uiState.isEnableMaxLength
                             )
                         ) {}
                     }
@@ -167,7 +171,10 @@ fun ConstructorScreenContent(
                     }
 
                     "MultiSelector" -> {
-                        MultiSelectorComponent(list = uiState.multiSelectorItems, question = uiState.multiSelectorAnswer) {}
+                        MultiSelectorComponent(
+                            list = uiState.multiSelectorItems,
+                            question = uiState.multiSelectorAnswer
+                        ) {}
                     }
 
                     "Date Picker" -> {
@@ -280,6 +287,59 @@ fun ConstructorScreenContent(
                                 ),
                                 shape = RoundedCornerShape(5.dp)
                             )
+
+                            Spacer(modifier = Modifier.size(10.dp))
+
+                            Text(
+                                text = "Set Max Length",
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                    lineHeight = 24.sp,
+                                    fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+                                    fontWeight = FontWeight.W400,
+                                    color = Color.White
+                                )
+                            )
+
+                            Spacer(modifier = Modifier.size(10.dp))
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 15.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Spacer(modifier = Modifier.size(5.dp))
+                                Checkbox(
+                                    checked = uiState.isEnableMaxLength,
+                                    onCheckedChange = {
+                                        onEventDispatchers(ConstructorContract.Intent.ClickCheckBoxIsEnabledMaxLength(it))
+                                    },
+                                    colors = CheckboxDefaults.colors(
+                                        checkedColor = Color(0xff4d648d)
+                                    )
+                                )
+                                Spacer(modifier = Modifier.size(5.dp))
+                                OutlinedTextField(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(58.dp),
+                                    value = if (uiState.maxLength == 0) "" else uiState.maxLength.toString(),
+                                    onValueChange = {
+                                        onEventDispatchers(ConstructorContract.Intent.ChangingMaxLength(if (it.isEmpty()) 0 else it.toInt()))
+                                    },
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = Color.LightGray,
+                                        unfocusedBorderColor = Color.LightGray,
+                                        focusedTextColor = Color.LightGray,
+                                        unfocusedTextColor = Color.LightGray
+                                    ),
+                                    shape = RoundedCornerShape(5.dp),
+                                    enabled = uiState.isEnableMaxLength,
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                                )
+                                Spacer(modifier = Modifier.size(5.dp))
+                            }
 
                             Spacer(modifier = Modifier.size(10.dp))
 

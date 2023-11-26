@@ -111,24 +111,35 @@ class ConstructorViewModelImpl @Inject constructor(
                 uiState.value.apply {
                     list.add(
                         VisibilityModule(
-                            componentId ,
+                            componentId,
                             visibilityComponentState,
-                            operator ,
+                            operator,
                             visibilityValue
                         )
                     )
                 }
 
-                reduce { it.copy(
-                    componentId = "" ,
-                    visibilityComponentState = "select" ,
-                    operator = "" ,
-                    visibilityValue = ""
-                ) }
+                reduce {
+                    it.copy(
+                        componentId = "",
+                        visibilityComponentState = "select",
+                        operator = "",
+                        visibilityValue = ""
+                    )
+                }
 
             }
 
+            is ConstructorContract.Intent.ClickCheckBoxIsEnabledMaxLength -> {
+                reduce { it.copy(isEnableMaxLength = intent.isEnabled) }
+            }
+
+            is ConstructorContract.Intent.ChangingMaxLength -> {
+                reduce { it.copy(maxLength = intent.maxLength) }
+            }
+
             ConstructorContract.Intent.ClickCreateButton -> {
+
                 if (!uiState.value.visibilityState) {
                     viewModelScope.launch {
                         uiState.value.apply {
@@ -140,6 +151,8 @@ class ConstructorViewModelImpl @Inject constructor(
                                     type = selectedInputType,
                                     text = textValue,
                                     id = idValue,
+                                    maxLength = maxLength,
+                                    isEnableMaxLength = isEnableMaxLength,
                                     color = 0xFF0F1C2,
                                     selectorDataQuestion = selecterAnswer,
                                     selectorDataAnswers = selectorItems,
@@ -193,6 +206,10 @@ class ConstructorViewModelImpl @Inject constructor(
 
                                 operator = "",
 
+                                isEnableMaxLength = false,
+
+                                maxLength = 0,
+
                                 visibilityValue = "",
 
                                 selectedDate = "",
@@ -213,7 +230,6 @@ class ConstructorViewModelImpl @Inject constructor(
                         }
                         direction.back()
                     }
-                    list = ArrayList<VisibilityModule>()
                 } else if (uiState.value.visibilityState) {
                     viewModelScope.launch {
                         uiState.value.apply {
@@ -229,7 +245,9 @@ class ConstructorViewModelImpl @Inject constructor(
                                     selectorDataQuestion = selecterAnswer,
                                     selectorDataAnswers = selectorItems,
                                     idVisibility = componentId,
-                                    visibility = true,
+                                    visibility = componentId.isNotEmpty(),
+                                    isEnableMaxLength = false,
+                                    maxLength = 0,
                                     operator = operator,
                                     value = visibilityValue,
                                     datePicker = selectedDate,
@@ -266,6 +284,8 @@ class ConstructorViewModelImpl @Inject constructor(
                                 visibilityState = false,
                                 componentId = "",
                                 operator = "",
+                                isEnableMaxLength = false,
+                                maxLength = 0,
                                 visibilityValue = "",
                                 selectedDate = "",
                                 selecterAnswer = "",
@@ -282,7 +302,6 @@ class ConstructorViewModelImpl @Inject constructor(
 
                         direction.back()
                     }
-                    list = ArrayList<VisibilityModule>()
                 }
             }
         }

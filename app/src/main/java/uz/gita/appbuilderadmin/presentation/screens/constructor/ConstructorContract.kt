@@ -38,6 +38,8 @@ interface ConstructorContract {
         val idCheckState: Boolean = false,
         val idValue: String = "",
         val visibilityState: Boolean = false,
+        val isEnableMaxLength: Boolean = false,
+        val maxLength: Int = 0,
         val componentId : String = "",
         val operator : String = "",
         val visibilityValue : String = "",
@@ -117,6 +119,14 @@ interface ConstructorContract {
 
         data class ChangeMultiSelectorAnswer(
             val text: String
+        ) : Intent
+
+        data class ClickCheckBoxIsEnabledMaxLength(
+            val isEnabled: Boolean
+        ) : Intent
+
+        data class ChangingMaxLength(
+            val maxLength: Int
         ) : Intent
 
         object ClickAddButtonVisibility : Intent

@@ -45,17 +45,6 @@ fun UserItem(
                     .padding(start = 16.dp)
             ) {
                 Text(
-                    text = user.id.toString(),
-                    fontSize = 18.sp,
-                    color = Color.White
-                )
-
-                Spacer(
-                    modifier = Modifier
-                        .width(12.dp)
-                )
-
-                Text(
                     text = user.name,
                     fontSize = 18.sp,
                     color = Color.White
