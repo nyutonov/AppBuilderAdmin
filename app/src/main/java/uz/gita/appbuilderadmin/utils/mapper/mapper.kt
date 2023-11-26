@@ -10,6 +10,8 @@ fun DataSnapshot.toComponentData(): ComponentsModel = ComponentsModel(
 
     componentId = child("componentId").getValue(Int::class.java) ?: 0,
     componentsName = child("componentsName").getValue(String::class.java) ?: "",
+    maxLength = child("maxLength").getValue(Int::class.java) ?: 0,
+    isEnableMaxLength = child("isEnableMaxLength").getValue(Boolean::class.java) ?: false,
 
     input = child("input").getValue(String::class.java) ?: "",
     type = child("type").getValue(String::class.java) ?: "",
