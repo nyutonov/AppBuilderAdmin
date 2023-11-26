@@ -32,11 +32,12 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DemoSpinner(
+fun Demo2Spinner(
     list: List<String>,
     preselected: String,
     onSelectionChanged: (selection: String) -> Unit,
     modifier: Modifier,
+    state : String ,
     onLongClick: () -> Unit
 ) {
 
@@ -64,10 +65,10 @@ fun DemoSpinner(
             ) {
                 list.forEach { entry ->
                     DropdownMenuItem(modifier = Modifier.fillMaxWidth(), onClick = {
-                        selected = entry
-                        expanded = false
-
                         onSelectionChanged.invoke(entry)
+                        expanded = false
+                        selected = state
+
                     }, text = {
                         Text(
                             text = entry,

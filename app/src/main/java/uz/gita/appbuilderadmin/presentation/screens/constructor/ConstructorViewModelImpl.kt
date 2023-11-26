@@ -3,12 +3,13 @@ package uz.gita.appbuilderadmin.presentation.screens.constructor
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
+import uz.gita.appbuilderadmin.data.model.VisibilityModule
 import uz.gita.appbuilderadmin.domain.repository.Repository
 import javax.inject.Inject
 
@@ -19,6 +20,7 @@ class ConstructorViewModelImpl @Inject constructor(
 ) : ViewModel(), ConstructorContract.ViewModel {
     override val uiState = MutableStateFlow(ConstructorContract.UiState())
     private var name = ""
+    private val list = ArrayList<VisibilityModule>()
 
     private fun reduce(block: (ConstructorContract.UiState) -> ConstructorContract.UiState) {
         val oldValue = uiState.value
@@ -34,6 +36,10 @@ class ConstructorViewModelImpl @Inject constructor(
 
             is ConstructorContract.Intent.ChangingIdValue -> {
                 reduce { it.copy(idValue = intent.idValue) }
+            }
+
+            is ConstructorContract.Intent.OnChangeVisibilityComponentState -> {
+                reduce { it.copy(visibilityComponentState = intent.value) }
             }
 
             is ConstructorContract.Intent.ChangingComponentId -> {
@@ -101,7 +107,29 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(multiSelectorAnswer = intent.text) }
             }
 
+            ConstructorContract.Intent.ClickAddButtonVisibility -> {
+                uiState.value.apply {
+                    list.add(
+                        VisibilityModule(
+                            componentId ,
+                            visibilityComponentState,
+                            operator ,
+                            visibilityValue
+                        )
+                    )
+                }
+
+                reduce { it.copy(
+                    componentId = "" ,
+                    visibilityComponentState = "select" ,
+                    operator = "" ,
+                    visibilityValue = ""
+                ) }
+
+            }
+
             ConstructorContract.Intent.ClickCreateButton -> {
+
                 if (!uiState.value.visibilityState) {
                     viewModelScope.launch {
                         uiState.value.apply {
@@ -186,7 +214,7 @@ class ConstructorViewModelImpl @Inject constructor(
                         }
                         direction.back()
                     }
-                } else if (uiState.value.visibilityState && uiState.value.operator.isNotEmpty() && uiState.value.visibilityValue.isNotEmpty()) {
+                } else if (uiState.value.visibilityState) {
                     viewModelScope.launch {
                         uiState.value.apply {
                             repository.addComponent(
@@ -205,6 +233,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                     operator = operator,
                                     value = visibilityValue,
                                     datePicker = selectedDate,
+                                    list = Gson().toJson(list) ,
                                     multiSelectDataQuestion = multiSelectorAnswer,
                                     multiSelectorDataAnswers = multiSelectorItems
                                 )
@@ -253,8 +282,6 @@ class ConstructorViewModelImpl @Inject constructor(
 
                         direction.back()
                     }
-                } else if (uiState.value.visibilityState && uiState.value.operator.isEmpty() && uiState.value.visibilityValue.isEmpty()) {
-                    reduce { it.copy(visibilityCheck = false) }
                 }
             }
         }

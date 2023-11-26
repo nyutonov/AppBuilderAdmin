@@ -1,6 +1,7 @@
 package uz.gita.appbuilderadmin.presentation.screens.constructor
 
 import kotlinx.coroutines.flow.StateFlow
+import uz.gita.appbuilderadmin.data.model.SelectorModule
 
 interface ConstructorContract {
 
@@ -43,7 +44,11 @@ interface ConstructorContract {
         val selectedDate: String = "",
         val selecterAnswer: String = "",
         val multiSelectorAnswer: String = "" ,
-        val visibilityCheck : Boolean = true
+        val visibilityCheck : Boolean = true ,
+        val visibilityComponentState : String = "" ,
+        val enteringSelectorsList : List<SelectorModule> = listOf() ,
+        val selectorVisibilityIdCheck : Boolean = false ,
+        val selectedVisibilityList : List<String> = listOf()
     )
     interface Intent {
         data class ChangingSelectedComponent(
@@ -52,6 +57,10 @@ interface ConstructorContract {
 
         data class ChangingVisibilityValue (
             val value : String
+        ) : Intent
+
+        data class OnChangeVisibilityComponentState(
+            val value  :String
         ) : Intent
 
         data class ChangingOperator(
@@ -109,5 +118,7 @@ interface ConstructorContract {
         data class ChangeMultiSelectorAnswer(
             val text: String
         ) : Intent
+
+        object ClickAddButtonVisibility : Intent
     }
 }

@@ -3,8 +3,13 @@ package uz.gita.appbuilderadmin.presentation.components
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -30,6 +35,7 @@ fun VisibilityComponents(
 ) {
 
     val regexSign = "[^<>|=]|<<|>>|<<|=<|=>".toRegex()
+
 
     Row (
         modifier = Modifier
@@ -58,7 +64,29 @@ fun VisibilityComponents(
             )
         )
     }
-    if(uiState.visibilityState) {
+    if (uiState.visibilityState) {
+        val list = listOf(
+            "select" ,
+            "Input" ,
+            "Selector" ,
+            "Multi Selector"
+        )
+        Spacer(modifier = Modifier.size(10.dp))
+        DemoSpinner(
+            list = list,
+            preselected = list[0] ,
+            onSelectionChanged = {
+               onEventDispatchers(ConstructorContract.Intent.OnChangeVisibilityComponentState(it))
+            },
+            modifier = Modifier
+                .padding(horizontal = 15.dp)
+                .fillMaxWidth()
+                .height(56.dp)
+        ) {
+
+        }
+    }
+    if(uiState.visibilityState && uiState.visibilityComponentState == "Input") {
         MyText(value = "Component ID")
         Text(
             text = "Component ID kiritilyotganda etibor berilsin agar kiritilgan id toplimasa ham visibility shartini qanoantirilmagan hisoblanadi",
@@ -159,6 +187,63 @@ fun VisibilityComponents(
             ) ,
             check = uiState.operator.contains("<|>".toRegex())
         )
+    } else if (uiState.visibilityState && uiState.visibilityComponentState == "Multi Selector" || uiState.visibilityComponentState == "Selector") {
+
+        MyText(value = "Component ID")
+        Text(
+            text = "Component ID kiritilyotganda etibor berilsin agar kiritilgan id toplimasa ham visibility shartini qanoantirilmagan hisoblanadi",
+            style = TextStyle(
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+                fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+                fontWeight = FontWeight.W400,
+                color = if (uiState.visibilityState) Color.White else Color.Gray ,
+                textAlign = TextAlign.Center
+            )
+        )
+        MyTextField(
+            value = uiState.componentId,
+            listener = {
+                onEventDispatchers(ConstructorContract.Intent.ChangingComponentId(it))
+            }
+        )
+
+        MyText(value = "Value")
+        MyTextField(
+            value = uiState.visibilityValue,
+            listener = {
+                onEventDispatchers(ConstructorContract.Intent.ChangingVisibilityValue(it))
+            }
+        )
+
+
+    }
+    if (uiState.visibilityState) {
+        Spacer(modifier = Modifier.size(10.dp))
+        Button(
+            modifier = Modifier
+                .padding(bottom = 15.dp)
+                .width(310.dp)
+                .height(50.dp),
+            onClick = {
+                onEventDispatchers(ConstructorContract.Intent.ClickAddButtonVisibility)
+            },
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xff4d648d)
+            )
+        ) {
+            Text(
+                text = "Add",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                    fontWeight = FontWeight.W400,
+                    textAlign = TextAlign.Center
+                )
+            )
+        }
+        Spacer(modifier = Modifier.size(7.dp))
     }
 
 }

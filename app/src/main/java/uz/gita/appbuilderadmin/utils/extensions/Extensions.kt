@@ -6,6 +6,7 @@ import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import uz.gita.appbuilderadmin.presentation.screens.constructor.ConstructorContract
 
 suspend fun <T> Task<QuerySnapshot>.getAllSync(mapper: (DocumentSnapshot) -> T): Result<List<T>> {
     val deferred = CompletableDeferred<Result<List<T>>>()

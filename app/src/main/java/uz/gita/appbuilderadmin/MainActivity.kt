@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Navigator (screen = UsersScreen()) { navigator ->
+            Navigator (screen = ConstructorScreen("")) { navigator ->
                 navigationHandler.navigationFlow
                     .onEach {
                         it(navigator)
