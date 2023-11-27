@@ -16,19 +16,37 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.data.model.UserModel
+import uz.gita.appbuilderadmin.data.model.VisibilityTypeModule
+import uz.gita.appbuilderadmin.data.source.local.room.VisibilityDao
 import uz.gita.appbuilderadmin.domain.repository.Repository
 import uz.gita.appbuilderadmin.utils.extensions.getAll
 import uz.gita.appbuilderadmin.utils.mapper.toComponentData
+import uz.gita.appbuilderadmin.utils.mapper.toData
+import uz.gita.appbuilderadmin.utils.mapper.toEntity
 import java.util.UUID
 import javax.inject.Inject
 
-class RepositoryImpl @Inject constructor() : Repository {
+class RepositoryImpl @Inject constructor(
+    private val visibilityDao: VisibilityDao
+) : Repository {
     private val firebasePref = Firebase.firestore
     private val firebaseDatabase = Firebase.database
     private val scope = CoroutineScope(Dispatchers.IO + Job())
+    private lateinit var listVisiblity : List<VisibilityTypeModule>
+
+    init {
+
+        visibilityDao.getAllVisibility()
+            .onEach {
+                listVisiblity = it.map { it.toData() }
+            }
+            .launchIn(scope)
+
+    }
 
     override fun addUser(userModel: UserModel): Flow<Boolean> = callbackFlow {
         val uuid = UUID.randomUUID().toString()
@@ -161,5 +179,61 @@ class RepositoryImpl @Inject constructor() : Repository {
             .addOnFailureListener { error ->
                 // Обработка ошибки
             }
+    }
+
+    override fun addVisibilityModule(visibilityTypeModule: VisibilityTypeModule) {
+        scope.launch {
+            visibilityDao.addVisibility(visibilityTypeModule.toEntity())
+        }
+    }
+
+    override fun getAllVisibilityModule(): List<VisibilityTypeModule> = listVisiblity
+
+    override fun getAllListInputId(): List<String> {
+        val list = ArrayList<String>()
+        listVisiblity.forEach {
+            if (it.type == "Input") {
+                list.add(it.id)
+            }
+        }
+        return list
+    }
+
+    override fun getAllSelectorId(): List<String> {
+        val list = ArrayList<String>()
+        listVisiblity.forEach {
+            if (it.type == "Selector")  {
+                list.add(it.id)
+            }
+        }
+        return list
+    }
+
+    override fun getAllMultiSelectorId(): List<String> {
+        val list = ArrayList<String>()
+        listVisiblity.forEach {
+            if (it.type == "Multi Selector")  {
+                list.add(it.id)
+            }
+        }
+        return list
+    }
+
+    override fun getSelectorValueListById(id: String): List<String> {
+        listVisiblity.forEach {
+            if (it.id == id) return it.values
+        }
+        return listOf()
+    }
+
+    override fun getMultiSelectorValueListById(id: String): List<String> {
+        listVisiblity.forEach {
+            if (it.id == id) return it.values
+        }
+        return listOf()
+    }
+
+    override fun removeAllVisibilityData() {
+
     }
 }

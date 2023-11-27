@@ -2,6 +2,7 @@ package uz.gita.appbuilderadmin.presentation.screens.constructor
 
 import kotlinx.coroutines.flow.StateFlow
 import uz.gita.appbuilderadmin.data.model.SelectorModule
+import uz.gita.appbuilderadmin.data.model.VisibilityModule
 
 interface ConstructorContract {
 
@@ -43,12 +44,6 @@ interface ConstructorContract {
         val visibilityValue : String = "",
         val selectedDate: String = "",
         val selecterAnswer: String = "",
-        val multiSelectorAnswer: String = "" ,
-        val visibilityCheck : Boolean = true ,
-        val visibilityComponentState : String = "" ,
-        val enteringSelectorsList : List<SelectorModule> = listOf() ,
-        val selectorVisibilityIdCheck : Boolean = false ,
-        val selectedVisibilityList : List<String> = listOf(),
         val isMaxLengthForTextEnabled: Boolean = false,
         val maxLengthForText: Int = 0,
         val isMinLengthForTextEnabled: Boolean = false,
@@ -58,8 +53,36 @@ interface ConstructorContract {
         val isMinValueForNumberEnabled: Boolean = false,
         val minValueForNumber: Int = 0,
         val isRequired: Boolean = false,
+        val multiSelectorAnswer: String = "",
+        val visibilityCheck : Boolean = true,
+        val visibilityComponentState : String = "",
+        val enteringSelectorsList : List<SelectorModule> = listOf(),
+        val selectorVisibilityIdCheck : Boolean = false,
+        val selectedVisibilityList : List<String> = listOf(),
+        val listAllInputId : List<String> = listOf(),
+        val listAllSelectorId : List<String> = listOf(),
+        val listAllMultiSelectorId : List<String> = listOf(),
+        val selectedInputId : String = "",
+        val selectedSelectorId : String = "",
+        val selectedMultiSelectorId : String = "",
+        val selectedSelectorList : List<String> = listOf(),
+        val selectedMultiSelectorList: List<String> = listOf() ,
+        val addButtonVisibilityState : Boolean = false ,
+        val listVisibilitiesValue : List<VisibilityModule> = listOf()
     )
     interface Intent {
+
+        object ClickVisibilityAddButton : Intent
+        object LoadData : Intent
+        data class ChangeSelectedMultiSelectorId(
+            val value : String
+        ) : Intent
+        data class ChangeSelectedSelectorId(
+            val value : String
+        ) : Intent
+        data class ChangeSelectedInputId(
+            val value : String
+        ) : Intent
         data class ChangingSelectedComponent(
             val component: String
         ) : Intent
