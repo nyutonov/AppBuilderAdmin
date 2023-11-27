@@ -394,9 +394,9 @@ fun ConstructorScreenContent(
                             SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
 
                             var text by remember { mutableStateOf("") }
-
+                            Spacer(modifier = Modifier.size(10.dp))
                             Text(text = "Question", color = Color.White)
-
+                            Spacer(modifier = Modifier.size(10.dp))
                             OutlinedTextField(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -419,9 +419,9 @@ fun ConstructorScreenContent(
                                 ),
                                 shape = RoundedCornerShape(5.dp)
                             )
-
+                            Spacer(modifier = Modifier.size(10.dp))
                             Text(text = "Item", color = Color.White)
-
+                            Spacer(modifier = Modifier.size(10.dp))
                             OutlinedTextField(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -438,19 +438,35 @@ fun ConstructorScreenContent(
                                 ),
                                 shape = RoundedCornerShape(5.dp)
                             )
-
+                            Spacer(modifier = Modifier.size(10.dp))
                             Button(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(56.dp),
+                                    .padding(bottom = 15.dp)
+                                    .width(310.dp)
+                                    .height(50.dp) ,
                                 onClick = {
                                     onEventDispatchers.invoke(
                                         ConstructorContract.Intent.AddItemToSelector(
                                             text
                                         )
+
                                     )
-                                }) {
-                                Text(text = "Add")
+                                    text = ""
+                                },
+                                shape = RoundedCornerShape(10.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xff4d648d)
+                                )
+                            ) {
+                                Text(
+                                    text = "Add",
+                                    style = TextStyle(
+                                        fontSize = 18.sp,
+                                        fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                                        fontWeight = FontWeight.W400,
+                                        textAlign = TextAlign.Center
+                                    )
+                                )
                             }
 
                             Spacer(modifier = Modifier.size(10.dp))

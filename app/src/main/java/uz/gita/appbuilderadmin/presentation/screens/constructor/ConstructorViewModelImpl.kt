@@ -1,6 +1,5 @@
 package uz.gita.appbuilderadmin.presentation.screens.constructor
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -157,7 +156,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                     selectorDataQuestion = selecterAnswer,
                                     selectorDataAnswers = selectorItems,
                                     idVisibility = componentId,
-                                    visibility = componentId.isNotEmpty(),
+                                    visibility = false,
                                     operator = operator,
                                     value = visibilityValue,
                                     datePicker = selectedDate,
@@ -166,6 +165,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                 )
                             )
                         }
+                        list = ArrayList()
 
                         uiState.update {
                             it.copy(
@@ -245,7 +245,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                     selectorDataQuestion = selecterAnswer,
                                     selectorDataAnswers = selectorItems,
                                     idVisibility = componentId,
-                                    visibility = componentId.isNotEmpty(),
+                                    visibility = true,
                                     isEnableMaxLength = false,
                                     maxLength = 0,
                                     operator = operator,
@@ -257,6 +257,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                 )
                             )
                         }
+                        list = ArrayList()
                         uiState.update {
                             it.copy(
                                 componentList = listOf(
