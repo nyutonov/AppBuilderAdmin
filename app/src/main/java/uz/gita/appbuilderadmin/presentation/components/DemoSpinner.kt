@@ -55,7 +55,7 @@ fun DemoSpinner(
                     .fillMaxWidth(),
                 trailingIcon = { Icon(Icons.Outlined.ArrowDropDown, null) },
                 readOnly = true,
-                colors = TextFieldDefaults.colors(Color.White)
+                colors = TextFieldDefaults.colors(Color.Black)
             )
             DropdownMenu(
                 modifier = Modifier.fillMaxWidth(),
@@ -74,6 +74,7 @@ fun DemoSpinner(
                             modifier = Modifier
                                 .wrapContentWidth()
                                 .align(Alignment.Start),
+                            color = Color.Black
                         )
                     })
                 }

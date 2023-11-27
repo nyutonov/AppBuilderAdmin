@@ -33,9 +33,7 @@ fun VisibilityComponents(
     uiState : ConstructorContract.UiState ,
     onEventDispatchers : (ConstructorContract.Intent) -> Unit
 ) {
-
     val regexSign = "[^<>|=]|<<|>>|<<|=<|=>".toRegex()
-
 
     Row (
         modifier = Modifier
@@ -66,7 +64,6 @@ fun VisibilityComponents(
     }
     if (uiState.visibilityState) {
         val list = listOf(
-            "select" ,
             "Input" ,
             "Selector" ,
             "Multi Selector"
@@ -74,7 +71,7 @@ fun VisibilityComponents(
         Spacer(modifier = Modifier.size(10.dp))
         DemoSpinner(
             list = list,
-            preselected = list[0] ,
+            preselected = "select",
             onSelectionChanged = {
                onEventDispatchers(ConstructorContract.Intent.OnChangeVisibilityComponentState(it))
             },

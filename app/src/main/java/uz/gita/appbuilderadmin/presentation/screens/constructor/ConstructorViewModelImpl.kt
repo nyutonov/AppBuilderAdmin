@@ -63,7 +63,13 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.ChangingSelectedInputType -> {
-                reduce { it.copy(selectedInputType = intent.type) }
+                reduce { it.copy(
+                    selectedInputType = intent.type,
+                    isMinValueForNumberEnabled = false,
+                    isMaxValueForNumberEnabled = false,
+                    isMinLengthForTextEnabled = false,
+                    isMaxLengthForTextEnabled = false
+                ) }
             }
 
             is ConstructorContract.Intent.ChangingTextValue -> {
@@ -106,6 +112,42 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(multiSelectorAnswer = intent.text) }
             }
 
+            is ConstructorContract.Intent.ChangeIsRequired -> {
+                reduce { it.copy(isRequired = intent.isRequired) }
+            }
+
+            is ConstructorContract.Intent.ChangeIsMaxLengthForTextEnabled -> {
+                reduce { it.copy(isMaxLengthForTextEnabled = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeMaxLengthForText -> {
+                reduce { it.copy(maxLengthForText = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeIsMinLengthForTextEnabled -> {
+                reduce { it.copy(isMinLengthForTextEnabled = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeMinLengthForText -> {
+                reduce { it.copy(minLengthForText = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeIsMaxValueForNumberEnabled -> {
+                reduce { it.copy(isMaxValueForNumberEnabled = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeMaxValueForNumber -> {
+                reduce { it.copy(maxValueForNumber = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeIsMinValueForNumberEnabled -> {
+                reduce { it.copy(isMinValueForNumberEnabled = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeMinValueForNumber -> {
+                reduce { it.copy(minValueForNumber = intent.value) }
+            }
+
             ConstructorContract.Intent.ClickAddButtonVisibility -> {
                 uiState.value.apply {
                     list.add(
@@ -117,14 +159,6 @@ class ConstructorViewModelImpl @Inject constructor(
                         )
                     )
                 }
-            }
-
-            is ConstructorContract.Intent.ClickCheckBoxIsEnabledMaxLength -> {
-                reduce { it.copy(isEnableMaxLength = intent.isEnabled) }
-            }
-
-            is ConstructorContract.Intent.ChangingMaxLength -> {
-                reduce { it.copy(maxLength = intent.maxLength) }
             }
 
             ConstructorContract.Intent.ClickCreateButton -> {
@@ -140,8 +174,15 @@ class ConstructorViewModelImpl @Inject constructor(
                                     type = selectedInputType,
                                     text = textValue,
                                     id = idValue,
-                                    maxLength = maxLength,
-                                    isEnableMaxLength = isEnableMaxLength,
+                                    isMaxLengthForTextEnabled = isMaxLengthForTextEnabled,
+                                    maxLengthForText = maxLengthForText,
+                                    isMinLengthForTextEnabled = isMinLengthForTextEnabled,
+                                    minLengthForText = minLengthForText,
+                                    isMaxValueForNumberEnabled = isMaxValueForNumberEnabled,
+                                    maxValueForNumber = maxValueForNumber,
+                                    isMinValueForNumberEnabled = isMinValueForNumberEnabled,
+                                    minValueForNumber = minValueForNumber,
+                                    isRequired = isRequired,
                                     color = 0xFF0F1C2,
                                     selectorDataQuestion = selecterAnswer,
                                     selectorDataAnswers = selectorItems,
@@ -196,10 +237,6 @@ class ConstructorViewModelImpl @Inject constructor(
 
                                 operator = "",
 
-                                isEnableMaxLength = false,
-
-                                maxLength = 0,
-
                                 visibilityValue = "",
 
                                 selectedDate = "",
@@ -208,7 +245,25 @@ class ConstructorViewModelImpl @Inject constructor(
 
                                 multiSelectorAnswer = "",
 
-                                visibilityCheck = true
+                                visibilityCheck = true,
+
+                                isMaxLengthForTextEnabled = false,
+
+                                maxLengthForText = 0,
+
+                                isMinLengthForTextEnabled = false,
+
+                                minLengthForText = 0,
+
+                                isMaxValueForNumberEnabled = false,
+
+                                maxValueForNumber = 0,
+
+                                isMinValueForNumberEnabled = false,
+
+                                minValueForNumber = 0,
+
+                                isRequired = false,
                             )
                         }
 
@@ -236,8 +291,15 @@ class ConstructorViewModelImpl @Inject constructor(
                                     selectorDataAnswers = selectorItems,
                                     idVisibility = componentId,
                                     visibility = true,
-                                    isEnableMaxLength = false,
-                                    maxLength = 0,
+                                    isMaxLengthForTextEnabled = isMaxLengthForTextEnabled,
+                                    maxLengthForText = maxLengthForText,
+                                    isMinLengthForTextEnabled = isMinLengthForTextEnabled,
+                                    minLengthForText = minLengthForText,
+                                    isMaxValueForNumberEnabled = isMaxValueForNumberEnabled,
+                                    maxValueForNumber = maxValueForNumber,
+                                    isMinValueForNumberEnabled = isMinValueForNumberEnabled,
+                                    minValueForNumber = minValueForNumber,
+                                    isRequired = isRequired,
                                     operator = operator,
                                     value = visibilityValue,
                                     datePicker = selectedDate,
@@ -274,9 +336,16 @@ class ConstructorViewModelImpl @Inject constructor(
                                 idValue = "",
                                 visibilityState = false,
                                 componentId = "",
+                                isMaxLengthForTextEnabled = false,
+                                maxLengthForText = 0,
+                                isMinLengthForTextEnabled = false,
+                                minLengthForText = 0,
+                                isMaxValueForNumberEnabled = false,
+                                maxValueForNumber = 0,
+                                isMinValueForNumberEnabled = false,
+                                minValueForNumber = 0,
+                                isRequired = false,
                                 operator = "",
-                                isEnableMaxLength = false,
-                                maxLength = 0,
                                 visibilityValue = "",
                                 selectedDate = "",
                                 selecterAnswer = "",
