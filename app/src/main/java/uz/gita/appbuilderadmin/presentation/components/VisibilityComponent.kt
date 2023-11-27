@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import uz.gita.appbuilderadmin.R
+import uz.gita.appbuilderadmin.data.model.VisibilityModule
 import uz.gita.appbuilderadmin.presentation.screens.constructor.ConstructorContract
 
 @Composable
@@ -65,8 +66,44 @@ fun VisibilityComponents(
         )
     }
     if (uiState.visibilityState) {
+        uiState.listVisibilitiesValue.forEach {
+            Spacer(modifier = Modifier.size(10.dp))
+            TextVisibility(
+                id = it.componentId,
+                operator = it.operator,
+                value = it.value
+            )
+        }
+    }
+    if (uiState.visibilityState) {
+        Spacer(modifier = Modifier.size(10.dp))
+        Button(
+            modifier = Modifier
+                .padding(bottom = 15.dp)
+                .width(310.dp)
+                .height(50.dp),
+            onClick = {
+                onEventDispatchers(ConstructorContract.Intent.ClickVisibilityAddButton)
+            },
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xff4d648d)
+            )
+        ) {
+            Text(
+                text = "Add Visibility",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                    fontWeight = FontWeight.W400,
+                    textAlign = TextAlign.Center
+                )
+            )
+        }
+    }
+    if (uiState.visibilityState&& uiState.addButtonVisibilityState) {
+        onEventDispatchers(ConstructorContract.Intent.LoadData)
         val list = listOf(
-            "select" ,
             "Input" ,
             "Selector" ,
             "Multi Selector"
@@ -74,7 +111,7 @@ fun VisibilityComponents(
         Spacer(modifier = Modifier.size(10.dp))
         DemoSpinner(
             list = list,
-            preselected = list[0] ,
+            preselected = "select" ,
             onSelectionChanged = {
                onEventDispatchers(ConstructorContract.Intent.OnChangeVisibilityComponentState(it))
             },
@@ -88,23 +125,19 @@ fun VisibilityComponents(
     }
     if(uiState.visibilityState && uiState.visibilityComponentState == "Input") {
         MyText(value = "Component ID")
-        Text(
-            text = "Component ID kiritilyotganda etibor berilsin agar kiritilgan id toplimasa ham visibility shartini qanoantirilmagan hisoblanadi",
-            style = TextStyle(
-                fontSize = 16.sp,
-                lineHeight = 24.sp,
-                fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
-                fontWeight = FontWeight.W400,
-                color = if (uiState.visibilityState) Color.White else Color.Gray ,
-                textAlign = TextAlign.Center
-            )
-        )
-        MyTextField(
-            value = uiState.componentId,
-            listener = {
+        Spacer(modifier = Modifier.size(10.dp))
+        DemoSpinner(
+            list = uiState.listAllInputId,
+            preselected = "select id",
+            onSelectionChanged = {
                 onEventDispatchers(ConstructorContract.Intent.ChangingComponentId(it))
-            }
-        )
+            },
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth()
+        ) {
+
+        }
         MyText(value = "Operator")
         Spacer(modifier = Modifier.size(10.dp))
         Text(
@@ -187,38 +220,71 @@ fun VisibilityComponents(
             ) ,
             check = uiState.operator.contains("<|>".toRegex())
         )
-    } else if (uiState.visibilityState && uiState.visibilityComponentState == "Multi Selector" || uiState.visibilityComponentState == "Selector") {
+    } else if (uiState.visibilityState && uiState.visibilityComponentState == "Selector") {
 
         MyText(value = "Component ID")
-        Text(
-            text = "Component ID kiritilyotganda etibor berilsin agar kiritilgan id toplimasa ham visibility shartini qanoantirilmagan hisoblanadi",
-            style = TextStyle(
-                fontSize = 16.sp,
-                lineHeight = 24.sp,
-                fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
-                fontWeight = FontWeight.W400,
-                color = if (uiState.visibilityState) Color.White else Color.Gray ,
-                textAlign = TextAlign.Center
-            )
-        )
-        MyTextField(
-            value = uiState.componentId,
-            listener = {
-                onEventDispatchers(ConstructorContract.Intent.ChangingComponentId(it))
-            }
-        )
+        Spacer(modifier = Modifier.size(10.dp))
+        DemoSpinner(
+            list = uiState.listAllSelectorId,
+            preselected = "select id",
+            onSelectionChanged = {
+                onEventDispatchers(ConstructorContract.Intent.ChangeSelectedSelectorId(it))
+            },
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth()
+        ) {
 
+        }
         MyText(value = "Value")
-        MyTextField(
-            value = uiState.visibilityValue,
-            listener = {
+        Spacer(modifier = Modifier.size(10.dp))
+        DemoSpinner(
+            list = uiState.selectedSelectorList,
+            preselected = "select value",
+            onSelectionChanged = {
                 onEventDispatchers(ConstructorContract.Intent.ChangingVisibilityValue(it))
-            }
-        )
+            },
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth()
+        ) {
 
+        }
 
     }
-    if (uiState.visibilityState) {
+    else if (uiState.visibilityState && uiState.visibilityComponentState == "Multi Selector") {
+
+        MyText(value = "Component ID")
+        Spacer(modifier = Modifier.size(10.dp))
+        DemoSpinner(
+            list = uiState.listAllMultiSelectorId,
+            preselected = "select id",
+            onSelectionChanged = {
+                onEventDispatchers(ConstructorContract.Intent.ChangeSelectedSelectorId(it))
+            },
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth()
+        ) {
+
+        }
+        MyText(value = "Value")
+        Spacer(modifier = Modifier.size(10.dp))
+        DemoSpinner(
+            list = uiState.selectedMultiSelectorList,
+            preselected = "select value",
+            onSelectionChanged = {
+                onEventDispatchers(ConstructorContract.Intent.ChangingVisibilityValue(it))
+            },
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth()
+        ) {
+
+        }
+
+    }
+    if (uiState.visibilityState && uiState.addButtonVisibilityState) {
         Spacer(modifier = Modifier.size(10.dp))
         Button(
             modifier = Modifier

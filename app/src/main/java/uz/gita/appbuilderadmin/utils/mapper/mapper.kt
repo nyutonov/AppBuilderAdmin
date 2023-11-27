@@ -3,6 +3,8 @@ package uz.gita.appbuilderadmin.utils.mapper
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.getValue
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
+import uz.gita.appbuilderadmin.data.model.VisibilityTypeModule
+import uz.gita.appbuilderadmin.data.source.local.room.VisibilityEntity
 import java.util.UUID
 
 fun DataSnapshot.toComponentData(): ComponentsModel = ComponentsModel(
@@ -33,3 +35,17 @@ fun DataSnapshot.toComponentData(): ComponentsModel = ComponentsModel(
     value = child("value").getValue(String::class.java) ?: "",
     id = child("id").getValue(String::class.java) ?: UUID.randomUUID().toString()
 )
+
+fun VisibilityEntity.toData() : VisibilityTypeModule = VisibilityTypeModule(
+    id ,
+    type ,
+    value.split(":")
+)
+
+fun VisibilityTypeModule.toEntity() : VisibilityEntity =
+    VisibilityEntity(
+        0 ,
+        id ,
+        type ,
+        values.joinToString(":")
+    )

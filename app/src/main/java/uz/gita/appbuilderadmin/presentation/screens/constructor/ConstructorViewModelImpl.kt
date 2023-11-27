@@ -1,14 +1,18 @@
 package uz.gita.appbuilderadmin.presentation.screens.constructor
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.google.gson.internal.ConstructorConstructor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
+import uz.gita.appbuilderadmin.data.model.SelectorModule
 import uz.gita.appbuilderadmin.data.model.VisibilityModule
+import uz.gita.appbuilderadmin.data.model.VisibilityTypeModule
 import uz.gita.appbuilderadmin.domain.repository.Repository
 import javax.inject.Inject
 
@@ -21,6 +25,8 @@ class ConstructorViewModelImpl @Inject constructor(
     private var name = ""
     private var list = ArrayList<VisibilityModule>()
 
+
+
     private fun reduce(block: (ConstructorContract.UiState) -> ConstructorContract.UiState) {
         val oldValue = uiState.value
         uiState.value = block(oldValue)
@@ -28,6 +34,30 @@ class ConstructorViewModelImpl @Inject constructor(
 
     override fun onEventDispatchers(intent: ConstructorContract.Intent) {
         when (intent) {
+
+            ConstructorContract.Intent.ClickVisibilityAddButton ->{
+                reduce { it.copy(addButtonVisibilityState = true) }
+            }
+
+            ConstructorContract.Intent.LoadData-> {
+                reduce { it.copy(listAllInputId = repository.getAllListInputId()) }
+                reduce { it.copy(listAllSelectorId = repository.getAllSelectorId()) }
+                reduce { it.copy(listAllMultiSelectorId = repository.getAllMultiSelectorId()) }
+            }
+
+            is ConstructorContract.Intent.ChangeSelectedMultiSelectorId -> {
+                reduce { it.copy(selectedMultiSelectorList = repository.getMultiSelectorValueListById(intent.value)) }
+                reduce { it.copy(selectedMultiSelectorId = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeSelectedSelectorId -> {
+                reduce { it.copy(selectedSelectorList = repository.getSelectorValueListById(intent.value)) }
+                reduce { it.copy(selectedSelectorId = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeSelectedInputId -> {
+                reduce { it.copy(selectedInputId = intent.value) }
+            }
 
             is ConstructorContract.Intent.ChangingPlaceholder -> {
                 reduce { it.copy(placeHolder = intent.placeholder) }
@@ -107,6 +137,7 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             ConstructorContract.Intent.ClickAddButtonVisibility -> {
+                reduce { it.copy(addButtonVisibilityState = false) }
                 uiState.value.apply {
                     list.add(
                         VisibilityModule(
@@ -117,6 +148,8 @@ class ConstructorViewModelImpl @Inject constructor(
                         )
                     )
                 }
+                reduce { it.copy(listVisibilitiesValue = list) }
+                removeAllData()
             }
 
             is ConstructorContract.Intent.ClickCheckBoxIsEnabledMaxLength -> {
@@ -128,6 +161,17 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             ConstructorContract.Intent.ClickCreateButton -> {
+                removeAllData()
+                uiState.value.apply {
+                    if(idValue.isNotEmpty() && selectedComponent == "Input") {
+                        repository.addVisibilityModule(VisibilityTypeModule(idValue , "Input" , listOf()))
+                    }else if(idValue.isNotEmpty() && selectedComponent == "Selector") {
+                        repository.addVisibilityModule(VisibilityTypeModule(idValue , selectedComponent , selectorItems))
+                    }else if (idValue.isNotEmpty() && selectedComponent == "Multi Selector") {
+                        repository.addVisibilityModule(VisibilityTypeModule(idValue , selectedComponent , multiSelectorItems))
+                    }
+                }
+
 
                 if (!uiState.value.visibilityState) {
                     viewModelScope.launch {
@@ -297,4 +341,25 @@ class ConstructorViewModelImpl @Inject constructor(
             }
         }
     }
+
+    private fun removeAllData() {
+
+        reduce { it.copy(
+            visibilityComponentState  =  "",
+            enteringSelectorsList  = listOf(),
+            selectorVisibilityIdCheck  = false,
+            selectedVisibilityList  =  listOf(),
+            listAllInputId  =  listOf(),
+            listAllSelectorId  =listOf(),
+            listAllMultiSelectorId  =  listOf(),
+            selectedInputId  = "",
+            selectedSelectorId  =  "",
+            selectedMultiSelectorId  =  "",
+            selectedSelectorList  = listOf(),
+            selectedMultiSelectorList = listOf() ,
+            addButtonVisibilityState = false
+        ) }
+
+    }
+
 }
