@@ -93,6 +93,7 @@ fun RegisterScreenContent(
                         .width(310.dp)
                         .height(58.dp),
                     value = uiState.name,
+                    singleLine = true,
                     label = {
                         Text(
                             text = "Username",
@@ -122,6 +123,7 @@ fun RegisterScreenContent(
                         .width(310.dp)
                         .height(58.dp),
                     value = uiState.password,
+                    singleLine = true,
                     label = {
                         Text(
                             text = "Password",

@@ -117,16 +117,6 @@ class ConstructorViewModelImpl @Inject constructor(
                         )
                     )
                 }
-
-                reduce {
-                    it.copy(
-                        componentId = "",
-                        visibilityComponentState = "select",
-                        operator = "",
-                        visibilityValue = ""
-                    )
-                }
-
             }
 
             is ConstructorContract.Intent.ClickCheckBoxIsEnabledMaxLength -> {
