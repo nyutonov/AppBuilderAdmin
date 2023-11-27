@@ -331,9 +331,10 @@ fun ConstructorScreenContent(
                                             .height(58.dp),
                                         value = if (uiState.maxLengthForText == 0) "" else uiState.maxLengthForText.toString(),
                                         onValueChange = {
+                                            val numericValue = it.filter { it.isDigit() }
                                             onEventDispatchers(
                                                 ConstructorContract.Intent.ChangeMaxLengthForText(
-                                                    if (it.isEmpty()) 0 else it.toInt()
+                                                    if (numericValue.isEmpty()) 0 else numericValue.toInt()
                                                 )
                                             )
                                         },
@@ -345,7 +346,10 @@ fun ConstructorScreenContent(
                                         ),
                                         shape = RoundedCornerShape(5.dp),
                                         enabled = uiState.isMaxLengthForTextEnabled,
-                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number) ,
+                                        placeholder = {
+                                            Text(text = "0")
+                                        }
                                     )
                                     Spacer(modifier = Modifier.size(5.dp))
                                 }
@@ -392,12 +396,16 @@ fun ConstructorScreenContent(
                                             .height(58.dp),
                                         value = if (uiState.minLengthForText == 0) "" else uiState.minLengthForText.toString(),
                                         onValueChange = {
+                                            val numericValue = it.filter { it.isDigit() }
                                             onEventDispatchers(
                                                 ConstructorContract.Intent.ChangeMinLengthForText(
-                                                    if (it.isEmpty()) 0 else it.toInt()
+                                                    if (numericValue.isEmpty()) 0 else numericValue.toInt()
                                                 )
                                             )
                                         },
+                                        placeholder = {
+                                            Text(text = "0")
+                                        } ,
                                         colors = OutlinedTextFieldDefaults.colors(
                                             focusedBorderColor = Color.LightGray,
                                             unfocusedBorderColor = Color.LightGray,
@@ -451,12 +459,16 @@ fun ConstructorScreenContent(
                                             .height(58.dp),
                                         value = if (uiState.maxValueForNumber == 0) "" else uiState.maxValueForNumber.toString(),
                                         onValueChange = {
+                                            val numericValue = it.filter { it.isDigit() }
                                             onEventDispatchers(
                                                 ConstructorContract.Intent.ChangeMaxValueForNumber(
-                                                    if (it.isEmpty()) 0 else it.toInt()
+                                                    if (numericValue.isEmpty()) 0 else numericValue.toInt()
                                                 )
                                             )
                                         },
+                                        placeholder = {
+                                            Text(text = "0")
+                                        } ,
                                         colors = OutlinedTextFieldDefaults.colors(
                                             focusedBorderColor = Color.LightGray,
                                             unfocusedBorderColor = Color.LightGray,
@@ -512,12 +524,16 @@ fun ConstructorScreenContent(
                                             .height(58.dp),
                                         value = if (uiState.minValueForNumber == 0) "" else uiState.minValueForNumber.toString(),
                                         onValueChange = {
+                                            val numericValue = it.filter { it.isDigit() }
                                             onEventDispatchers(
                                                 ConstructorContract.Intent.ChangeMinValueForNumber(
-                                                    if (it.isEmpty()) 0 else it.toInt()
+                                                    if (numericValue.isEmpty()) 0 else numericValue.toInt()
                                                 )
                                             )
                                         },
+                                        placeholder = {
+                                            Text(text = "0")
+                                        } ,
                                         colors = OutlinedTextFieldDefaults.colors(
                                             focusedBorderColor = Color.LightGray,
                                             unfocusedBorderColor = Color.LightGray,

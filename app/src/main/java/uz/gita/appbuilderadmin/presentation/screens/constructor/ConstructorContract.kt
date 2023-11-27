@@ -68,7 +68,8 @@ interface ConstructorContract {
         val selectedSelectorList : List<String> = listOf(),
         val selectedMultiSelectorList: List<String> = listOf() ,
         val addButtonVisibilityState : Boolean = false ,
-        val listVisibilitiesValue : List<VisibilityModule> = listOf()
+        val listVisibilitiesValue : List<VisibilityModule> = listOf() ,
+        val firstClickState : Boolean = true
     )
     interface Intent {
 

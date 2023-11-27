@@ -7,6 +7,7 @@ import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import uz.gita.appbuilderadmin.app.App
 import uz.gita.appbuilderadmin.presentation.screens.constructor.ConstructorContract
 
 suspend fun <T> Task<QuerySnapshot>.getAllSync(mapper: (DocumentSnapshot) -> T): Result<List<T>> {
@@ -21,4 +22,8 @@ suspend fun <T> Task<QuerySnapshot>.getAllSync(mapper: (DocumentSnapshot) -> T):
 
 fun <T> Task<QuerySnapshot>.getAll(mapper: (DocumentSnapshot) -> T): Flow<Result<List<T>>> = flow {
     emit(getAllSync(mapper))
+}
+
+fun myToast(message : String) {
+    Toast.makeText(App.instance , message , Toast.LENGTH_LONG).show()
 }

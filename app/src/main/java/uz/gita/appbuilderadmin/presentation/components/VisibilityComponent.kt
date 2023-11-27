@@ -1,5 +1,6 @@
 package uz.gita.appbuilderadmin.presentation.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import uz.gita.appbuilderadmin.R
 import uz.gita.appbuilderadmin.data.model.VisibilityModule
 import uz.gita.appbuilderadmin.presentation.screens.constructor.ConstructorContract
+import uz.gita.appbuilderadmin.utils.extensions.myToast
 
 @Composable
 fun VisibilityComponents(
@@ -292,7 +294,30 @@ fun VisibilityComponents(
                 .width(310.dp)
                 .height(50.dp),
             onClick = {
-                onEventDispatchers(ConstructorContract.Intent.ClickAddButtonVisibility)
+                Log.d("TTT" ,"visibility value : ${uiState.visibilityValue} operator : ${uiState.operator} ")
+                if (uiState.visibilityComponentState.isEmpty()) {
+                    myToast("You need to enter all data")
+                }
+                 if (uiState.visibilityComponentState == "Input"  ) {
+                     if(uiState.operator.isEmpty() || uiState.visibilityValue.isEmpty()) {
+                         myToast("You need to enter all data")
+                     }else {
+                         onEventDispatchers(ConstructorContract.Intent.ClickAddButtonVisibility)
+                     }
+                }
+                 else if(uiState.visibilityComponentState == "Selector" ) {
+                     if( uiState.visibilityValue.isEmpty()) {
+                         myToast("You need to enter all data")
+                     }else {
+                         onEventDispatchers(ConstructorContract.Intent.ClickAddButtonVisibility)
+                     }
+                }else if(uiState.visibilityComponentState == "Multi Selector") {
+                    if(uiState.visibilityValue.isEmpty()) {
+                        myToast("You need to enter all data")
+                    }else {
+                        onEventDispatchers(ConstructorContract.Intent.ClickAddButtonVisibility)
+                    }
+                }
             },
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(

@@ -14,6 +14,7 @@ import uz.gita.appbuilderadmin.data.model.SelectorModule
 import uz.gita.appbuilderadmin.data.model.VisibilityModule
 import uz.gita.appbuilderadmin.data.model.VisibilityTypeModule
 import uz.gita.appbuilderadmin.domain.repository.Repository
+import uz.gita.appbuilderadmin.utils.extensions.myToast
 import javax.inject.Inject
 
 @HiltViewModel
@@ -53,6 +54,7 @@ class ConstructorViewModelImpl @Inject constructor(
             is ConstructorContract.Intent.ChangeSelectedSelectorId -> {
                 reduce { it.copy(selectedSelectorList = repository.getSelectorValueListById(intent.value)) }
                 reduce { it.copy(selectedSelectorId = intent.value) }
+                reduce { it.copy(componentId = intent.value) }
             }
 
             is ConstructorContract.Intent.ChangeSelectedInputId -> {
@@ -179,6 +181,8 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             ConstructorContract.Intent.ClickAddButtonVisibility -> {
+                myToast("Visibility is added")
+                reduce { it.copy(firstClickState = false) }
                 reduce { it.copy(addButtonVisibilityState = false) }
                 uiState.value.apply {
                     list.add(
@@ -195,216 +199,113 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             ConstructorContract.Intent.ClickCreateButton -> {
-                removeAllData()
-                uiState.value.apply {
-                    if(idValue.isNotEmpty() && selectedComponent == "Input") {
-                        repository.addVisibilityModule(VisibilityTypeModule(idValue , "Input" , listOf()))
-                    }else if(idValue.isNotEmpty() && selectedComponent == "Selector") {
-                        repository.addVisibilityModule(VisibilityTypeModule(idValue , selectedComponent , selectorItems))
-                    }else if (idValue.isNotEmpty() && selectedComponent == "Multi Selector") {
-                        repository.addVisibilityModule(VisibilityTypeModule(idValue , selectedComponent , multiSelectorItems))
+
+
+
+                if(uiState.value.visibilityState && uiState.value.firstClickState) {
+                    myToast("Firstly you need to add visibility")
+                }else {
+                    removeAllData()
+                    uiState.value.apply {
+                        if(idValue.isNotEmpty() && selectedComponent == "Input") {
+                            repository.addVisibilityModule(VisibilityTypeModule(idValue , "Input" , listOf()))
+                        }else if(idValue.isNotEmpty() && selectedComponent == "Selector") {
+                            repository.addVisibilityModule(VisibilityTypeModule(idValue , selectedComponent , selectorItems))
+                        }else if (idValue.isNotEmpty() && selectedComponent == "Multi Selector") {
+                            repository.addVisibilityModule(VisibilityTypeModule(idValue , selectedComponent , multiSelectorItems))
+                        }
                     }
-                }
-
-
-                if (!uiState.value.visibilityState) {
-                    viewModelScope.launch {
-                        uiState.value.apply {
-                            repository.addComponent(
-                                name, ComponentsModel(
-                                    componentsName = selectedComponent,
-                                    input = selectedComponent,
-                                    placeHolder = placeHolder,
-                                    type = selectedInputType,
-                                    text = textValue,
-                                    id = idValue,
-                                    isMaxLengthForTextEnabled = isMaxLengthForTextEnabled,
-                                    maxLengthForText = maxLengthForText,
-                                    isMinLengthForTextEnabled = isMinLengthForTextEnabled,
-                                    minLengthForText = minLengthForText,
-                                    isMaxValueForNumberEnabled = isMaxValueForNumberEnabled,
-                                    maxValueForNumber = maxValueForNumber,
-                                    isMinValueForNumberEnabled = isMinValueForNumberEnabled,
-                                    minValueForNumber = minValueForNumber,
-                                    isRequired = isRequired,
-                                    color = 0xFF0F1C2,
-                                    selectorDataQuestion = selecterAnswer,
-                                    selectorDataAnswers = selectorItems,
-                                    idVisibility = componentId,
-                                    visibility = false,
-                                    operator = operator,
-                                    value = visibilityValue,
-                                    datePicker = selectedDate,
-                                    multiSelectDataQuestion = multiSelectorAnswer,
-                                    multiSelectorDataAnswers = multiSelectorItems
+                    if (!uiState.value.visibilityState) {
+                        viewModelScope.launch {
+                            uiState.value.apply {
+                                repository.addComponent(
+                                    name, ComponentsModel(
+                                        componentsName = selectedComponent,
+                                        input = selectedComponent,
+                                        placeHolder = placeHolder,
+                                        type = selectedInputType,
+                                        text = textValue,
+                                        id = idValue,
+                                        isMaxLengthForTextEnabled = isMaxLengthForTextEnabled,
+                                        maxLengthForText = maxLengthForText,
+                                        isMinLengthForTextEnabled = isMinLengthForTextEnabled,
+                                        minLengthForText = minLengthForText,
+                                        isMaxValueForNumberEnabled = isMaxValueForNumberEnabled,
+                                        maxValueForNumber = maxValueForNumber,
+                                        isMinValueForNumberEnabled = isMinValueForNumberEnabled,
+                                        minValueForNumber = minValueForNumber,
+                                        isRequired = isRequired,
+                                        color = 0xFF0F1C2,
+                                        selectorDataQuestion = selecterAnswer,
+                                        selectorDataAnswers = selectorItems,
+                                        idVisibility = componentId,
+                                        visibility = false,
+                                        operator = operator,
+                                        value = visibilityValue,
+                                        datePicker = selectedDate,
+                                        multiSelectDataQuestion = multiSelectorAnswer,
+                                        multiSelectorDataAnswers = multiSelectorItems
+                                    )
                                 )
-                            )
-                        }
-                        list = ArrayList()
+                            }
+                            list = ArrayList()
 
-                        uiState.update {
-                            it.copy(
-                                componentList = listOf(
-                                    "Input",
-                                    "Text",
-                                    "Selector",
-                                    "MultiSelector",
-                                    "Date Picker"
-                                ),
-                                inputTypeList = listOf(
-                                    "Text",
-                                    "Number",
-                                    "Email",
-                                    "Phone"
-                                ),
-                                selectorItems = listOf(),
+                            removeUiState()
 
-                                multiSelectorItems = listOf(),
-
-                                selectedComponent = uiState.value.componentList[0],
-
-                                selectedInputType = uiState.value.inputTypeList[0],
-
-                                placeHolder = "",
-
-                                textValue = "",
-
-                                name = "",
-
-                                idCheckState = false,
-
-                                idValue = "",
-
-                                visibilityState = false,
-
-                                componentId = "",
-
-                                operator = "",
-
-                                visibilityValue = "",
-
-                                selectedDate = "",
-
-                                selecterAnswer = "",
-
-                                multiSelectorAnswer = "",
-
-                                visibilityCheck = true,
-
-                                isMaxLengthForTextEnabled = false,
-
-                                maxLengthForText = 0,
-
-                                isMinLengthForTextEnabled = false,
-
-                                minLengthForText = 0,
-
-                                isMaxValueForNumberEnabled = false,
-
-                                maxValueForNumber = 0,
-
-                                isMinValueForNumberEnabled = false,
-
-                                minValueForNumber = 0,
-
-                                isRequired = false,
-                            )
-                        }
-
-                        reduce {
-                            it.copy(
-                                placeHolder = "",
-                                selectedInputType = uiState.value.inputTypeList[0]
-                            )
-                        }
-                        direction.back()
-                    }
-                } else if (uiState.value.visibilityState) {
-                    viewModelScope.launch {
-                        uiState.value.apply {
-                            repository.addComponent(
-                                name, ComponentsModel(
-                                    componentsName = selectedComponent,
-                                    input = selectedComponent,
-                                    placeHolder = placeHolder,
-                                    type = selectedInputType,
-                                    text = textValue,
-                                    id = idValue,
-                                    color = 0xFF0F1C2,
-                                    selectorDataQuestion = selecterAnswer,
-                                    selectorDataAnswers = selectorItems,
-                                    idVisibility = componentId,
-                                    visibility = true,
-                                    isMaxLengthForTextEnabled = isMaxLengthForTextEnabled,
-                                    maxLengthForText = maxLengthForText,
-                                    isMinLengthForTextEnabled = isMinLengthForTextEnabled,
-                                    minLengthForText = minLengthForText,
-                                    isMaxValueForNumberEnabled = isMaxValueForNumberEnabled,
-                                    maxValueForNumber = maxValueForNumber,
-                                    isMinValueForNumberEnabled = isMinValueForNumberEnabled,
-                                    minValueForNumber = minValueForNumber,
-                                    isRequired = isRequired,
-                                    operator = operator,
-                                    value = visibilityValue,
-                                    datePicker = selectedDate,
-                                    list = Gson().toJson(list) ,
-                                    multiSelectDataQuestion = multiSelectorAnswer,
-                                    multiSelectorDataAnswers = multiSelectorItems
+                            reduce {
+                                it.copy(
+                                    placeHolder = "",
+                                    selectedInputType = uiState.value.inputTypeList[0]
                                 )
-                            )
+                            }
+                            direction.back()
                         }
-                        list = ArrayList()
-                        uiState.update {
-                            it.copy(
-                                componentList = listOf(
-                                    "Input",
-                                    "Text",
-                                    "Selector",
-                                    "MultiSelector",
-                                    "Date Picker"
-                                ),
-                                inputTypeList = listOf(
-                                    "Text",
-                                    "Number",
-                                    "Email",
-                                    "Phone"
-                                ),
-                                selectorItems = listOf(),
-                                multiSelectorItems = listOf(),
-                                selectedComponent = uiState.value.componentList[0],
-                                selectedInputType = uiState.value.inputTypeList[0],
-                                placeHolder = "",
-                                textValue = "",
-                                name = "",
-                                idCheckState = false,
-                                idValue = "",
-                                visibilityState = false,
-                                componentId = "",
-                                isMaxLengthForTextEnabled = false,
-                                maxLengthForText = 0,
-                                isMinLengthForTextEnabled = false,
-                                minLengthForText = 0,
-                                isMaxValueForNumberEnabled = false,
-                                maxValueForNumber = 0,
-                                isMinValueForNumberEnabled = false,
-                                minValueForNumber = 0,
-                                isRequired = false,
-                                operator = "",
-                                visibilityValue = "",
-                                selectedDate = "",
-                                selecterAnswer = "",
-                                multiSelectorAnswer = ""
-                            )
-                        }
+                    } else if (uiState.value.visibilityState) {
+                        viewModelScope.launch {
+                            uiState.value.apply {
+                                repository.addComponent(
+                                    name, ComponentsModel(
+                                        componentsName = selectedComponent,
+                                        input = selectedComponent,
+                                        placeHolder = placeHolder,
+                                        type = selectedInputType,
+                                        text = textValue,
+                                        id = idValue,
+                                        color = 0xFF0F1C2,
+                                        selectorDataQuestion = selecterAnswer,
+                                        selectorDataAnswers = selectorItems,
+                                        idVisibility = componentId,
+                                        visibility = true,
+                                        isMaxLengthForTextEnabled = isMaxLengthForTextEnabled,
+                                        maxLengthForText = maxLengthForText,
+                                        isMinLengthForTextEnabled = isMinLengthForTextEnabled,
+                                        minLengthForText = minLengthForText,
+                                        isMaxValueForNumberEnabled = isMaxValueForNumberEnabled,
+                                        maxValueForNumber = maxValueForNumber,
+                                        isMinValueForNumberEnabled = isMinValueForNumberEnabled,
+                                        minValueForNumber = minValueForNumber,
+                                        isRequired = isRequired,
+                                        operator = operator,
+                                        value = visibilityValue,
+                                        datePicker = selectedDate,
+                                        list = Gson().toJson(list) ,
+                                        multiSelectDataQuestion = multiSelectorAnswer,
+                                        multiSelectorDataAnswers = multiSelectorItems
+                                    )
+                                )
+                            }
+                            list = ArrayList()
+                            removeUiState()
 
-                        reduce {
-                            it.copy(
-                                placeHolder = "",
-                                selectedInputType = uiState.value.inputTypeList[0]
-                            )
-                        }
+                            reduce {
+                                it.copy(
+                                    placeHolder = "",
+                                    selectedInputType = uiState.value.inputTypeList[0]
+                                )
+                            }
 
-                        direction.back()
+                            direction.back()
+                        }
                     }
                 }
             }
@@ -426,9 +327,71 @@ class ConstructorViewModelImpl @Inject constructor(
             selectedMultiSelectorId  =  "",
             selectedSelectorList  = listOf(),
             selectedMultiSelectorList = listOf() ,
-            addButtonVisibilityState = false
+            addButtonVisibilityState = false ,
+            operator = "" ,
+            visibilityValue = ""
         ) }
 
+    }
+
+    private fun removeUiState() {
+        reduce {
+            it.copy(
+            componentList = listOf(
+                "Input",
+                "Text",
+                "Selector",
+                "MultiSelector",
+                "Date Picker"
+            ),
+            inputTypeList = listOf(
+                "Text",
+                "Number",
+                "Email",
+                "Phone"
+            ),
+            selectorItems = listOf(),
+            multiSelectorItems = listOf(),
+            selectedComponent = uiState.value.componentList[0],
+            selectedInputType = uiState.value.inputTypeList[0],
+            placeHolder = "",
+            textValue = "",
+            name = "",
+            idCheckState = false,
+            idValue = "",
+            visibilityState = false,
+            componentId  = "",
+            operator  = "",
+            visibilityValue  = "",
+            selectedDate = "",
+            selecterAnswer = "",
+            isMaxLengthForTextEnabled = false,
+            maxLengthForText = 0,
+            isMinLengthForTextEnabled = false,
+            minLengthForText = 0,
+            isMaxValueForNumberEnabled = false,
+            maxValueForNumber = 0,
+            isMinValueForNumberEnabled = false,
+            minValueForNumber = 0,
+            isRequired = false,
+            multiSelectorAnswer = "",
+            visibilityCheck  = true,
+            visibilityComponentState  = "",
+            enteringSelectorsList  = listOf(),
+            selectorVisibilityIdCheck  = false,
+            selectedVisibilityList  = listOf(),
+            listAllInputId  = listOf(),
+            listAllSelectorId  = listOf(),
+            listAllMultiSelectorId  = listOf(),
+            selectedInputId  = "",
+            selectedSelectorId  = "",
+            selectedMultiSelectorId  = "",
+            selectedSelectorList  = listOf(),
+            selectedMultiSelectorList = listOf() ,
+            addButtonVisibilityState  = false ,
+            listVisibilitiesValue  = listOf()
+            )
+        }
     }
 
 }
