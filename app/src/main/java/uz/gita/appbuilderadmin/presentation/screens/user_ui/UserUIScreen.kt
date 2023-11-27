@@ -113,11 +113,12 @@ private fun MainContent(
                 )
             }
             Spacer(modifier = Modifier.size(5.dp))
-            LazyColumn {
+            LazyColumn() {
                 items(uiState.value.components) {
 
                     when (it.componentsName) {
                         "Text" -> {
+                            textTopComponent(text = "Text")
                             TextComponent(
                                 it,
                                 onLongClick = {
@@ -128,7 +129,6 @@ private fun MainContent(
                                         )
                                     )
                                 })
-                            textTopComponent(text = "Text")
                         }
 
                         "Input" -> {

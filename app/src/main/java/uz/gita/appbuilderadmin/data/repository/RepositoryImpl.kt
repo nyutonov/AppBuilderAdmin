@@ -137,8 +137,16 @@ class RepositoryImpl @Inject constructor(
                                 this.child("idVisibility").setValue(component.idVisibility)
                                 this.child("operator").setValue(component.operator)
                                 this.child("value").setValue(component.value)
-                                this.child("maxLength").setValue(component.maxLength)
-                                this.child("isEnableMaxLength").setValue(component.isEnableMaxLength)
+
+                                this.child("isMaxLengthForTextEnabled").setValue(component.isMaxLengthForTextEnabled)
+                                this.child("maxLengthForText").setValue(component.maxLengthForText)
+                                this.child("isMinLengthForTextEnabled").setValue(component.isMinLengthForTextEnabled)
+                                this.child("minLengthForText").setValue(component.minLengthForText)
+                                this.child("isMaxValueForNumberEnabled").setValue(component.isMaxValueForNumberEnabled)
+                                this.child("maxValueForNumber").setValue(component.maxValueForNumber)
+                                this.child("isMinValueForNumberEnabled").setValue(component.isMinValueForNumberEnabled)
+                                this.child("minValueForNumber").setValue(component.minValueForNumber)
+                                this.child("isRequired").setValue(component.isRequired)
 
                                 this.child("text").setValue(component.text)
                                 this.child("color").setValue(component.color)

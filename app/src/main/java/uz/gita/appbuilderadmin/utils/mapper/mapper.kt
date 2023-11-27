@@ -12,8 +12,16 @@ fun DataSnapshot.toComponentData(): ComponentsModel = ComponentsModel(
 
     componentId = child("componentId").getValue(Int::class.java) ?: 0,
     componentsName = child("componentsName").getValue(String::class.java) ?: "",
-    maxLength = child("maxLength").getValue(Int::class.java) ?: 0,
-    isEnableMaxLength = child("isEnableMaxLength").getValue(Boolean::class.java) ?: false,
+
+    isMaxLengthForTextEnabled = child("isMaxLengthForTextEnabled").getValue(Boolean::class.java) ?: false,
+    maxLengthForText = child("maxLengthForText").getValue(Int::class.java) ?: 0,
+    isMinLengthForTextEnabled = child("isMinLengthForTextEnabled").getValue(Boolean::class.java) ?: false,
+    minLengthForText = child("minLengthForText").getValue(Int::class.java) ?: 0,
+    isMaxValueForNumberEnabled = child("isMaxValueForNumberEnabled").getValue(Boolean::class.java) ?: false,
+    maxValueForNumber = child("maxValueForNumber").getValue(Int::class.java) ?: 0,
+    isMinValueForNumberEnabled = child("isMinValueForNumberEnabled").getValue(Boolean::class.java) ?: false,
+    minValueForNumber = child("minValueForNumber").getValue(Int::class.java) ?: 0,
+    isRequired = child("isRequired").getValue(Boolean::class.java) ?: false,
 
     input = child("input").getValue(String::class.java) ?: "",
     type = child("type").getValue(String::class.java) ?: "",

@@ -39,13 +39,20 @@ interface ConstructorContract {
         val idCheckState: Boolean = false,
         val idValue: String = "",
         val visibilityState: Boolean = false,
-        val isEnableMaxLength: Boolean = false,
-        val maxLength: Int = 0,
         val componentId : String = "",
         val operator : String = "",
         val visibilityValue : String = "",
         val selectedDate: String = "",
         val selecterAnswer: String = "",
+        val isMaxLengthForTextEnabled: Boolean = false,
+        val maxLengthForText: Int = 0,
+        val isMinLengthForTextEnabled: Boolean = false,
+        val minLengthForText: Int = 0,
+        val isMaxValueForNumberEnabled: Boolean = false,
+        val maxValueForNumber: Int = 0,
+        val isMinValueForNumberEnabled: Boolean = false,
+        val minValueForNumber: Int = 0,
+        val isRequired: Boolean = false,
         val multiSelectorAnswer: String = "",
         val visibilityCheck : Boolean = true,
         val visibilityComponentState : String = "",
@@ -144,12 +151,40 @@ interface ConstructorContract {
             val text: String
         ) : Intent
 
-        data class ClickCheckBoxIsEnabledMaxLength(
-            val isEnabled: Boolean
+        data class ChangeIsRequired(
+            val isRequired: Boolean
         ) : Intent
 
-        data class ChangingMaxLength(
-            val maxLength: Int
+        data class ChangeIsMaxLengthForTextEnabled(
+            val value: Boolean
+        ) : Intent
+
+        data class ChangeMaxLengthForText(
+            val value: Int
+        ) : Intent
+
+        data class ChangeIsMinLengthForTextEnabled(
+            val value: Boolean
+        ) : Intent
+
+        data class ChangeMinLengthForText(
+            val value: Int
+        ) : Intent
+
+        data class ChangeIsMaxValueForNumberEnabled(
+            val value: Boolean
+        ) : Intent
+
+        data class ChangeMaxValueForNumber(
+            val value: Int
+        ) : Intent
+
+        data class ChangeIsMinValueForNumberEnabled(
+            val value: Boolean
+        ) : Intent
+
+        data class ChangeMinValueForNumber(
+            val value: Int
         ) : Intent
 
         object ClickAddButtonVisibility : Intent

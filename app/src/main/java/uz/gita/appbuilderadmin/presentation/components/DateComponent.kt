@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,7 +22,9 @@ fun DateComponent(
     val list = if (date.isNotEmpty()) date.split(" ") else listOf()
 
     WheelDatePicker(
-        modifier = Modifier.combinedClickable(onLongClick = onLongClick) { },
+        modifier = Modifier
+            .fillMaxWidth()
+            .combinedClickable(onLongClick = onLongClick) { },
         startDate = if (list.isEmpty()) LocalDate.now() else LocalDate.of(
             list[0].toInt(),
             list[1].toInt(),
