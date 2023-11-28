@@ -3,6 +3,8 @@ package uz.gita.appbuilderadmin.presentation.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.BottomStart
 import androidx.compose.ui.Alignment.Companion.Center
@@ -46,49 +49,58 @@ fun DeleteDialog() {
                 .size(36.dp)
                 .align(TopCenter)
         )
-
-        Box(
+        Row(
             modifier = Modifier
-                .padding(end = 33.dp, bottom = 33.dp)
-                .width(112.dp)
-                .height(39.dp)
-                .align(BottomEnd)
-                .background(color = Color(0xFF30BE71), shape = RoundedCornerShape(size = 5.dp))
-
+                .fillMaxWidth()
+                .padding(bottom = 33.dp)
+                .padding(horizontal = 15.dp)
+                .align(BottomCenter)
         ) {
-            Text(
-                text = "Keep",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(R.font.nunitoextralight)),
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFFFFFFFF),
+            Box(
+                modifier = Modifier
+//                    .padding(start = 38.dp, bottom = 33.dp)
+                    .width(112.dp)
+                    .height(39.dp)
+//                    .align(BottomStart)
+                    .background(color = Color(0xFFFF0000), shape = RoundedCornerShape(size = 5.dp))
 
-                    textAlign = TextAlign.Center,
-                ), modifier = Modifier.align(Center)
-            )
+            ) {
+                Text(
+                    text = "Discard",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontFamily = FontFamily(Font(R.font.nunitoextralight)),
+                        fontWeight = FontWeight(400),
+                        color = Color(0xFFFFFFFF),
+                        textAlign = TextAlign.Center,
+                    ), modifier = Modifier.align(Center)
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Box(
+                modifier = Modifier
+//                    .padding(end = 33.dp, bottom = 33.dp)
+                    .width(112.dp)
+                    .height(39.dp)
+                    .background(color = Color(0xFF30BE71), shape = RoundedCornerShape(size = 5.dp))
+
+            ) {
+                Text(
+                    text = "Keep",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontFamily = FontFamily(Font(R.font.nunitoextralight)),
+                        fontWeight = FontWeight(400),
+                        color = Color(0xFFFFFFFF),
+
+                        textAlign = TextAlign.Center,
+                    ), modifier = Modifier.align(Center)
+                )
+            }
+
         }
-        Box(
-            modifier = Modifier
-                .padding(start = 38.dp, bottom = 33.dp)
-                .width(112.dp)
-                .height(39.dp)
-                .align(BottomStart)
-                .background(color = Color(0xFFFF0000), shape = RoundedCornerShape(size = 5.dp))
-
-        ) {
-            Text(
-                text = "Discard",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(R.font.nunitoextralight)),
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFFFFFFFF),
-                    textAlign = TextAlign.Center,
-                ), modifier = Modifier.align(Center)
-            )
-        }
-
         Text(
             text = "Are your sure you want discard your changes ?",
             style = TextStyle(
@@ -101,7 +113,6 @@ fun DeleteDialog() {
         )
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
