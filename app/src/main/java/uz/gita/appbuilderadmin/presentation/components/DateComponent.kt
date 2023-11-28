@@ -34,7 +34,8 @@ fun DateComponent(
 
     Row(modifier = Modifier.fillMaxWidth()) {
         WheelDatePicker(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
                 .fillMaxWidth(),
 //                .combinedClickable(onLongClick = onLongClick) { },
             startDate = if (list.isEmpty()) LocalDate.now() else LocalDate.of(

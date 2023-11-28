@@ -2,6 +2,7 @@ package uz.gita.appbuilderadmin.presentation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,8 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.BottomCenter
-import androidx.compose.ui.Alignment.Companion.BottomEnd
-import androidx.compose.ui.Alignment.Companion.BottomStart
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
@@ -33,7 +32,10 @@ import uz.gita.appbuilderadmin.R
 import uz.gita.appbuilderadmin.ui.theme.AppBuilderAdminTheme
 
 @Composable
-fun DeleteDialog() {
+fun DeleteDialog(
+    clickYes: () -> Unit,
+    clickNo: () -> Unit,
+) {
     Box(
         modifier = Modifier
             .padding(horizontal = 42.dp)
@@ -61,6 +63,7 @@ fun DeleteDialog() {
 //                    .padding(start = 38.dp, bottom = 33.dp)
                     .width(112.dp)
                     .height(39.dp)
+                    .clickable { clickNo() }
 //                    .align(BottomStart)
                     .background(color = Color(0xFFFF0000), shape = RoundedCornerShape(size = 5.dp))
 
@@ -84,6 +87,7 @@ fun DeleteDialog() {
 //                    .padding(end = 33.dp, bottom = 33.dp)
                     .width(112.dp)
                     .height(39.dp)
+                    .clickable { clickYes() }
                     .background(color = Color(0xFF30BE71), shape = RoundedCornerShape(size = 5.dp))
 
             ) {
@@ -118,6 +122,6 @@ fun DeleteDialog() {
 @Composable
 fun GreetingPreview() {
     AppBuilderAdminTheme {
-        DeleteDialog()
+        DeleteDialog({}, {})
     }
 }

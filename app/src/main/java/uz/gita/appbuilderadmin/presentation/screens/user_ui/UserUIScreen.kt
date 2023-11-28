@@ -1,7 +1,6 @@
 package uz.gita.appbuilderadmin.presentation.screens.user_ui
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -67,9 +66,9 @@ private fun MainContent(
         mutableStateOf(false)
     }
     loaderText = uiState.value.components.isEmpty()
-   var openDeleteDialog by remember {
-       mutableStateOf(false)
-   }
+    var openDeleteDialog by remember {
+        mutableStateOf(false)
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -156,15 +155,29 @@ private fun MainContent(
                             SampleSpinner(
                                 question = it.selectorDataQuestion,
                                 it,
-//                                onLongClick = {
-//                                    onEventDispatcher.invoke(
-//                                        UserUIContract.Intent.DeleteComponents(
-//                                            it,
-//                                            name
-//                                        )
-//                                    )
-//                                }
+                                onClick = {
+                                    openDeleteDialog = true
+                                }
                             )
+
+                            if (openDeleteDialog) {
+                                Dialog(onDismissRequest = { openDeleteDialog = false }) {
+                                    DeleteDialog(
+                                        clickYes = {
+                                            onEventDispatcher.invoke(
+                                                UserUIContract.Intent.DeleteComponents(
+                                                    it,
+                                                    name
+                                                )
+                                            )
+                                            openDeleteDialog = false
+                                        },
+                                        clickNo = {
+                                            openDeleteDialog = false
+                                        }
+                                    )
+                                }
+                            }
                         }
 
                         "MultiSelector" -> {
@@ -181,19 +194,26 @@ private fun MainContent(
                                     )
                                 },
                                 onClickDelete = {
-                                   openDeleteDialog=true
+                                    openDeleteDialog = true
                                 }
                             )
-                            if (openDeleteDialog){
-                                Log.d("TTT", "DeleteDialog: ")
-                                Dialog(onDismissRequest = { openDeleteDialog=false }) {
-                                    DeleteDialog {
-                                        onEventDispatcher.invoke(UserUIContract.Intent.DeleteComponents(it,name))
-                                        openDeleteDialog=true
-                                        Log.d("TTT", "ClickYes")
-                                    }
+                            if (openDeleteDialog) {
+                                Dialog(onDismissRequest = { openDeleteDialog = false }) {
+                                    DeleteDialog(
+                                        clickYes = {
+                                            onEventDispatcher.invoke(
+                                                UserUIContract.Intent.DeleteComponents(
+                                                    it,
+                                                    name
+                                                )
+                                            )
+                                            openDeleteDialog = false
+                                        },
+                                        clickNo = {
+                                            openDeleteDialog = false
+                                        }
+                                    )
                                 }
-
                             }
                         }
 
@@ -203,13 +223,27 @@ private fun MainContent(
                                 it.datePicker,
                                 listener = {},
                                 onLongClick = {
-                                    onEventDispatcher.invoke(
-                                        UserUIContract.Intent.DeleteComponents(
-                                            it,
-                                            name
-                                        )
-                                    )
+                                    openDeleteDialog = true
                                 })
+
+                            if (openDeleteDialog) {
+                                Dialog(onDismissRequest = { openDeleteDialog = false }) {
+                                    DeleteDialog(
+                                        clickYes = {
+                                            onEventDispatcher.invoke(
+                                                UserUIContract.Intent.DeleteComponents(
+                                                    it,
+                                                    name
+                                                )
+                                            )
+                                            openDeleteDialog = false
+                                        },
+                                        clickNo = {
+                                            openDeleteDialog = false
+                                        }
+                                    )
+                                }
+                            }
                         }
                     }
                 }
