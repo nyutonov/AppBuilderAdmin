@@ -47,8 +47,10 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.ChangeSelectedMultiSelectorId -> {
+                Log.d("TTT" , "id :${intent.value}")
                 reduce { it.copy(selectedMultiSelectorList = repository.getMultiSelectorValueListById(intent.value)) }
                 reduce { it.copy(selectedMultiSelectorId = intent.value) }
+                reduce { it.copy(componentId = intent.value) }
             }
 
             is ConstructorContract.Intent.ChangeSelectedSelectorId -> {
@@ -184,6 +186,7 @@ class ConstructorViewModelImpl @Inject constructor(
                 myToast("Visibility is added")
                 reduce { it.copy(firstClickState = false) }
                 reduce { it.copy(addButtonVisibilityState = false) }
+                Log.d("TTT" , "id ${uiState.value.componentId}")
                 uiState.value.apply {
                     list.add(
                         VisibilityModule(
@@ -207,11 +210,13 @@ class ConstructorViewModelImpl @Inject constructor(
                 }else {
                     removeAllData()
                     uiState.value.apply {
+                        Log.d("TTT" , "name : $selectedComponent")
                         if(idValue.isNotEmpty() && selectedComponent == "Input") {
                             repository.addVisibilityModule(VisibilityTypeModule(idValue , "Input" , listOf()))
                         }else if(idValue.isNotEmpty() && selectedComponent == "Selector") {
                             repository.addVisibilityModule(VisibilityTypeModule(idValue , selectedComponent , selectorItems))
-                        }else if (idValue.isNotEmpty() && selectedComponent == "Multi Selector") {
+                        }else if (idValue.isNotEmpty() && selectedComponent == "MultiSelector") {
+                            Log.d("TTT" , "enter")
                             repository.addVisibilityModule(VisibilityTypeModule(idValue , selectedComponent , multiSelectorItems))
                         }
                     }

@@ -50,6 +50,7 @@ import cafe.adriel.voyager.hilt.getViewModel
 import uz.gita.appbuilderadmin.R
 import uz.gita.appbuilderadmin.app.App
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
+import uz.gita.appbuilderadmin.presentation.components.ComponentsInText
 import uz.gita.appbuilderadmin.presentation.components.DateComponent
 import uz.gita.appbuilderadmin.presentation.components.DemoSpinner
 import uz.gita.appbuilderadmin.presentation.components.InputComponent
@@ -560,46 +561,8 @@ fun ConstructorScreenContent(
                             )
 
                         } else if (uiState.selectedComponent == "Text") {
-                            SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
-                            Spacer(modifier = Modifier.size(10.dp))
-                            Text(
-                                text = "Text Value",
-                                style = TextStyle(
-                                    fontSize = 16.sp,
-                                    lineHeight = 24.sp,
-                                    fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
-                                    fontWeight = FontWeight.W400,
-                                    color = Color.White
-                                )
-                            )
-                            Spacer(modifier = Modifier.size(10.dp))
-                            OutlinedTextField(
-                                modifier = Modifier
-                                    .width(310.dp)
-                                    .height(58.dp),
-                                value = uiState.textValue,
-                                singleLine = true,
-                                onValueChange = {
-                                    onEventDispatchers(
-                                        ConstructorContract.Intent.ChangingTextValue(
-                                            it
-                                        )
-                                    )
-                                },
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = Color.LightGray,
-                                    unfocusedBorderColor = Color.LightGray,
-                                    focusedTextColor = Color.LightGray,
-                                    unfocusedTextColor = Color.LightGray
-                                ),
-                                shape = RoundedCornerShape(5.dp)
-                            )
 
-                            Spacer(modifier = Modifier.size(10.dp))
-                            VisibilityComponents(
-                                uiState = uiState,
-                                onEventDispatchers = onEventDispatchers
-                            )
+                            ComponentsInText(uiState = uiState, onEventDispatchers = onEventDispatchers)
 
                         } else if (uiState.selectedComponent == "Selector") {
                             SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)

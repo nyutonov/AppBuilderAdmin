@@ -212,7 +212,7 @@ class RepositoryImpl @Inject constructor(
     override fun getAllMultiSelectorId(): List<String> {
         val list = ArrayList<String>()
         listVisiblity.forEach {
-            if (it.type == "Multi Selector")  {
+            if (it.type == "MultiSelector")  {
                 list.add(it.id)
             }
         }

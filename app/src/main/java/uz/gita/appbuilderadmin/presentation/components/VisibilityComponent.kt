@@ -166,36 +166,26 @@ fun VisibilityComponents(
                 )
             )
         }
-        MyTextField(
-            value = uiState.operator,
-            listener = {
-                if (it.length < 3) {
-                    onEventDispatchers(
-                        ConstructorContract.Intent.ChangingOperator(
-                            it
-                                .replace(regexSign , "")
-                        )
-                    )
-                    onEventDispatchers(
-                        ConstructorContract.Intent.ChangeVisibilityCheck
-                    )
-                }
-            } ,
-            outlinedTextFieldColors = if (!uiState.visibilityCheck)
-                OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Red,
-                    unfocusedBorderColor = Color.Red,
-                    focusedTextColor = Color.Red,
-                    unfocusedTextColor = Color.Red
-                )
-            else OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.LightGray,
-                unfocusedBorderColor = Color.LightGray,
-                focusedTextColor = Color.LightGray,
-                unfocusedTextColor = Color.LightGray
-            )
-
+        val list = listOf(
+            "==" ,
+            "!=" ,
+            "<=" ,
+            ">=" ,
+            "<" ,
+            ">"
         )
+        DemoSpinner(
+            list = list,
+            preselected = list[0],
+            onSelectionChanged = {
+                onEventDispatchers(ConstructorContract.Intent.ChangingOperator(it))
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
+        ) {
+
+        }
         MyText(value = "Value")
         MyTextField(
             value = uiState.visibilityValue,
@@ -238,6 +228,48 @@ fun VisibilityComponents(
         ) {
 
         }
+        MyText(value = "Operator")
+        Spacer(modifier = Modifier.size(10.dp))
+        Text(
+            text = "You can add only <>=",
+            style = TextStyle(
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+                fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+                fontWeight = FontWeight.W400,
+                color = Color.White
+            )
+        )
+        if (uiState.operator.contains("<|>".toRegex())) {
+            Spacer(modifier = Modifier.size(10.dp))
+            Text(
+                text = "You enter < or >. If you enter this we can check visibility only number. REMEMBER",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    lineHeight = 24.sp,
+                    fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+                    fontWeight = FontWeight.W400,
+                    color = Color.White ,
+                    textAlign = TextAlign.Center
+                )
+            )
+        }
+        val list = listOf(
+            "==" ,
+            "!="
+        )
+        DemoSpinner(
+            list = list,
+            preselected = "select operator",
+            onSelectionChanged = {
+                onEventDispatchers(ConstructorContract.Intent.ChangingOperator(it))
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
+        ) {
+
+        }
         MyText(value = "Value")
         Spacer(modifier = Modifier.size(10.dp))
         DemoSpinner(
@@ -262,11 +294,53 @@ fun VisibilityComponents(
             list = uiState.listAllMultiSelectorId,
             preselected = "select id",
             onSelectionChanged = {
-                onEventDispatchers(ConstructorContract.Intent.ChangeSelectedSelectorId(it))
+                onEventDispatchers(ConstructorContract.Intent.ChangeSelectedMultiSelectorId(it))
             },
             modifier = Modifier
                 .padding(horizontal = 10.dp)
                 .fillMaxWidth()
+        ) {
+
+        }
+        MyText(value = "Operator")
+        Spacer(modifier = Modifier.size(10.dp))
+        Text(
+            text = "You can add only <>=",
+            style = TextStyle(
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+                fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+                fontWeight = FontWeight.W400,
+                color = Color.White
+            )
+        )
+        if (uiState.operator.contains("<|>".toRegex())) {
+            Spacer(modifier = Modifier.size(10.dp))
+            Text(
+                text = "You enter < or >. If you enter this we can check visibility only number. REMEMBER",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    lineHeight = 24.sp,
+                    fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+                    fontWeight = FontWeight.W400,
+                    color = Color.White ,
+                    textAlign = TextAlign.Center
+                )
+            )
+        }
+        val list = listOf(
+            "==" ,
+            "!="
+        )
+        DemoSpinner(
+            list = list,
+            preselected = list[0],
+            onSelectionChanged = {
+                onEventDispatchers(ConstructorContract.Intent.ChangingOperator(it))
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
         ) {
 
         }
