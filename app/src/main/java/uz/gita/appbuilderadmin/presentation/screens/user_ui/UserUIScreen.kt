@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.hilt.getViewModel
 import uz.gita.appbuilderadmin.presentation.components.DateComponent
@@ -135,14 +136,14 @@ private fun MainContent(
                             textTopComponent(text = "Input")
                             InputComponent(
                                 it,
-                                onLongClick = {
-                                    onEventDispatcher.invoke(
-                                        UserUIContract.Intent.DeleteComponents(
-                                            it,
-                                            name
-                                        )
-                                    )
-                                }
+//                                onLongClick = {
+//                                    onEventDispatcher.invoke(
+//                                        UserUIContract.Intent.DeleteComponents(
+//                                            it,
+//                                            name
+//                                        )
+//                                    )
+//                                }
                             )
                         }
 
@@ -173,7 +174,12 @@ private fun MainContent(
                                             name
                                         )
                                     )
-                                })
+                                },
+                                onClickDete = {
+
+                                }
+
+                            )
                         }
 
                         "Date Picker" -> {

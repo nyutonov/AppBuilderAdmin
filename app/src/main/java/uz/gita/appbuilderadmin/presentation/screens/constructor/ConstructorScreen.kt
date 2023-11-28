@@ -173,8 +173,10 @@ fun ConstructorScreenContent(
                     "MultiSelector" -> {
                         MultiSelectorComponent(
                             list = uiState.multiSelectorItems,
-                            question = uiState.multiSelectorAnswer
-                        ) {}
+                            question = uiState.multiSelectorAnswer,
+                            onClickDete = {},
+                            onLongClick = {}
+                        )
                     }
 
                     "Date Picker" -> {
