@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import uz.gita.appbuilderadmin.R
+import uz.gita.appbuilderadmin.data.model.ComponentsModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -34,52 +35,53 @@ fun MultiSelectorComponent(
     question: String,
     list: List<String>,
     onLongClick: () -> Unit,
-    onClickDelete: () -> Unit
+    onClickDelete: () -> Unit,
+    data: ComponentsModel
 ) {
-    Box(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.combinedClickable(onLongClick = onLongClick) { }) {
-            Row {
-                Text(
-                    text = question,
-                    color = Color.White,
-                    modifier = Modifier.padding(start = 10.dp)
-                )
-            }
 
-            list.forEach {
-                var check by remember { mutableStateOf(false) }
-
+    Column {
+        Box(
+            modifier = Modifier.weight(
+                if (data.weight == 0f) {
+                    1f
+                } else {
+                    data.weight
+                }
+            )
+        ) {
+            Column(modifier = Modifier.combinedClickable(onLongClick = onLongClick) { }) {
                 Row {
-                    Checkbox(
-                        checked = check,
-                        onCheckedChange = { check = it }
-                    )
-
                     Text(
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically),
-                        text = it,
-                        color = Color.LightGray
+                        text = question,
+                        color = Color.White,
+                        modifier = Modifier.padding(start = 10.dp)
                     )
+                }
+
+                list.forEach {
+                    var check by remember { mutableStateOf(false) }
+
+                    Row {
+                        Checkbox(
+                            checked = check,
+                            onCheckedChange = { check = it }
+                        )
+
+                        Text(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically),
+                            text = it,
+                            color = Color.LightGray
+                        )
+                    }
                 }
             }
         }
-        Image(
-            painter = painterResource(id = R.drawable.ic_delete),
-            contentDescription = "",
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .clickable { onClickDelete() }
-                .align(Alignment.TopEnd)
-                .padding(end =10.dp, top = 2.dp),
-            colorFilter = ColorFilter.tint(Color.White)
-        )
     }
 }
 
 @Composable
 @Preview(showBackground = true)
 fun prev() {
-    MultiSelectorComponent("question", listOf(), {}, {})
+    MultiSelectorComponent("question", listOf(), {}, {}, data = ComponentsModel())
 }
