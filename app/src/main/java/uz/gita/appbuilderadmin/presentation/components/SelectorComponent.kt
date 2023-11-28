@@ -11,6 +11,7 @@ import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -32,76 +33,81 @@ fun SampleSpinner(
     var selected by remember { mutableStateOf(data.preselected) }
     var expanded by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = question,
-            color = Color.White,
-            modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp)
-        )
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-//                .weight(1f)
-            ) {
-                Column {
-                    OutlinedTextField(
-                        value = (selected),
-                        onValueChange = { },
-                        placeholder = { Text(text = "Enter") },
-                        modifier = Modifier.fillMaxWidth(),
-                        trailingIcon = { Icon(Icons.Outlined.ArrowDropDown, null) },
-                        readOnly = true,
-                        colors = TextFieldDefaults.colors(Color.White)
-                    )
-                    DropdownMenu(
-                        modifier = Modifier.fillMaxWidth(),
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                    ) {
-                        data.selectorDataAnswers.forEach { entry ->
+    Box(modifier = Modifier.fillMaxWidth()) {
 
-                            DropdownMenuItem(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = {
-                                    selected = entry
-                                    expanded = false
-                                },
-                                text = {
-                                    Text(
-                                        text = (entry),
-                                        modifier = Modifier
-                                            .wrapContentWidth()
-                                            .align(Alignment.Start),
-                                    )
-                                }
-                            )
+
+        Column(modifier = Modifier.padding(start = 16.dp)) {
+            Text(
+                text = question,
+                color = Color.White,
+                modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp)
+            )
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Box(
+                    modifier = Modifier
+                        .weight(0.7f)
+//                .weight(1f)
+                ) {
+                    Column {
+                        OutlinedTextField(
+                            value = (selected),
+                            onValueChange = { },
+                            placeholder = { Text(text = "Enter") },
+                            modifier = Modifier.fillMaxWidth(),
+                            trailingIcon = { Icon(Icons.Outlined.ArrowDropDown, null) },
+                            readOnly = true,
+                            colors = TextFieldDefaults.colors(Color.White)
+                        )
+                        DropdownMenu(
+                            modifier = Modifier.fillMaxWidth(),
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                        ) {
+                            data.selectorDataAnswers.forEach { entry ->
+
+                                DropdownMenuItem(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    onClick = {
+                                        selected = entry
+                                        expanded = false
+                                    },
+                                    text = {
+                                        Text(
+                                            text = (entry),
+                                            modifier = Modifier
+                                                .wrapContentWidth()
+                                                .align(Alignment.Start),
+                                        )
+                                    }
+                                )
+                            }
                         }
                     }
+                    Spacer(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .background(Color.Transparent)
+                            .padding(10.dp)
+                            .clickable(
+                                onClick = { expanded = !expanded }
+                            )
+                    )
                 }
-                Spacer(
+                Spacer(modifier = Modifier.width(10.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.ic_delete),
+                    contentDescription = "",
                     modifier = Modifier
-                        .matchParentSize()
-                        .background(Color.Transparent)
-                        .padding(10.dp)
-                        .clickable(
-                            onClick = { expanded = !expanded }
-                        )
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .clickable { onClick() }
+                        .align(CenterVertically)
+                        .padding(end = 10.dp, top = 2.dp),
+                    colorFilter = ColorFilter.tint(Color.White)
                 )
             }
-
-            Image(
-                painter = painterResource(id = R.drawable.ic_delete),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape)
-                    .clickable { onClick() }
-                    .align(Alignment.CenterVertically)
-                    .padding(10.dp),
-                colorFilter = ColorFilter.tint(Color.White)
-            )
         }
+
     }
 }
 
