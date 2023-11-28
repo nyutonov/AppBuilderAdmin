@@ -54,6 +54,7 @@ import uz.gita.appbuilderadmin.presentation.components.DateComponent
 import uz.gita.appbuilderadmin.presentation.components.DemoSpinner
 import uz.gita.appbuilderadmin.presentation.components.InputComponent
 import uz.gita.appbuilderadmin.presentation.components.MultiSelectorComponent
+import uz.gita.appbuilderadmin.presentation.components.MyText
 import uz.gita.appbuilderadmin.presentation.components.TextComponent
 import uz.gita.appbuilderadmin.presentation.components.VisibilityComponents
 
@@ -173,8 +174,10 @@ fun ConstructorScreenContent(
                     "MultiSelector" -> {
                         MultiSelectorComponent(
                             list = uiState.multiSelectorItems,
-                            question = uiState.multiSelectorAnswer
-                        ) {}
+                            question = uiState.multiSelectorAnswer,
+                            onClickDelete = {},
+                            onLongClick = {}
+                        )
                     }
 
                     "Date Picker" -> {
@@ -229,6 +232,7 @@ fun ConstructorScreenContent(
 
                         if (uiState.selectedComponent == "Input") {
                             SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
+                            RequiredComponent(onEventDispatchers)
                             Spacer(modifier = Modifier.size(10.dp))
                             Text(
                                 text = "Set Type",
@@ -346,7 +350,7 @@ fun ConstructorScreenContent(
                                         ),
                                         shape = RoundedCornerShape(5.dp),
                                         enabled = uiState.isMaxLengthForTextEnabled,
-                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number) ,
+                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                         placeholder = {
                                             Text(text = "0")
                                         }
@@ -405,7 +409,7 @@ fun ConstructorScreenContent(
                                         },
                                         placeholder = {
                                             Text(text = "0")
-                                        } ,
+                                        },
                                         colors = OutlinedTextFieldDefaults.colors(
                                             focusedBorderColor = Color.LightGray,
                                             unfocusedBorderColor = Color.LightGray,
@@ -468,7 +472,7 @@ fun ConstructorScreenContent(
                                         },
                                         placeholder = {
                                             Text(text = "0")
-                                        } ,
+                                        },
                                         colors = OutlinedTextFieldDefaults.colors(
                                             focusedBorderColor = Color.LightGray,
                                             unfocusedBorderColor = Color.LightGray,
@@ -533,7 +537,7 @@ fun ConstructorScreenContent(
                                         },
                                         placeholder = {
                                             Text(text = "0")
-                                        } ,
+                                        },
                                         colors = OutlinedTextFieldDefaults.colors(
                                             focusedBorderColor = Color.LightGray,
                                             unfocusedBorderColor = Color.LightGray,
@@ -659,11 +663,19 @@ fun ConstructorScreenContent(
                                             )
                                         )
 
-                                        Toast.makeText(App.instance, "$text is added", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            App.instance,
+                                            "$text is added",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
 
                                         text = ""
                                     } else {
-                                        Toast.makeText(App.instance, "$text is not added", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            App.instance,
+                                            "$text is not added",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
                                 },
                                 shape = RoundedCornerShape(10.dp),
@@ -750,11 +762,19 @@ fun ConstructorScreenContent(
                                                 text
                                             )
                                         )
-                                        Toast.makeText(App.instance, "$text is added", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            App.instance,
+                                            "$text is added",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
 
                                         text = ""
                                     } else {
-                                        Toast.makeText(App.instance, "$text is not added", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            App.instance,
+                                            "$text is not added",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
                                 },
                                 shape = RoundedCornerShape(10.dp),
@@ -874,3 +894,25 @@ fun SetId(
     }
 }
 
+@Composable
+fun RequiredComponent(
+    onEventDispatchers: (ConstructorContract.Intent) -> Unit
+) {
+    MyText(value = "Required")
+    Spacer(modifier = Modifier.size(10.dp))
+    DemoSpinner(
+        list = listOf(
+            "true",
+            "false"
+        ),
+        preselected = "select required",
+        onSelectionChanged = {
+            onEventDispatchers.invoke(ConstructorContract.Intent.ChangeIsRequired(it == "true"))
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp)
+    ) {
+
+    }
+}
