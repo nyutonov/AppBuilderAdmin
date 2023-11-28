@@ -135,7 +135,7 @@ private fun MainContent(
                             textTopComponent(text = "Input")
                             InputComponent(
                                 it,
-                                onLongClick = {
+                                onClick = {
                                     onEventDispatcher.invoke(
                                         UserUIContract.Intent.DeleteComponents(
                                             it,
