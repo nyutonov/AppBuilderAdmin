@@ -174,7 +174,7 @@ fun ConstructorScreenContent(
                         MultiSelectorComponent(
                             list = uiState.multiSelectorItems,
                             question = uiState.multiSelectorAnswer,
-                            onClickDete = {},
+                            onClickDelete = {},
                             onLongClick = {}
                         )
                     }

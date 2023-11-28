@@ -34,7 +34,7 @@ fun MultiSelectorComponent(
     question: String,
     list: List<String>,
     onLongClick: () -> Unit,
-    onClickDete: () -> Unit
+    onClickDelete: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.combinedClickable(onLongClick = onLongClick) { }) {
@@ -70,7 +70,7 @@ fun MultiSelectorComponent(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .clickable { onClickDete() }
+                .clickable { onClickDelete() }
                 .align(Alignment.TopEnd)
                 .padding(end =10.dp, top = 2.dp),
             colorFilter = ColorFilter.tint(Color.White)
