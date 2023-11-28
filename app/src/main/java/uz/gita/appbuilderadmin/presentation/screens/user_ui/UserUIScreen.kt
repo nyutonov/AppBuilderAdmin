@@ -125,15 +125,28 @@ private fun MainContent(
                             textTopComponent(text = "Text")
                             TextComponent(
                                 it,
-                                onLongClick = {
-                                    onEventDispatcher.invoke(
-                                        UserUIContract.Intent.DeleteComponents(
-                                            it,
-                                            name
-                                        )
-                                    )
+                                onClick = {
+                                    openDeleteDialog = true
                                 }
                             )
+                            if (openDeleteDialog) {
+                                Dialog(onDismissRequest = { openDeleteDialog = false }) {
+                                    DeleteDialog(
+                                        clickYes = {
+                                            onEventDispatcher.invoke(
+                                                UserUIContract.Intent.DeleteComponents(
+                                                    it,
+                                                    name
+                                                )
+                                            )
+                                            openDeleteDialog = false
+                                        },
+                                        clickNo = {
+                                            openDeleteDialog = false
+                                        }
+                                    )
+                                }
+                            }
                         }
 
                         "Input" -> {
@@ -141,7 +154,7 @@ private fun MainContent(
                             InputComponent(
                                 it,
                                 onClick = {
-                                    openDeleteDialog=true
+                                    openDeleteDialog = true
                                 }
                             )
                             if (openDeleteDialog) {
