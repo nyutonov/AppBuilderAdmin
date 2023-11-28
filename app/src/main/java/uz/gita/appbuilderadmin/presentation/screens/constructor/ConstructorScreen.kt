@@ -3,7 +3,6 @@ package uz.gita.appbuilderadmin.presentation.screens.constructor
 import android.annotation.SuppressLint
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,10 +28,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,8 +43,9 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.hilt.getViewModel
 import uz.gita.appbuilderadmin.R
-import uz.gita.appbuilderadmin.app.App
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
+import uz.gita.appbuilderadmin.presentation.components.ComponentsInMultiSelector
+import uz.gita.appbuilderadmin.presentation.components.ComponentsInSelector
 import uz.gita.appbuilderadmin.presentation.components.ComponentsInText
 import uz.gita.appbuilderadmin.presentation.components.DateComponent
 import uz.gita.appbuilderadmin.presentation.components.DemoSpinner
@@ -562,205 +558,25 @@ fun ConstructorScreenContent(
 
                         } else if (uiState.selectedComponent == "Text") {
 
-                            ComponentsInText(uiState = uiState, onEventDispatchers = onEventDispatchers)
+                            ComponentsInText(
+                                uiState = uiState,
+                                onEventDispatchers = onEventDispatchers
+                            )
 
                         } else if (uiState.selectedComponent == "Selector") {
-                            SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
 
-                            var text by remember { mutableStateOf("") }
-                            Spacer(modifier = Modifier.size(10.dp))
-                            Text(text = "Question", color = Color.White)
-                            Spacer(modifier = Modifier.size(10.dp))
-                            OutlinedTextField(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(58.dp)
-                                    .padding(horizontal = 15.dp),
-                                value = uiState.selecterAnswer,
-                                singleLine = true,
-                                onValueChange = {
-                                    onEventDispatchers.invoke(
-                                        ConstructorContract.Intent.ChangeSelectorAnswer(
-                                            it
-                                        )
-                                    )
-                                },
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = Color.LightGray,
-                                    unfocusedBorderColor = Color.LightGray,
-                                    focusedTextColor = Color.LightGray,
-                                    unfocusedTextColor = Color.LightGray
-                                ),
-                                shape = RoundedCornerShape(5.dp)
-                            )
-                            Spacer(modifier = Modifier.size(10.dp))
-                            Text(text = "Item", color = Color.White)
-                            Spacer(modifier = Modifier.size(10.dp))
-                            OutlinedTextField(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(58.dp)
-                                    .padding(horizontal = 15.dp),
-                                value = text,
-                                singleLine = true,
-                                onValueChange = { text = it },
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = Color.LightGray,
-                                    unfocusedBorderColor = Color.LightGray,
-                                    focusedTextColor = Color.LightGray,
-                                    unfocusedTextColor = Color.LightGray
-                                ),
-                                shape = RoundedCornerShape(5.dp)
-                            )
-                            Spacer(modifier = Modifier.size(10.dp))
-                            Button(
-                                modifier = Modifier
-                                    .padding(bottom = 15.dp)
-                                    .width(310.dp)
-                                    .height(50.dp),
-                                onClick = {
-                                    if (!uiState.selectorItems.contains(text) && text.isNotEmpty()) {
-                                        onEventDispatchers.invoke(
-                                            ConstructorContract.Intent.AddItemToSelector(
-                                                text
-                                            )
-                                        )
-
-                                        Toast.makeText(
-                                            App.instance,
-                                            "$text is added",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-
-                                        text = ""
-                                    } else {
-                                        Toast.makeText(
-                                            App.instance,
-                                            "$text is not added",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                },
-                                shape = RoundedCornerShape(10.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xff4d648d)
-                                )
-                            ) {
-                                Text(
-                                    text = "Add",
-                                    style = TextStyle(
-                                        fontSize = 18.sp,
-                                        fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
-                                        fontWeight = FontWeight.W400,
-                                        textAlign = TextAlign.Center
-                                    )
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.size(10.dp))
-                            VisibilityComponents(
+                            ComponentsInSelector(
                                 uiState = uiState,
                                 onEventDispatchers = onEventDispatchers
                             )
+
                         } else if (uiState.selectedComponent == "MultiSelector") {
-                            SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
 
-                            var text by remember { mutableStateOf("") }
-
-                            Text(text = "Question", color = Color.White)
-
-                            OutlinedTextField(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(58.dp)
-                                    .padding(horizontal = 15.dp),
-                                value = uiState.multiSelectorAnswer,
-                                singleLine = true,
-                                onValueChange = {
-                                    onEventDispatchers.invoke(
-                                        ConstructorContract.Intent.ChangeMultiSelectorAnswer(
-                                            it
-                                        )
-                                    )
-                                },
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = Color.LightGray,
-                                    unfocusedBorderColor = Color.LightGray,
-                                    focusedTextColor = Color.LightGray,
-                                    unfocusedTextColor = Color.LightGray
-                                ),
-                                shape = RoundedCornerShape(5.dp)
-                            )
-
-                            Text(text = "Item", color = Color.White)
-
-                            OutlinedTextField(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(58.dp)
-                                    .padding(horizontal = 15.dp),
-                                value = text,
-                                singleLine = true,
-                                onValueChange = { text = it },
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = Color.LightGray,
-                                    unfocusedBorderColor = Color.LightGray,
-                                    focusedTextColor = Color.LightGray,
-                                    unfocusedTextColor = Color.LightGray
-                                ),
-                                shape = RoundedCornerShape(5.dp)
-                            )
-
-                            Spacer(modifier = Modifier.size(10.dp))
-
-                            Button(
-                                modifier = Modifier
-                                    .padding(bottom = 15.dp)
-                                    .width(310.dp)
-                                    .height(50.dp),
-                                onClick = {
-                                    if (!uiState.multiSelectorItems.contains(text) && text.isNotEmpty()) {
-                                        onEventDispatchers.invoke(
-                                            ConstructorContract.Intent.AddItemToMultiSelector(
-                                                text
-                                            )
-                                        )
-                                        Toast.makeText(
-                                            App.instance,
-                                            "$text is added",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-
-                                        text = ""
-                                    } else {
-                                        Toast.makeText(
-                                            App.instance,
-                                            "$text is not added",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                },
-                                shape = RoundedCornerShape(10.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xff4d648d)
-                                )
-                            ) {
-                                Text(
-                                    text = "Add",
-                                    style = TextStyle(
-                                        fontSize = 18.sp,
-                                        fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
-                                        fontWeight = FontWeight.W400,
-                                        textAlign = TextAlign.Center
-                                    )
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.size(10.dp))
-                            VisibilityComponents(
+                            ComponentsInMultiSelector(
                                 uiState = uiState,
                                 onEventDispatchers = onEventDispatchers
                             )
+
                         } else {
                             SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
                             VisibilityComponents(
@@ -859,7 +675,7 @@ fun SetId(
 
 @Composable
 fun RequiredComponent(
-    onEventDispatchers: (ConstructorContract.Intent) -> Unit
+    onEventDispatchers: (ConstructorContract.Intent) -> Unit,
 ) {
     MyText(value = "Required")
     Spacer(modifier = Modifier.size(10.dp))
