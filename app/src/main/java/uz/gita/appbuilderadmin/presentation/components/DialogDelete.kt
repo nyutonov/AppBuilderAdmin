@@ -37,7 +37,7 @@ fun DeleteDialog(
 ) {
     Box(
         modifier = Modifier
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 10.dp)
             .fillMaxWidth()
             .height(250.dp)
             .background(color = Color(0xFF252525), shape = RoundedCornerShape(size = 20.dp))
