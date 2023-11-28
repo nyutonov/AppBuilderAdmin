@@ -141,6 +141,9 @@ fun ConstructorScreenContent(
                             )
                         ) {}
                     }
+                    "Row" -> {
+                       //Row funksion
+                    }
 
                     "Text" -> {
                         TextComponent(

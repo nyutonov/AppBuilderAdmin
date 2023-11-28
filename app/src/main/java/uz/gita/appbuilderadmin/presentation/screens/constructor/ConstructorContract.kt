@@ -1,6 +1,7 @@
 package uz.gita.appbuilderadmin.presentation.screens.constructor
 
 import kotlinx.coroutines.flow.StateFlow
+import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.data.model.SelectorModule
 import uz.gita.appbuilderadmin.data.model.VisibilityModule
 
@@ -16,12 +17,15 @@ interface ConstructorContract {
 
 
     data class UiState(
+
+
         val componentList: List<String> = listOf(
             "Input",
             "Text",
             "Selector",
             "MultiSelector",
-            "Date Picker"
+            "Date Picker",
+            "Row"
         ),
         val inputTypeList: List<String> = listOf(
             "Text",
@@ -29,6 +33,10 @@ interface ConstructorContract {
             "Email",
             "Phone"
         ),
+
+        val rowType:List<ComponentsModel> = listOf(),
+
+
         val selectorItems: List<String> = listOf(),
         val multiSelectorItems: List<String> = listOf(),
         val selectedComponent: String = componentList[0],

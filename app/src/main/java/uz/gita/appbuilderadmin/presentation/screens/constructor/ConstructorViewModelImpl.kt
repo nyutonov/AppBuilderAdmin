@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import com.google.gson.internal.ConstructorConstructor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -249,7 +248,8 @@ class ConstructorViewModelImpl @Inject constructor(
                                         value = visibilityValue,
                                         datePicker = selectedDate,
                                         multiSelectDataQuestion = multiSelectorAnswer,
-                                        multiSelectorDataAnswers = multiSelectorItems
+                                        multiSelectorDataAnswers = multiSelectorItems,
+                                        rowType = Gson().toJson(rowType)
                                     )
                                 )
                             }
