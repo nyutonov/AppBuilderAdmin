@@ -132,22 +132,36 @@ private fun MainContent(
                                             name
                                         )
                                     )
-                                })
+                                }
+                            )
                         }
 
                         "Input" -> {
                             textTopComponent(text = "Input")
                             InputComponent(
                                 it,
-//                                onLongClick = {
-//                                    onEventDispatcher.invoke(
-//                                        UserUIContract.Intent.DeleteComponents(
-//                                            it,
-//                                            name
-//                                        )
-//                                    )
-//                                }
+                                onClick = {
+                                    openDeleteDialog=true
+                                }
                             )
+                            if (openDeleteDialog) {
+                                Dialog(onDismissRequest = { openDeleteDialog = false }) {
+                                    DeleteDialog(
+                                        clickYes = {
+                                            onEventDispatcher.invoke(
+                                                UserUIContract.Intent.DeleteComponents(
+                                                    it,
+                                                    name
+                                                )
+                                            )
+                                            openDeleteDialog = false
+                                        },
+                                        clickNo = {
+                                            openDeleteDialog = false
+                                        }
+                                    )
+                                }
+                            }
                         }
 
                         "Selector" -> {
