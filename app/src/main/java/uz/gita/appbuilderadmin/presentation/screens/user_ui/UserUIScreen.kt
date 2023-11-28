@@ -156,14 +156,15 @@ private fun MainContent(
                             SampleSpinner(
                                 question = it.selectorDataQuestion,
                                 it,
-                                onLongClick = {
-                                    onEventDispatcher.invoke(
-                                        UserUIContract.Intent.DeleteComponents(
-                                            it,
-                                            name
-                                        )
-                                    )
-                                })
+//                                onLongClick = {
+//                                    onEventDispatcher.invoke(
+//                                        UserUIContract.Intent.DeleteComponents(
+//                                            it,
+//                                            name
+//                                        )
+//                                    )
+//                                }
+                            )
                         }
 
                         "MultiSelector" -> {
