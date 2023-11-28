@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,9 +37,9 @@ fun DeleteDialog(
 ) {
     Box(
         modifier = Modifier
-            .padding(horizontal = 42.dp)
+            .padding(horizontal = 20.dp)
             .fillMaxWidth()
-            .height(236.dp)
+            .height(250.dp)
             .background(color = Color(0xFF252525), shape = RoundedCornerShape(size = 20.dp))
     ) {
         Image(
@@ -61,15 +60,15 @@ fun DeleteDialog(
             Box(
                 modifier = Modifier
 //                    .padding(start = 38.dp, bottom = 33.dp)
-                    .width(112.dp)
-                    .height(39.dp)
+                    .weight(2f)
                     .clickable { clickNo() }
+                    .height(39.dp)
 //                    .align(BottomStart)
                     .background(color = Color(0xFFFF0000), shape = RoundedCornerShape(size = 5.dp))
 
             ) {
                 Text(
-                    text = "Discard",
+                    text = "Cancel",
                     style = TextStyle(
                         fontSize = 18.sp,
                         fontFamily = FontFamily(Font(R.font.nunitoextralight)),
@@ -80,19 +79,19 @@ fun DeleteDialog(
                 )
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(0.5f))
 
             Box(
                 modifier = Modifier
 //                    .padding(end = 33.dp, bottom = 33.dp)
-                    .width(112.dp)
-                    .height(39.dp)
+                    .weight(2f)
                     .clickable { clickYes() }
+                    .height(39.dp)
                     .background(color = Color(0xFF30BE71), shape = RoundedCornerShape(size = 5.dp))
 
             ) {
                 Text(
-                    text = "Keep",
+                    text = "Delete",
                     style = TextStyle(
                         fontSize = 18.sp,
                         fontFamily = FontFamily(Font(R.font.nunitoextralight)),
@@ -106,7 +105,7 @@ fun DeleteDialog(
 
         }
         Text(
-            text = "Are your sure you want discard your changes ?",
+            text = "Do you want to delete it?",
             style = TextStyle(
                 fontSize = 23.sp,
                 fontFamily = FontFamily(Font(R.font.nunitoextralight)),
