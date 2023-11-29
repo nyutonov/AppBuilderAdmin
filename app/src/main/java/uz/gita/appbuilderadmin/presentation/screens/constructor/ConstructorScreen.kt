@@ -54,6 +54,7 @@ import uz.gita.appbuilderadmin.presentation.components.DemoSpinner
 import uz.gita.appbuilderadmin.presentation.components.InputComponent
 import uz.gita.appbuilderadmin.presentation.components.MultiSelectorComponent
 import uz.gita.appbuilderadmin.presentation.components.MyText
+import uz.gita.appbuilderadmin.presentation.components.RowComponent
 import uz.gita.appbuilderadmin.presentation.components.TextComponent
 import uz.gita.appbuilderadmin.presentation.components.VisibilityComponents
 
@@ -145,7 +146,7 @@ fun ConstructorScreenContent(
                     }
 
                     "Row" -> {
-                        //Row funksion
+                        RowComponent(componentsModel = uiState.rowType)
                     }
 
                     "Text" -> {
@@ -181,7 +182,7 @@ fun ConstructorScreenContent(
                             onClickDelete = {},
                             onLongClick = {},
 
-                        )
+                            )
                     }
 
                     "Date Picker" -> {

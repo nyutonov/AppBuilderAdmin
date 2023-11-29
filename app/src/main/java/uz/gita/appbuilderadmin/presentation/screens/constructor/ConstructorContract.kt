@@ -1,10 +1,7 @@
 package uz.gita.appbuilderadmin.presentation.screens.constructor
 
-import android.net.Uri
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.text.font.FontWeight
-import androidx.core.net.toUri
 import kotlinx.coroutines.flow.StateFlow
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.data.model.SelectorModule
@@ -40,7 +37,6 @@ interface ConstructorContract {
 
         val rowType: MutableList<ComponentsModel> = mutableListOf(),
 
-
         val imageInputTypes: List<String> = listOf(
             "Local",
             "Remote"
@@ -51,6 +47,7 @@ interface ConstructorContract {
         val selectorItems: List<String> = listOf(),
         val multiSelectorItems: List<String> = listOf(),
         val selectedComponent: String = componentList[0],
+        val selectedComponentInRow: String = componentList[0],
         val selectedInputType: String = inputTypeList[0],
         val placeHolder: String = "",
         val textValue: String = "",
@@ -88,7 +85,7 @@ interface ConstructorContract {
         val selectedMultiSelectorList: List<String> = listOf(),
         val addButtonVisibilityState: Boolean = false,
         val listVisibilitiesValue: List<VisibilityModule> = listOf(),
-        val firstClickState: Boolean = true
+        val firstClickState: Boolean = true,
     )
 
     interface Intent {
@@ -96,39 +93,43 @@ interface ConstructorContract {
         object ClickVisibilityAddButton : Intent
         object LoadData : Intent
         data class ChangeSelectedMultiSelectorId(
-            val value: String
+            val value: String,
         ) : Intent
 
         data class ChangeSelectedSelectorId(
-            val value: String
+            val value: String,
         ) : Intent
 
         data class ChangeSelectedInputId(
-            val value: String
+            val value: String,
         ) : Intent
 
         data class ChangingSelectedComponent(
-            val component: String
+            val component: String,
+        ) : Intent
+
+        data class ChangingSelectedComponentInRow(
+            val componentInRow: String,
         ) : Intent
 
         data class ChangingVisibilityValue(
-            val value: String
+            val value: String,
         ) : Intent
 
         data class OnChangeVisibilityComponentState(
-            val value: String
+            val value: String,
         ) : Intent
 
         data class ChangingOperator(
-            val value: String
+            val value: String,
         ) : Intent
 
         data class ChangingIdValue(
-            val idValue: String
+            val idValue: String,
         ) : Intent
 
         data class ChangingComponentId(
-            val value: String
+            val value: String,
         ) : Intent
 
         data class EnteringName(
@@ -138,8 +139,8 @@ interface ConstructorContract {
         object ClickCreateButton : Intent
 
         data class ClickCreateRowComponent(
-            val weight: Float=1F
-        ):Intent
+            val weight: Float = 1F,
+        ) : Intent
 
         object ChangeVisibilityCheck : Intent
 
@@ -148,79 +149,79 @@ interface ConstructorContract {
         object ClickCheckBoxID : Intent
 
         data class ChangingSelectedInputType(
-            val type: String
+            val type: String,
         ) : Intent
 
         data class ChangingPlaceholder(
-            val placeholder: String
+            val placeholder: String,
         ) : Intent
 
         data class ChangingTextValue(
-            val value: String
+            val value: String,
         ) : Intent
 
         data class SetSelectedDate(
-            val date: String
+            val date: String,
         ) : Intent
 
         data class AddItemToSelector(
-            val text: String
+            val text: String,
         ) : Intent
 
         data class AddItemToMultiSelector(
-            val text: String
+            val text: String,
         ) : Intent
 
         data class ChangeSelectorAnswer(
-            val text: String
+            val text: String,
         ) : Intent
 
         data class ChangeMultiSelectorAnswer(
-            val text: String
+            val text: String,
         ) : Intent
 
         data class ChangeIsRequired(
-            val isRequired: Boolean
+            val isRequired: Boolean,
         ) : Intent
 
         data class ChangeIsMaxLengthForTextEnabled(
-            val value: Boolean
+            val value: Boolean,
         ) : Intent
 
         data class ChangeMaxLengthForText(
-            val value: Int
+            val value: Int,
         ) : Intent
 
         data class ChangeIsMinLengthForTextEnabled(
-            val value: Boolean
+            val value: Boolean,
         ) : Intent
 
         data class ChangeMinLengthForText(
-            val value: Int
+            val value: Int,
         ) : Intent
 
         data class ChangeIsMaxValueForNumberEnabled(
-            val value: Boolean
+            val value: Boolean,
         ) : Intent
 
         data class ChangeMaxValueForNumber(
-            val value: Int
+            val value: Int,
         ) : Intent
 
         data class ChangeIsMinValueForNumberEnabled(
-            val value: Boolean
+            val value: Boolean,
         ) : Intent
 
         data class ChangeMinValueForNumber(
-            val value: Int
+            val value: Int,
         ) : Intent
 
         data class ChangeImageInputType(
-            val value: String
+            val value: String,
         ) : Intent
 
         data class ChangeImageUri(
-            val imageUri: String
+            val imageUri: String,
         ) : Intent
 
         object ClickAddButtonVisibility : Intent
