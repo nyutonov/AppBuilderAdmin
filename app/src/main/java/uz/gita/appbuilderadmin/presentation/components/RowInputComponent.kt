@@ -24,16 +24,14 @@ import uz.gita.appbuilderadmin.data.model.ComponentsModel
 @Composable
 fun RowInputComponent(
     data: ComponentsModel,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     var value by remember { mutableStateOf("") }
 
     Column {
         Row(
             modifier = Modifier.weight(
-                if (data.weight == 0f) {
-                    1f
-                } else {
+                if (data.weight == 0f) { 1f } else {
                     data.weight
                 }
             )
