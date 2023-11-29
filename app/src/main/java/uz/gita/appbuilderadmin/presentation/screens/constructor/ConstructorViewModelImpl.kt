@@ -1,6 +1,5 @@
 package uz.gita.appbuilderadmin.presentation.screens.constructor
 
-import android.net.Uri
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -15,11 +14,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
-import uz.gita.appbuilderadmin.data.model.SelectorModule
 import uz.gita.appbuilderadmin.data.model.VisibilityModule
 import uz.gita.appbuilderadmin.data.model.VisibilityTypeModule
 import uz.gita.appbuilderadmin.domain.repository.Repository
-import uz.gita.appbuilderadmin.presentation.components.RowComponent
 import uz.gita.appbuilderadmin.utils.extensions.myToast
 import javax.inject.Inject
 
@@ -40,6 +37,13 @@ class ConstructorViewModelImpl @Inject constructor(
 
     override fun onEventDispatchers(intent: ConstructorContract.Intent) {
         when (intent) {
+            is ConstructorContract.Intent.ChangeWeight -> {
+
+                uiState.update { it.copy(weight =
+                if (intent.weight==0f)1f else intent.weight
+
+                ) }
+            }
 
             ConstructorContract.Intent.ClickVisibilityAddButton -> {
                 reduce { it.copy(addButtonVisibilityState = true) }
@@ -170,7 +174,13 @@ class ConstructorViewModelImpl @Inject constructor(
 
             is ConstructorContract.Intent.ChangeImageInputType -> {
                 if (uiState.value.selectedImageInputType != intent.value) {
-                    reduce { it.copy(selectedImageInputType = intent.value, selectedImageUri = "", isExist = false) }
+                    reduce {
+                        it.copy(
+                            selectedImageInputType = intent.value,
+                            selectedImageUri = "",
+                            isExist = false
+                        )
+                    }
                 }
             }
 
@@ -251,7 +261,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                 datePicker = selectedDate,
                                 multiSelectDataQuestion = multiSelectorAnswer,
                                 multiSelectorDataAnswers = multiSelectorItems,
-                                weight = intent.weight
+                                weight = uiState.value.weight
                             )
                         )
                     }
@@ -272,7 +282,7 @@ class ConstructorViewModelImpl @Inject constructor(
                 } else {
                     if (uiState.value.selectedInputType == "Image") {
                         repository.uploadImage(uiState.value.selectedImageUri.toUri())
-                            .onEach {  }
+                            .onEach { }
                             .launchIn(viewModelScope)
                     }
 
@@ -493,6 +503,7 @@ class ConstructorViewModelImpl @Inject constructor(
             )
         }
     }
+
     private fun removeUiStateForRow() {
         reduce {
             it.copy(

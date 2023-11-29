@@ -28,6 +28,10 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -705,6 +709,73 @@ fun SetId(
             ),
             shape = RoundedCornerShape(5.dp),
             enabled = uiState.idCheckState
+        )
+        Spacer(modifier = Modifier.size(5.dp))
+    }
+}
+@Composable
+fun InputWeight(
+    uiState: ConstructorContract.UiState,
+    onEventDispatchers: (ConstructorContract.Intent) -> Unit,
+    onChangeWeight:(Float)->Unit={}
+) {
+    var isCheck by remember {
+        mutableStateOf(false)
+    }
+    var weight by remember {
+        mutableStateOf("")
+    }
+    Spacer(modifier = Modifier.size(10.dp))
+    Text(
+        text = "Set Weight",
+        style = TextStyle(
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+            fontWeight = FontWeight.W400,
+            color = Color.White
+        )
+    )
+    Spacer(modifier = Modifier.size(10.dp))
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 15.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Spacer(modifier = Modifier.size(5.dp))
+        Checkbox(
+            checked = isCheck,
+            onCheckedChange = {
+                isCheck=it
+            },
+            colors = CheckboxDefaults.colors(
+                checkedColor = Color(0xff4d648d)
+            )
+        )
+        Spacer(modifier = Modifier.size(5.dp))
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(58.dp),
+            value = weight,
+            singleLine = true,
+            onValueChange = {
+                weight=it
+                 onEventDispatchers(ConstructorContract.Intent.ChangeWeight(if (it.isEmpty())0f else it.toFloat()))
+
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.LightGray,
+                unfocusedBorderColor = Color.LightGray,
+                focusedTextColor = Color.LightGray,
+                unfocusedTextColor = Color.LightGray
+            ),
+            keyboardOptions = KeyboardOptions(
+               keyboardType = KeyboardType.Number
+           ),
+            shape = RoundedCornerShape(5.dp),
+            enabled = isCheck
         )
         Spacer(modifier = Modifier.size(5.dp))
     }
