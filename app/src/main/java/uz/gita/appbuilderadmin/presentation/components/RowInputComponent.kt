@@ -3,6 +3,7 @@ package uz.gita.appbuilderadmin.presentation.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
@@ -30,11 +31,10 @@ fun RowInputComponent(
 
     Column {
         Row(
-            modifier = Modifier.weight(
-                if (data.weight == 0f) { 1f } else {
+            modifier = Modifier
+                .weight(
                     data.weight
-                }
-            )
+                )
         ) {
             TextField(
                 value = value,

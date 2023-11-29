@@ -39,15 +39,11 @@ fun RowMultiSelectorComponent(
     onClickDelete: () -> Unit,
     data: ComponentsModel
 ) {
-    
+
     Column {
         Box(
             modifier = Modifier.weight(
-                if (data.weight == 0f) {
-                    1f
-                } else {
-                    data.weight
-                }
+                data.weight
             )
         ) {
             Column(modifier = Modifier.combinedClickable(onLongClick = onLongClick) { }) {

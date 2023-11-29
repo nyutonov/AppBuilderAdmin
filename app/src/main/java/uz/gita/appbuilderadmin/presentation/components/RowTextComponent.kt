@@ -26,11 +26,7 @@ fun RowTextComponent(
         Box(
             modifier = Modifier
                 .weight(
-                    if (data.weight == 0f) {
-                        1f
-                    } else {
-                        data.weight
-                    }
+                    data.weight
                 )
         ) {
             Row(modifier = Modifier.fillMaxWidth()) {
