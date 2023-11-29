@@ -3,6 +3,7 @@ package uz.gita.appbuilderadmin.presentation.screens.constructor
 import android.net.Uri
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.font.FontWeight
 import androidx.core.net.toUri
 import kotlinx.coroutines.flow.StateFlow
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
@@ -37,7 +38,8 @@ interface ConstructorContract {
             "Phone"
         ),
 
-        val rowType: List<ComponentsModel> = listOf(),
+        val rowType: MutableList<ComponentsModel> = mutableListOf(),
+
 
         val imageInputTypes: List<String> = listOf(
             "Local",
@@ -134,6 +136,10 @@ interface ConstructorContract {
         ) : Intent
 
         object ClickCreateButton : Intent
+
+        data class ClickCreateRowComponent(
+            val weight: Float=1F
+        ):Intent
 
         object ChangeVisibilityCheck : Intent
 

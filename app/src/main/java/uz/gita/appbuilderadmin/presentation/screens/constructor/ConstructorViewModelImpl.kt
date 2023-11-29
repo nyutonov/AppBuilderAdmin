@@ -1,6 +1,5 @@
 package uz.gita.appbuilderadmin.presentation.screens.constructor
 
-import android.net.Uri
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -14,7 +13,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
-import uz.gita.appbuilderadmin.data.model.SelectorModule
 import uz.gita.appbuilderadmin.data.model.VisibilityModule
 import uz.gita.appbuilderadmin.data.model.VisibilityTypeModule
 import uz.gita.appbuilderadmin.domain.repository.Repository
@@ -220,6 +218,36 @@ class ConstructorViewModelImpl @Inject constructor(
                 removeAllData()
             }
 
+            is ConstructorContract.Intent.ClickCreateRowComponent -> {
+
+                uiState.update {
+                    val list = uiState.value.rowType
+
+                    uiState.value.apply {
+                        list.add(
+                            ComponentsModel(
+                                componentsName = selectedComponent,
+                                input = selectedComponent,
+                                placeHolder = placeHolder,
+                                type = selectedInputType,
+                                text = textValue,
+                                id = idValue,
+                                color = 0xFF0F1C2,
+                                selectorDataQuestion = selecterAnswer,
+                                selectorDataAnswers = selectorItems,
+                                idVisibility = componentId,
+                                datePicker = selectedDate,
+                                multiSelectDataQuestion = multiSelectorAnswer,
+                                multiSelectorDataAnswers = multiSelectorItems,
+                                weight = intent.weight
+                            )
+                        )
+                    }
+                    it.copy(rowType = list)
+                }
+            }
+
+
             ConstructorContract.Intent.ClickCreateButton -> {
                 if (uiState.value.visibilityState && uiState.value.firstClickState) {
                     myToast("Firstly you need to add visibility")
@@ -348,7 +376,7 @@ class ConstructorViewModelImpl @Inject constructor(
 
                     uiState.value.selectedImageUri?.let {
                         repository.uploadImage(it)
-                            .onEach {  }
+                            .onEach { }
                             .launchIn(viewModelScope)
                     }
                 }
