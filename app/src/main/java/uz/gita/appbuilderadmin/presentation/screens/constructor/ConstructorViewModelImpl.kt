@@ -1,5 +1,6 @@
 package uz.gita.appbuilderadmin.presentation.screens.constructor
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -9,12 +10,10 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.data.model.SelectorModule
 import uz.gita.appbuilderadmin.data.model.VisibilityModule
@@ -40,6 +39,13 @@ class ConstructorViewModelImpl @Inject constructor(
 
     override fun onEventDispatchers(intent: ConstructorContract.Intent) {
         when (intent) {
+            is ConstructorContract.Intent.ChangeWeight -> {
+
+                uiState.update { it.copy(weight =
+                if (intent.weight==0f)1f else intent.weight
+
+                ) }
+            }
 
             ConstructorContract.Intent.ClickVisibilityAddButton -> {
                 reduce { it.copy(addButtonVisibilityState = true) }
@@ -52,6 +58,7 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.ChangeSelectedMultiSelectorId -> {
+                Log.d("TTT", "id :${intent.value}")
                 reduce {
                     it.copy(
                         selectedMultiSelectorList = repository.getMultiSelectorValueListById(
@@ -168,7 +175,13 @@ class ConstructorViewModelImpl @Inject constructor(
 
             is ConstructorContract.Intent.ChangeImageInputType -> {
                 if (uiState.value.selectedImageInputType != intent.value) {
-                    reduce { it.copy(selectedImageInputType = intent.value, selectedImageUri = "", isExist = false) }
+                    reduce {
+                        it.copy(
+                            selectedImageInputType = intent.value,
+                            selectedImageUri = "",
+                            isExist = false
+                        )
+                    }
                 }
             }
 
@@ -245,7 +258,7 @@ class ConstructorViewModelImpl @Inject constructor(
                     uiState.value.apply {
                         list.add(
                             ComponentsModel(
-                                componentsName = selectedComponent,
+                                componentsName = selectedComponentInRow,
                                 input = selectedComponent,
                                 placeHolder = placeHolder,
                                 type = selectedInputType,
@@ -258,11 +271,12 @@ class ConstructorViewModelImpl @Inject constructor(
                                 datePicker = selectedDate,
                                 multiSelectDataQuestion = multiSelectorAnswer,
                                 multiSelectorDataAnswers = multiSelectorItems,
-                                weight = intent.weight
+                                weight = uiState.value.weight
                             )
                         )
                     }
-                    it.copy(rowType = list)
+                    it.copy(rowType = list, isChanged = !uiState.value.isChanged)
+
                 }
             }
 
@@ -451,6 +465,9 @@ class ConstructorViewModelImpl @Inject constructor(
                 enteringSelectorsList = listOf(),
                 selectorVisibilityIdCheck = false,
                 selectedVisibilityList = listOf(),
+                selectedImageInputType = "Select",
+                selectedImageColor = Color.Transparent,
+                selectedImageUri = "",
                 listAllInputId = listOf(),
                 listAllSelectorId = listOf(),
                 listAllMultiSelectorId = listOf(),
@@ -469,6 +486,7 @@ class ConstructorViewModelImpl @Inject constructor(
     private fun removeUiState() {
         reduce {
             it.copy(
+                rowType = mutableListOf(),
                 componentList = listOf(
                     "Input",
                     "Text",
@@ -485,12 +503,77 @@ class ConstructorViewModelImpl @Inject constructor(
                     "Phone"
                 ),
                 selectedImageInputType = "Select",
-                selectedImageColor = Color.Transparent,
+                selectedImageColor = Color.Transparent.toArgb(),
                 selectedImageUri = "",
                 selectorItems = listOf(),
                 multiSelectorItems = listOf(),
                 selectedComponent = uiState.value.componentList[0],
                 selectedInputType = uiState.value.inputTypeList[0],
+                placeHolder = "",
+                textValue = "",
+                name = "",
+                idCheckState = false,
+                idValue = "",
+                visibilityState = false,
+                componentId = "",
+                operator = "",
+                visibilityValue = "",
+                selectedDate = "",
+                selecterAnswer = "",
+                isMaxLengthForTextEnabled = false,
+                maxLengthForText = 0,
+                isMinLengthForTextEnabled = false,
+                minLengthForText = 0,
+                isMaxValueForNumberEnabled = false,
+                maxValueForNumber = 0,
+                isMinValueForNumberEnabled = false,
+                minValueForNumber = 0,
+                isRequired = false,
+                multiSelectorAnswer = "",
+                visibilityCheck = true,
+                visibilityComponentState = "",
+                enteringSelectorsList = listOf(),
+                selectorVisibilityIdCheck = false,
+                selectedVisibilityList = listOf(),
+                listAllInputId = listOf(),
+                listAllSelectorId = listOf(),
+                listAllMultiSelectorId = listOf(),
+                selectedInputId = "",
+                selectedSelectorId = "",
+                selectedMultiSelectorId = "",
+                selectedSelectorList = listOf(),
+                selectedMultiSelectorList = listOf(),
+                addButtonVisibilityState = false,
+                listVisibilitiesValue = listOf()
+            )
+        }
+    }
+
+    private fun removeUiStateForRow() {
+        reduce {
+            it.copy(
+//                rowType = mutableListOf(),
+                componentList = listOf(
+                    "Input",
+                    "Text",
+                    "Selector",
+                    "MultiSelector",
+                    "Date Picker",
+                    "Row"
+                ),
+                inputTypeList = listOf(
+                    "Text",
+                    "Number",
+                    "Email",
+                    "Phone"
+                ),
+                selectedImageInputType = "Select",
+                selectedImageColor = Color.Transparent,
+                selectedImageUri = "",
+                selectorItems = listOf(),
+                multiSelectorItems = listOf(),
+                selectedComponent = "Row",
+                selectedInputType = "Row",
                 placeHolder = "",
                 textValue = "",
                 name = "",

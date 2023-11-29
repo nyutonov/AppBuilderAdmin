@@ -36,6 +36,7 @@ interface ConstructorContract {
         ),
 
         val rowType: MutableList<ComponentsModel> = mutableListOf(),
+        val weight:Float=1f,
 
         val imageInputTypes: List<String> = listOf(
             "Local",
@@ -88,11 +89,17 @@ interface ConstructorContract {
         val addButtonVisibilityState: Boolean = false,
         val listVisibilitiesValue: List<VisibilityModule> = listOf(),
         val firstClickState: Boolean = true,
+
+        val isChanged:Boolean=false
     )
 
     interface Intent {
 
         object ClickVisibilityAddButton : Intent
+
+        data class ChangeWeight(
+            val weight: Float=1f
+        ):Intent
         object LoadData : Intent
         data class ChangeSelectedMultiSelectorId(
             val value: String,

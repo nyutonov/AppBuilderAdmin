@@ -25,42 +25,42 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import uz.gita.appbuilderadmin.R
 
-@Composable
-fun InputWeight(
-   onChangevalue: (Float) -> Unit
-) {
-    var value by remember { mutableStateOf("") }
-
-    Row(modifier = Modifier.fillMaxWidth()) {
-        TextField(
-            value = value,
-            onValueChange = {
-                value = it
-                if (it.isEmpty()){
-                   onChangevalue(1f)
-                }
-        else{
-            onChangevalue(it.filter { it.isDigit() }.toFloat())
-                }
-            },
-            modifier = Modifier
-                .weight(1f)
-                .background(Color.Transparent)
-                .padding(20.dp),
-            placeholder = {
-                Text(text = "Weight")
-            },
-            singleLine = true,
-            textStyle = TextStyle(fontSize = 18.sp),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number
-            )
-        )
-    }
-}
+//@Composable
+//fun InputWeight(
+//   onChangevalue: (Float) -> Unit
+//) {
+//    var value by remember { mutableStateOf("") }
+//
+//    Row(modifier = Modifier.fillMaxWidth()) {
+//        TextField(
+//            value = value,
+//            onValueChange = {
+//                value = it
+//                if (it.isEmpty()){
+//                   onChangevalue(1f)
+//                }
+//        else{
+//            onChangevalue(it.filter { it.isDigit() }.toFloat())
+//                }
+//            },
+//            modifier = Modifier
+//                .weight(1f)
+//                .background(Color.Transparent)
+//                .padding(20.dp),
+//            placeholder = {
+//                Text(text = "Weight")
+//            },
+//            singleLine = true,
+//            textStyle = TextStyle(fontSize = 18.sp),
+//            keyboardOptions = KeyboardOptions(
+//                keyboardType = KeyboardType.Number
+//            )
+//        )
+//    }
+//}
 
 @Composable
 @Preview
 fun InputWeightPrev() {
-    InputWeight(){}
+//    InputWeight(){}
 }
