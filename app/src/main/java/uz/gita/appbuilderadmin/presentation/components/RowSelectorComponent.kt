@@ -85,6 +85,7 @@ fun RowSelectorComponent(
                     }
                 }
             }
+/*
             Spacer(
                 modifier = Modifier
                     .matchParentSize()
@@ -94,6 +95,7 @@ fun RowSelectorComponent(
                         onClick = { expanded = !expanded }
                     )
             )
+*/
         }
     }
 }
