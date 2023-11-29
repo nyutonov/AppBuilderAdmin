@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.hilt.getViewModel
+import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.presentation.components.DateComponent
 import uz.gita.appbuilderadmin.presentation.components.DeleteDialog
 import uz.gita.appbuilderadmin.presentation.components.InputComponent
@@ -222,7 +223,8 @@ private fun MainContent(
                                 },
                                 onClickDelete = {
                                     openDeleteDialog = true
-                                }
+                                },
+                                data = ComponentsModel()
                             )
                             if (openDeleteDialog) {
                                 Dialog(onDismissRequest = { openDeleteDialog = false }) {

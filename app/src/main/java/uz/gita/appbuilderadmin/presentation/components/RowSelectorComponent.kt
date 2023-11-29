@@ -32,7 +32,7 @@ import uz.gita.appbuilderadmin.data.model.ComponentsModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RowSampleSpinner(
+fun RowSelectorComponent(
     question: String = "",
     data: ComponentsModel,
     onClick: () -> Unit = {},
