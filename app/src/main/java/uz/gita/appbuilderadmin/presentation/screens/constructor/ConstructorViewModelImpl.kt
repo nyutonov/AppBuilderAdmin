@@ -406,6 +406,7 @@ class ConstructorViewModelImpl @Inject constructor(
 
         reduce {
             it.copy(
+                rowType = mutableListOf(),
                 visibilityComponentState = "",
                 enteringSelectorsList = listOf(),
                 selectorVisibilityIdCheck = false,
