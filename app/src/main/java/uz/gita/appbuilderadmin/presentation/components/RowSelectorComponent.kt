@@ -36,82 +36,66 @@ fun RowSelectorComponent(
     question: String = "",
     data: ComponentsModel,
     onClick: () -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
 
     var selected by remember { mutableStateOf(data.preselected) }
     var expanded by remember { mutableStateOf(false) }
-    Column {
-
+    Text(
+        text = question,
+        color = Color.White,
+        modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp)
+    )
+    Row(modifier = modifier) {
         Box(
-            modifier = Modifier.weight(
-                if (data.weight == 0f) {
-                    1f
-                } else {
-                    data.weight
-                }
-            )
+            Modifier.fillMaxWidth()
         ) {
-
-            Column(modifier = Modifier.padding(start = 16.dp)) {
-                Text(
-                    text = question,
-                    color = Color.White,
-                    modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp)
+            Column {
+                OutlinedTextField(
+                    value = (selected),
+                    onValueChange = { },
+                    placeholder = { Text(text = "Enter") },
+                    modifier = Modifier.fillMaxWidth(),
+                    trailingIcon = { Icon(Icons.Outlined.ArrowDropDown, null) },
+                    readOnly = true,
+                    colors = TextFieldDefaults.colors(Color.White)
                 )
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Box(
-                        modifier = Modifier
-                            .weight(0.7f)
-//                .weight(1f)
-                    ) {
-                        Column {
-                            OutlinedTextField(
-                                value = (selected),
-                                onValueChange = { },
-                                placeholder = { Text(text = "Enter") },
-                                modifier = Modifier.fillMaxWidth(),
-                                trailingIcon = { Icon(Icons.Outlined.ArrowDropDown, null) },
-                                readOnly = true,
-                                colors = TextFieldDefaults.colors(Color.White)
-                            )
-                            DropdownMenu(
-                                modifier = Modifier.fillMaxWidth(),
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false },
-                            ) {
-                                data.selectorDataAnswers.forEach { entry ->
+                DropdownMenu(
+                    modifier = Modifier.fillMaxWidth(),
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                ) {
+                    data.selectorDataAnswers.forEach { entry ->
 
-                                    DropdownMenuItem(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        onClick = {
-                                            selected = entry
-                                            expanded = false
-                                        },
-                                        text = {
-                                            Text(
-                                                text = (entry),
-                                                modifier = Modifier
-                                                    .wrapContentWidth()
-                                                    .align(Alignment.Start),
-                                            )
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                        Spacer(
-                            modifier = Modifier
-                                .matchParentSize()
-                                .background(Color.Transparent)
-                                .padding(10.dp)
-                                .clickable(
-                                    onClick = { expanded = !expanded }
+                        DropdownMenuItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                selected = entry
+                                expanded = false
+                            },
+                            text = {
+                                Text(
+                                    text = (entry),
+                                    modifier = Modifier
+                                        .wrapContentWidth()
+                                        .align(Alignment.Start),
                                 )
+                            }
                         )
                     }
                 }
             }
-
+/*
+            Spacer(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(Color.Transparent)
+                    .padding(10.dp)
+                    .clickable(
+                        onClick = { expanded = !expanded }
+                    )
+            )
+*/
         }
     }
 }

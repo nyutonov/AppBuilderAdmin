@@ -2,6 +2,7 @@ package uz.gita.appbuilderadmin.presentation.components
 
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -53,6 +54,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.toColor
 import androidx.core.net.toUri
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import okhttp3.Call
@@ -65,13 +67,11 @@ import uz.gita.appbuilderadmin.presentation.screens.constructor.ConstructorContr
 import uz.gita.appbuilderadmin.presentation.screens.constructor.SetId
 import java.io.IOException
 
-@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun ComponentsInImage(
     uiState: ConstructorContract.UiState,
     onEventDispatchers: (ConstructorContract.Intent) -> Unit,
 ) {
-    val controller = rememberColorPickerController()
     val client = OkHttpClient()
     val context = LocalContext.current
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
@@ -184,32 +184,8 @@ fun ComponentsInImage(
                 )
             )
         }
-
-        Box(
-            modifier = Modifier
-                .size(100.dp)
-        ) {
-            Image(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentScale = ContentScale.Crop,
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = ""
-            )
-
-            bitmap.value?.let {
-                Image(
-                    modifier = Modifier
-                        .size(400.dp),
-                    contentScale = ContentScale.Crop,
-                    bitmap = it.asImageBitmap(),
-                    contentDescription = ""
-                )
-            }
-        }
     } else if (uiState.selectedImageInputType == "Remote") {
         var isCheck by remember { mutableStateOf(false) }
-        var isExist = uiState.isExist
 
         TextField(
             value = uiState.selectedImageUri,
@@ -234,14 +210,14 @@ fun ComponentsInImage(
                 .head()
                 .build()
 
-            val call: okhttp3.Call = client.newCall(request)
+            val call: Call = client.newCall(request)
 
             call.enqueue(object : Callback {
-                override fun onFailure(call: okhttp3.Call, e: IOException) {
+                override fun onFailure(call: Call, e: IOException) {
                     onEventDispatchers.invoke(ConstructorContract.Intent.ChangeIsExist(false))
                 }
 
-                override fun onResponse(call: okhttp3.Call, response: Response) {
+                override fun onResponse(call: Call, response: Response) {
                     onEventDispatchers.invoke(ConstructorContract.Intent.ChangeIsExist(response.isSuccessful))
                 }
             })
@@ -250,28 +226,39 @@ fun ComponentsInImage(
         }
 
         Icon(
-            imageVector = if (isExist) Icons.Default.Done else Icons.Default.Close,
+            imageVector = if (uiState.isExist) Icons.Default.Done else Icons.Default.Close,
             contentDescription = "",
-            tint = if (isExist) Color.Green else Color.Red
+            tint = if (uiState.isExist) Color.Green else Color.Red
         )
     }
 
-//    AlphaTile(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .height(60.dp)
-//            .clip(RoundedCornerShape(6.dp)),
-//        controller = controller
-//    )
-//
-//    HsvColorPicker(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .height(450.dp)
-//            .padding(10.dp),
-//        controller = controller,
-//        onColorChanged = {
-//
-//        }
-//    )
+    Button(
+        modifier = Modifier
+            .padding(bottom = 15.dp)
+            .width(310.dp)
+            .height(50.dp),
+        onClick = {
+            onEventDispatchers.invoke(ConstructorContract.Intent.ChangeDialogShowing(true))
+        },
+        shape = RoundedCornerShape(10.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xff4d648d))
+    ) {
+        Text(
+            text = "Select color",
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                fontWeight = FontWeight.W400,
+                textAlign = TextAlign.Center
+            )
+        )
+    }
+
+    Box(
+        modifier = Modifier
+            .padding(bottom = 15.dp)
+            .width(310.dp)
+            .height(50.dp)
+            .background(color = uiState.selectedImageColor)
+    )
 }

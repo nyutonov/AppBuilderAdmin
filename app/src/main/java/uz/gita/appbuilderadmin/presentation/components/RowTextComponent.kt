@@ -19,6 +19,7 @@ import uz.gita.appbuilderadmin.data.model.ComponentsModel
 fun RowTextComponent(
     data: ComponentsModel,
     onClick: () -> Unit = {},
+    modifier: Modifier
 ) {
 
 
@@ -26,18 +27,14 @@ fun RowTextComponent(
         Box(
             modifier = Modifier
                 .weight(
-                    if (data.weight == 0f) {
-                        1f
-                    } else {
-                        data.weight
-                    }
+                    data.weight
                 )
         ) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = data.text,
-                    modifier = Modifier
-                        .padding(start = 10.dp)
+                    modifier = modifier
+                        .padding(start = 2.dp)
                         .align(Alignment.CenterVertically),
                     color = Color.LightGray,
                 )
