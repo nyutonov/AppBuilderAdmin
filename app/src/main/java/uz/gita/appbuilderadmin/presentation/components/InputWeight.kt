@@ -1,9 +1,12 @@
 package uz.gita.appbuilderadmin.presentation.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -14,15 +17,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import uz.gita.appbuilderadmin.R
 
 @Composable
 fun InputWeight(
-   /* onClick: (String) -> Unit*/
+   onChangevalue: (Float) -> Unit
 ) {
     var value by remember { mutableStateOf("") }
 
@@ -31,8 +36,13 @@ fun InputWeight(
             value = value,
             onValueChange = {
                 value = it
+                if (it.isEmpty()){
+                   onChangevalue(1f)
+                }
+        else{
+            onChangevalue(it.filter { it.isDigit() }.toFloat())
+                }
             },
-
             modifier = Modifier
                 .weight(1f)
                 .background(Color.Transparent)
@@ -46,25 +56,11 @@ fun InputWeight(
                 keyboardType = KeyboardType.Number
             )
         )
-
-/*
-        Image(
-            painter = painterResource(id = R.drawable.ic_delete),
-            contentDescription = "",
-            modifier = Modifier
-                .size(50.dp)
-                .clip(CircleShape)
-                .clickable { onClick(value) }
-                .align(Alignment.CenterVertically)
-                .padding(10.dp),
-            colorFilter = ColorFilter.tint(Color.White)
-        )
-*/
     }
 }
 
 @Composable
 @Preview
 fun InputWeightPrev() {
-    InputWeight()
+    InputWeight(){}
 }

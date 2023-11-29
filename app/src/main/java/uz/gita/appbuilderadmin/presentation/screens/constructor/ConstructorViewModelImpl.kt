@@ -106,6 +106,10 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(selectedComponent = intent.component) }
             }
 
+            is ConstructorContract.Intent.ChangingSelectedComponentInRow -> {
+                reduce { it.copy(selectedComponentInRow = intent.componentInRow) }
+            }
+
             is ConstructorContract.Intent.ChangingSelectedInputType -> {
                 reduce {
                     it.copy(
@@ -184,10 +188,6 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(isMinLengthForTextEnabled = intent.value) }
             }
 
-            is ConstructorContract.Intent.ChangeIsExist -> {
-                reduce { it.copy(isExist = intent.value) }
-            }
-
             is ConstructorContract.Intent.ChangeMinLengthForText -> {
                 reduce { it.copy(minLengthForText = intent.value) }
             }
@@ -224,6 +224,36 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(listVisibilitiesValue = list) }
                 removeAllData()
             }
+
+            is ConstructorContract.Intent.ClickCreateRowComponent -> {
+
+                uiState.update {
+                    val list = uiState.value.rowType
+
+                    uiState.value.apply {
+                        list.add(
+                            ComponentsModel(
+                                componentsName = selectedComponent,
+                                input = selectedComponent,
+                                placeHolder = placeHolder,
+                                type = selectedInputType,
+                                text = textValue,
+                                id = idValue,
+                                color = 0xFF0F1C2,
+                                selectorDataQuestion = selecterAnswer,
+                                selectorDataAnswers = selectorItems,
+                                idVisibility = componentId,
+                                datePicker = selectedDate,
+                                multiSelectDataQuestion = multiSelectorAnswer,
+                                multiSelectorDataAnswers = multiSelectorItems,
+                                weight = intent.weight
+                            )
+                        )
+                    }
+                    it.copy(rowType = list)
+                }
+            }
+
 
             ConstructorContract.Intent.ClickCreateButton -> {
                 if (uiState.value.visibilityState && uiState.value.firstClickState) {

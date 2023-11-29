@@ -224,7 +224,7 @@ private fun MainContent(
                                 onClickDelete = {
                                     openDeleteDialog = true
                                 },
-                                data = ComponentsModel()
+//                                data = ComponentsModel()
                             )
                             if (openDeleteDialog) {
                                 Dialog(onDismissRequest = { openDeleteDialog = false }) {
