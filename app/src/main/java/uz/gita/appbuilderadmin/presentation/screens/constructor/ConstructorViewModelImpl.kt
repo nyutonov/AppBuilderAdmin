@@ -164,7 +164,7 @@ class ConstructorViewModelImpl @Inject constructor(
 
             is ConstructorContract.Intent.ChangeImageInputType -> {
                 if (uiState.value.selectedImageInputType != intent.value) {
-                    reduce { it.copy(selectedImageInputType = intent.value, selectedImageUri = "") }
+                    reduce { it.copy(selectedImageInputType = intent.value, selectedImageUri = "", isExist = false) }
                 }
             }
 
@@ -182,6 +182,10 @@ class ConstructorViewModelImpl @Inject constructor(
 
             is ConstructorContract.Intent.ChangeIsMinLengthForTextEnabled -> {
                 reduce { it.copy(isMinLengthForTextEnabled = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeIsExist -> {
+                reduce { it.copy(isExist = intent.value) }
             }
 
             is ConstructorContract.Intent.ChangeMinLengthForText -> {
@@ -225,6 +229,12 @@ class ConstructorViewModelImpl @Inject constructor(
                 if (uiState.value.visibilityState && uiState.value.firstClickState) {
                     myToast("Firstly you need to add visibility")
                 } else {
+                    if (uiState.value.selectedInputType == "Image") {
+                        repository.uploadImage(uiState.value.selectedImageUri.toUri())
+                            .onEach {  }
+                            .launchIn(viewModelScope)
+                    }
+
                     removeAllData()
                     uiState.value.apply {
                         if (idValue.isNotEmpty() && selectedComponent == "Input") {
@@ -345,12 +355,6 @@ class ConstructorViewModelImpl @Inject constructor(
 
                             direction.back()
                         }
-                    }
-
-                    if (uiState.value.selectedImageUri.isNotEmpty()) {
-                        repository.uploadImage(uiState.value.selectedImageUri.toUri())
-                            .onEach {  }
-                            .launchIn(viewModelScope)
                     }
                 }
             }

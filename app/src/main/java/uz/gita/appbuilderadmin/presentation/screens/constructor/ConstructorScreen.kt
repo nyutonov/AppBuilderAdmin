@@ -73,7 +73,7 @@ class ConstructorScreen(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-@SuppressLint("RememberReturnType")
+@SuppressLint("RememberReturnType", "NewApi")
 @Composable
 fun ConstructorScreenContent(
     uiState: ConstructorContract.UiState,
@@ -179,7 +179,7 @@ fun ConstructorScreenContent(
                             question = uiState.multiSelectorAnswer,
                             onClickDelete = {},
                             onLongClick = {},
-                            data = ComponentsModel()
+//                            data = ComponentsModel()
                         )
                     }
 
@@ -611,7 +611,9 @@ fun ConstructorScreenContent(
                 .height(50.dp)
                 .align(Alignment.BottomCenter),
             onClick = {
-                onEventDispatchers(ConstructorContract.Intent.ClickCreateButton)
+                if ((uiState.selectedInputType == "Image" && uiState.isExist) || uiState.selectedInputType != "Image") {
+                    onEventDispatchers(ConstructorContract.Intent.ClickCreateButton)
+                }
             },
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(

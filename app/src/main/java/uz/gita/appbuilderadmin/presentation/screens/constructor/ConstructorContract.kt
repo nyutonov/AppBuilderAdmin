@@ -47,6 +47,7 @@ interface ConstructorContract {
         val selectedImageColor: Int = Color.Transparent.toArgb(),
         val selectedImageUri: String = "",
         val selectorItems: List<String> = listOf(),
+        val isExist: Boolean = false,
         val multiSelectorItems: List<String> = listOf(),
         val selectedComponent: String = componentList[0],
         val selectedInputType: String = inputTypeList[0],
@@ -218,5 +219,9 @@ interface ConstructorContract {
         ) : Intent
 
         object ClickAddButtonVisibility : Intent
+
+        data class ChangeIsExist(
+            val value: Boolean
+        ) : Intent
     }
 }
