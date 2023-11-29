@@ -144,6 +144,7 @@ fun ConstructorScreenContent(
                             )
                         ) {}
                     }
+
                     "Row" -> {
                         RowComponent(componentsModel = uiState.rowType)
                     }
