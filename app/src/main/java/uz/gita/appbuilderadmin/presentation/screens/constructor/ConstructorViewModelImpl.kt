@@ -262,7 +262,7 @@ class ConstructorViewModelImpl @Inject constructor(
                 Log.d("TTT", "onEventDispatchers: ${uiState.value.rowType.size}")
                 Log.d("TTT", "onEventDispatchers: ${uiState.value.rowType}")
                 removeAllData()
-//                removeUiState()
+                removeUiStateForRow()
             }
 
 
@@ -454,6 +454,70 @@ class ConstructorViewModelImpl @Inject constructor(
                 multiSelectorItems = listOf(),
                 selectedComponent = uiState.value.componentList[0],
                 selectedInputType = uiState.value.inputTypeList[0],
+                placeHolder = "",
+                textValue = "",
+                name = "",
+                idCheckState = false,
+                idValue = "",
+                visibilityState = false,
+                componentId = "",
+                operator = "",
+                visibilityValue = "",
+                selectedDate = "",
+                selecterAnswer = "",
+                isMaxLengthForTextEnabled = false,
+                maxLengthForText = 0,
+                isMinLengthForTextEnabled = false,
+                minLengthForText = 0,
+                isMaxValueForNumberEnabled = false,
+                maxValueForNumber = 0,
+                isMinValueForNumberEnabled = false,
+                minValueForNumber = 0,
+                isRequired = false,
+                multiSelectorAnswer = "",
+                visibilityCheck = true,
+                visibilityComponentState = "",
+                enteringSelectorsList = listOf(),
+                selectorVisibilityIdCheck = false,
+                selectedVisibilityList = listOf(),
+                listAllInputId = listOf(),
+                listAllSelectorId = listOf(),
+                listAllMultiSelectorId = listOf(),
+                selectedInputId = "",
+                selectedSelectorId = "",
+                selectedMultiSelectorId = "",
+                selectedSelectorList = listOf(),
+                selectedMultiSelectorList = listOf(),
+                addButtonVisibilityState = false,
+                listVisibilitiesValue = listOf()
+            )
+        }
+    }
+    private fun removeUiStateForRow() {
+        reduce {
+            it.copy(
+//                rowType = mutableListOf(),
+                componentList = listOf(
+                    "Input",
+                    "Text",
+                    "Selector",
+                    "MultiSelector",
+                    "Date Picker",
+                    "Row"
+                ),
+                inputTypeList = listOf(
+                    "Text",
+                    "Number",
+                    "Email",
+                    "Phone"
+                ),
+                selectedImageInputType = "Select",
+                selectedImageColor = Color.Transparent.toArgb(),
+                selectedImageUri = "",
+                selectorItems = listOf(),
+                multiSelectorItems = listOf(),
+                selectedComponent = "Row",
+                selectedInputType = "Row",
                 placeHolder = "",
                 textValue = "",
                 name = "",

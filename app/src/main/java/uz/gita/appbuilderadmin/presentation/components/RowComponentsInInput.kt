@@ -67,6 +67,7 @@ fun ComponentsInInput(
         modifier = Modifier
             .fillMaxWidth()
             .height(58.dp)
+
             .padding(horizontal = 15.dp),
         value = uiState.placeHolder,
         singleLine = true,
