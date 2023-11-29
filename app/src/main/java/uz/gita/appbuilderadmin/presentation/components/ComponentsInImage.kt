@@ -2,10 +2,8 @@ package uz.gita.appbuilderadmin.presentation.components
 
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
-import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -24,7 +22,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.ArrowDropDown
@@ -38,14 +35,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -59,11 +54,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
-import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
-import com.github.skydoves.colorpicker.compose.AlphaTile
-import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import okhttp3.Call
 import okhttp3.Callback
@@ -219,7 +209,7 @@ fun ComponentsInImage(
         }
     } else if (uiState.selectedImageInputType == "Remote") {
         var isCheck by remember { mutableStateOf(false) }
-        var isExist by remember { mutableStateOf(false) }
+        var isExist = uiState.isExist
 
         TextField(
             value = uiState.selectedImageUri,
@@ -244,15 +234,15 @@ fun ComponentsInImage(
                 .head()
                 .build()
 
-            val call: Call = client.newCall(request)
+            val call: okhttp3.Call = client.newCall(request)
 
             call.enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    isExist = false
+                override fun onFailure(call: okhttp3.Call, e: IOException) {
+                    onEventDispatchers.invoke(ConstructorContract.Intent.ChangeIsExist(false))
                 }
 
-                override fun onResponse(call: Call, response: Response) {
-                    isExist = response.isSuccessful
+                override fun onResponse(call: okhttp3.Call, response: Response) {
+                    onEventDispatchers.invoke(ConstructorContract.Intent.ChangeIsExist(response.isSuccessful))
                 }
             })
 

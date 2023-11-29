@@ -1,5 +1,6 @@
 package uz.gita.appbuilderadmin.presentation.screens.constructor
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
+import uz.gita.appbuilderadmin.data.model.SelectorModule
 import uz.gita.appbuilderadmin.data.model.VisibilityModule
 import uz.gita.appbuilderadmin.data.model.VisibilityTypeModule
 import uz.gita.appbuilderadmin.domain.repository.Repository
@@ -24,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ConstructorViewModelImpl @Inject constructor(
     private val repository: Repository,
-    private val direction: ConstructorDirection,
+    private val direction: ConstructorDirection
 ) : ViewModel(), ConstructorContract.ViewModel {
     override val uiState = MutableStateFlow(ConstructorContract.UiState())
     private var name = ""
@@ -168,7 +170,7 @@ class ConstructorViewModelImpl @Inject constructor(
 
             is ConstructorContract.Intent.ChangeImageInputType -> {
                 if (uiState.value.selectedImageInputType != intent.value) {
-                    reduce { it.copy(selectedImageInputType = intent.value, selectedImageUri = "") }
+                    reduce { it.copy(selectedImageInputType = intent.value, selectedImageUri = "", isExist = false) }
                 }
             }
 
@@ -268,6 +270,12 @@ class ConstructorViewModelImpl @Inject constructor(
                 if (uiState.value.visibilityState && uiState.value.firstClickState) {
                     myToast("Firstly you need to add visibility")
                 } else {
+                    if (uiState.value.selectedInputType == "Image") {
+                        repository.uploadImage(uiState.value.selectedImageUri.toUri())
+                            .onEach {  }
+                            .launchIn(viewModelScope)
+                    }
+
                     removeAllData()
                     uiState.value.apply {
                         if (idValue.isNotEmpty() && selectedComponent == "Input") {
@@ -388,12 +396,6 @@ class ConstructorViewModelImpl @Inject constructor(
 
                             direction.back()
                         }
-                    }
-
-                    if (uiState.value.selectedImageUri.isNotEmpty()) {
-                        repository.uploadImage(uiState.value.selectedImageUri.toUri())
-                            .onEach { }
-                            .launchIn(viewModelScope)
                     }
                 }
             }

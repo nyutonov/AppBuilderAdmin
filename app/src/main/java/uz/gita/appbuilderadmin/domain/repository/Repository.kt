@@ -25,4 +25,5 @@ interface Repository {
     fun getSelectorValueListById(id: String): List<String>
     fun getMultiSelectorValueListById(id: String): List<String>
     fun removeAllVisibilityData()
+
 }
