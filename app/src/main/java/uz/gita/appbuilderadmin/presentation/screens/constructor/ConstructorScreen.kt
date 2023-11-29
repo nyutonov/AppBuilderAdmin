@@ -54,6 +54,7 @@ import uz.gita.appbuilderadmin.presentation.components.DemoSpinner
 import uz.gita.appbuilderadmin.presentation.components.InputComponent
 import uz.gita.appbuilderadmin.presentation.components.MultiSelectorComponent
 import uz.gita.appbuilderadmin.presentation.components.MyText
+import uz.gita.appbuilderadmin.presentation.components.RowComponent
 import uz.gita.appbuilderadmin.presentation.components.TextComponent
 import uz.gita.appbuilderadmin.presentation.components.VisibilityComponents
 
@@ -73,7 +74,7 @@ class ConstructorScreen(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-@SuppressLint("RememberReturnType")
+@SuppressLint("RememberReturnType", "NewApi")
 @Composable
 fun ConstructorScreenContent(
     uiState: ConstructorContract.UiState,
