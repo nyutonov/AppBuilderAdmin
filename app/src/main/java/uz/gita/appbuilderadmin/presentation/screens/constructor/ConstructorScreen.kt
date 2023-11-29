@@ -134,7 +134,9 @@ fun ConstructorScreenContent(
                 )
                 Spacer(modifier = Modifier.size(10.dp))
 
+                Log.d("TTT", "ConstructorScreenContent: ${uiState.selectedComponent}")
                 when (uiState.selectedComponent) {
+
 
                     "Input" -> {
                         InputComponent(
@@ -146,6 +148,7 @@ fun ConstructorScreenContent(
                     }
 
                     "Row" -> {
+                        Log.d("TTT", "ConstructorScreenContent: ${uiState.rowType} ")
                         RowComponent(componentsModel = uiState.rowType)
                     }
 

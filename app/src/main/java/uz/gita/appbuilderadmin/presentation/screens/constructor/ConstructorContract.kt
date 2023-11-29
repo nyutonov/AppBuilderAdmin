@@ -86,6 +86,8 @@ interface ConstructorContract {
         val addButtonVisibilityState: Boolean = false,
         val listVisibilitiesValue: List<VisibilityModule> = listOf(),
         val firstClickState: Boolean = true,
+
+        val isChanged:Boolean=false
     )
 
     interface Intent {

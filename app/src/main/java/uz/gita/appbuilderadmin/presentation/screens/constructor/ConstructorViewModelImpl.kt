@@ -17,6 +17,7 @@ import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.data.model.VisibilityModule
 import uz.gita.appbuilderadmin.data.model.VisibilityTypeModule
 import uz.gita.appbuilderadmin.domain.repository.Repository
+import uz.gita.appbuilderadmin.presentation.components.RowComponent
 import uz.gita.appbuilderadmin.utils.extensions.myToast
 import javax.inject.Inject
 
@@ -106,6 +107,7 @@ class ConstructorViewModelImpl @Inject constructor(
 
             is ConstructorContract.Intent.ChangingSelectedComponentInRow -> {
                 reduce { it.copy(selectedComponentInRow = intent.componentInRow) }
+
             }
 
             is ConstructorContract.Intent.ChangingSelectedInputType -> {
@@ -228,10 +230,13 @@ class ConstructorViewModelImpl @Inject constructor(
                 uiState.update {
                     val list = uiState.value.rowType
 
+
+                    Log.d("TTT", "onEventDispatchers:${uiState.value.selectedComponentInRow} ")
+
                     uiState.value.apply {
                         list.add(
                             ComponentsModel(
-                                componentsName = selectedComponent,
+                                componentsName = selectedComponentInRow,
                                 input = selectedComponent,
                                 placeHolder = placeHolder,
                                 type = selectedInputType,
@@ -248,8 +253,14 @@ class ConstructorViewModelImpl @Inject constructor(
                             )
                         )
                     }
-                    it.copy(rowType = list)
+                    it.copy(rowType = list, isChanged = !uiState.value.isChanged)
+
                 }
+
+                Log.d("TTT", "onEventDispatchers: ${uiState.value.rowType.size}")
+                Log.d("TTT", "onEventDispatchers: ${uiState.value.rowType}")
+                removeAllData()
+//                removeUiState()
             }
 
 
@@ -423,7 +434,8 @@ class ConstructorViewModelImpl @Inject constructor(
                     "Text",
                     "Selector",
                     "MultiSelector",
-                    "Date Picker"
+                    "Date Picker",
+                    "Row"
                 ),
                 inputTypeList = listOf(
                     "Text",
