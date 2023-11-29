@@ -34,7 +34,6 @@ class UsersViewModel @Inject constructor(
         when (intent) {
             is UsersContract.Intent.ClickUser -> {
                 viewModelScope.launch {
-                    Log.d("TTT", "userscreen name : ${intent.name}")
                     direction.moveToUserUI(intent.name)
                 }
             }

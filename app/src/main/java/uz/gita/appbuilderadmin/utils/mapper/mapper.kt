@@ -1,5 +1,7 @@
 package uz.gita.appbuilderadmin.utils.mapper
 
+import androidx.compose.ui.graphics.Color
+import androidx.core.graphics.toColor
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.getValue
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
@@ -22,6 +24,8 @@ fun DataSnapshot.toComponentData(): ComponentsModel = ComponentsModel(
     isMinValueForNumberEnabled = child("isMinValueForNumberEnabled").getValue(Boolean::class.java) ?: false,
     minValueForNumber = child("minValueForNumber").getValue(Int::class.java) ?: 0,
     isRequired = child("isRequired").getValue(Boolean::class.java) ?: false,
+
+    imageUri = child("imageUri").getValue(String::class.java) ?: "",
 
     input = child("input").getValue(String::class.java) ?: "",
     type = child("type").getValue(String::class.java) ?: "",

@@ -1,6 +1,7 @@
 package uz.gita.appbuilderadmin.presentation.screens.user_ui
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,6 +38,7 @@ import cafe.adriel.voyager.hilt.getViewModel
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.presentation.components.DateComponent
 import uz.gita.appbuilderadmin.presentation.components.DeleteDialog
+import uz.gita.appbuilderadmin.presentation.components.ImageComponent
 import uz.gita.appbuilderadmin.presentation.components.InputComponent
 import uz.gita.appbuilderadmin.presentation.components.MultiSelectorComponent
 import uz.gita.appbuilderadmin.presentation.components.SampleSpinner
@@ -273,6 +275,11 @@ private fun MainContent(
                                     )
                                 }
                             }
+                        }
+
+                        "Image" -> {
+                            textTopComponent(text = "Image")
+                            ImageComponent(uri = it.imageUri)
                         }
                     }
                 }

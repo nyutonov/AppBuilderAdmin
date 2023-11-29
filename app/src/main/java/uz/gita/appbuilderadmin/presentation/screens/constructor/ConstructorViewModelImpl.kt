@@ -1,6 +1,5 @@
 package uz.gita.appbuilderadmin.presentation.screens.constructor
 
-import android.net.Uri
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -10,10 +9,12 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.data.model.SelectorModule
 import uz.gita.appbuilderadmin.data.model.VisibilityModule
@@ -51,7 +52,6 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.ChangeSelectedMultiSelectorId -> {
-                Log.d("TTT", "id :${intent.value}")
                 reduce {
                     it.copy(
                         selectedMultiSelectorList = repository.getMultiSelectorValueListById(
@@ -196,12 +196,24 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(isMaxValueForNumberEnabled = intent.value) }
             }
 
+            is ConstructorContract.Intent.ChangeDialogShowing -> {
+                reduce { it.copy(isShowingColorDialog = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeColorForImage -> {
+                reduce { it.copy(selectedImageColor = intent.color, isShowingColorDialog = false) }
+            }
+
             is ConstructorContract.Intent.ChangeMaxValueForNumber -> {
                 reduce { it.copy(maxValueForNumber = intent.value) }
             }
 
             is ConstructorContract.Intent.ChangeIsMinValueForNumberEnabled -> {
                 reduce { it.copy(isMinValueForNumberEnabled = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeIsExist -> {
+                reduce { it.copy(isExist = intent.value) }
             }
 
             is ConstructorContract.Intent.ChangeMinValueForNumber -> {
@@ -256,15 +268,53 @@ class ConstructorViewModelImpl @Inject constructor(
 
 
             ConstructorContract.Intent.ClickCreateButton -> {
-                if (uiState.value.visibilityState && uiState.value.firstClickState) {
+                if (uiState.value.selectedComponent == "Image") {
+                    if (uiState.value.selectedImageInputType == "Local") {
+                        repository.uploadImage(uiState.value.selectedImageUri.toUri())
+                            .onEach {
+                                uiState.value.selectedImageUri = it.toString()
+
+                                viewModelScope.launch {
+                                    uiState.value.apply {
+                                        repository.addComponent(
+                                            name, ComponentsModel(
+                                                componentsName = selectedComponent,
+                                                id = idValue,
+                                                imageUri = selectedImageUri,
+                                                color = 0xFF0F1C2,
+                                                idVisibility = componentId,
+                                            )
+                                        )
+                                    }
+
+                                    removeUiState()
+
+                                    direction.back()
+                                }
+                            }
+                            .launchIn(viewModelScope)
+                    } else if (uiState.value.selectedImageInputType == "Remote") {
+                        viewModelScope.launch {
+                            uiState.value.apply {
+                                repository.addComponent(
+                                    name, ComponentsModel(
+                                        componentsName = selectedComponent,
+                                        id = idValue,
+                                        imageUri = selectedImageUri,
+                                        color = 0xFF0F1C2,
+                                        idVisibility = componentId,
+                                    )
+                                )
+                            }
+
+                            removeUiState()
+
+                            direction.back()
+                        }
+                    }
+                } else if (uiState.value.visibilityState && uiState.value.firstClickState) {
                     myToast("Firstly you need to add visibility")
                 } else {
-                    if (uiState.value.selectedInputType == "Image") {
-                        repository.uploadImage(uiState.value.selectedImageUri.toUri())
-                            .onEach {  }
-                            .launchIn(viewModelScope)
-                    }
-
                     removeAllData()
                     uiState.value.apply {
                         if (idValue.isNotEmpty() && selectedComponent == "Input") {
@@ -304,6 +354,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                         type = selectedInputType,
                                         text = textValue,
                                         id = idValue,
+                                        imageUri = selectedImageUri,
                                         isMaxLengthForTextEnabled = isMaxLengthForTextEnabled,
                                         maxLengthForText = maxLengthForText,
                                         isMinLengthForTextEnabled = isMinLengthForTextEnabled,
@@ -350,6 +401,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                         type = selectedInputType,
                                         text = textValue,
                                         id = idValue,
+                                        imageUri = selectedImageUri,
                                         color = 0xFF0F1C2,
                                         selectorDataQuestion = selecterAnswer,
                                         selectorDataAnswers = selectorItems,
@@ -399,9 +451,6 @@ class ConstructorViewModelImpl @Inject constructor(
                 enteringSelectorsList = listOf(),
                 selectorVisibilityIdCheck = false,
                 selectedVisibilityList = listOf(),
-                selectedImageInputType = "Select",
-                selectedImageColor = Color.Transparent.toArgb(),
-                selectedImageUri = "",
                 listAllInputId = listOf(),
                 listAllSelectorId = listOf(),
                 listAllMultiSelectorId = listOf(),
@@ -425,7 +474,9 @@ class ConstructorViewModelImpl @Inject constructor(
                     "Text",
                     "Selector",
                     "MultiSelector",
-                    "Date Picker"
+                    "Date Picker",
+                    "Row",
+                    "Image",
                 ),
                 inputTypeList = listOf(
                     "Text",
@@ -434,7 +485,7 @@ class ConstructorViewModelImpl @Inject constructor(
                     "Phone"
                 ),
                 selectedImageInputType = "Select",
-                selectedImageColor = Color.Transparent.toArgb(),
+                selectedImageColor = Color.Transparent,
                 selectedImageUri = "",
                 selectorItems = listOf(),
                 multiSelectorItems = listOf(),

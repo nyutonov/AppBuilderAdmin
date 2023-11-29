@@ -16,18 +16,28 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +52,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.hilt.getViewModel
+import com.github.skydoves.colorpicker.compose.AlphaTile
+import com.github.skydoves.colorpicker.compose.HsvColorPicker
+import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import uz.gita.appbuilderadmin.R
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.presentation.components.ComponentsInImage
@@ -51,12 +64,14 @@ import uz.gita.appbuilderadmin.presentation.components.ComponentsInSelector
 import uz.gita.appbuilderadmin.presentation.components.ComponentsInText
 import uz.gita.appbuilderadmin.presentation.components.DateComponent
 import uz.gita.appbuilderadmin.presentation.components.DemoSpinner
+import uz.gita.appbuilderadmin.presentation.components.ImageComponent
 import uz.gita.appbuilderadmin.presentation.components.InputComponent
 import uz.gita.appbuilderadmin.presentation.components.MultiSelectorComponent
 import uz.gita.appbuilderadmin.presentation.components.MyText
 import uz.gita.appbuilderadmin.presentation.components.RowComponent
 import uz.gita.appbuilderadmin.presentation.components.TextComponent
 import uz.gita.appbuilderadmin.presentation.components.VisibilityComponents
+import uz.gita.appbuilderadmin.utils.extensions.myToast
 
 class ConstructorScreen(
     private val name: String,
@@ -73,8 +88,9 @@ class ConstructorScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
-@SuppressLint("RememberReturnType", "NewApi")
+@SuppressLint("RememberReturnType")
 @Composable
 fun ConstructorScreenContent(
     uiState: ConstructorContract.UiState,
@@ -144,6 +160,7 @@ fun ConstructorScreenContent(
                             )
                         ) {}
                     }
+
                     "Row" -> {
                         RowComponent(componentsModel = uiState.rowType)
                     }
@@ -193,6 +210,10 @@ fun ConstructorScreenContent(
                             )
                         }) {}
                     }
+
+                    "Image" -> {
+                        ImageComponent(uri = uiState.selectedImageUri, color = uiState.selectedImageColor)
+                    }
                 }
             }
 
@@ -221,8 +242,6 @@ fun ConstructorScreenContent(
                             list = uiState.componentList,
                             preselected = uiState.selectedComponent,
                             onSelectionChanged = {
-                                Log.d("TTT", it)
-
                                 onEventDispatchers(
                                     ConstructorContract.Intent.ChangingSelectedComponent(
                                         it
@@ -622,6 +641,66 @@ fun ConstructorScreenContent(
             }
         }
 
+        if (uiState.isShowingColorDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    onEventDispatchers.invoke(ConstructorContract.Intent.ChangeDialogShowing(false))
+                }
+            ) {
+                Surface(
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .wrapContentHeight(),
+                    shape = MaterialTheme.shapes.large
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        val controller = rememberColorPickerController()
+
+                        AlphaTile(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(60.dp)
+                                .clip(RoundedCornerShape(6.dp)),
+                            controller = controller
+                        )
+
+                        HsvColorPicker(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(300.dp)
+                                .padding(10.dp),
+                            controller = controller,
+                            onColorChanged = {
+
+                            }
+                        )
+
+                        Button(
+                            modifier = Modifier
+                                .padding(bottom = 15.dp)
+                                .width(310.dp)
+                                .height(50.dp),
+                            onClick = {
+                                onEventDispatchers.invoke(ConstructorContract.Intent.ChangeColorForImage(controller.selectedColor.value))
+                            },
+                            shape = RoundedCornerShape(10.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xff4d648d))
+                        ) {
+                            Text(
+                                text = "Save",
+                                style = TextStyle(
+                                    fontSize = 18.sp,
+                                    fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                                    fontWeight = FontWeight.W400,
+                                    textAlign = TextAlign.Center
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
         Button(
             modifier = Modifier
                 .padding(bottom = 15.dp)
@@ -629,7 +708,15 @@ fun ConstructorScreenContent(
                 .height(50.dp)
                 .align(Alignment.BottomCenter),
             onClick = {
-                if ((uiState.selectedInputType == "Image" && uiState.isExist) || uiState.selectedInputType != "Image") {
+                if (uiState.selectedComponent == "Image") {
+                    if (uiState.selectedImageInputType == "Remote" && uiState.isExist) {
+                        onEventDispatchers(ConstructorContract.Intent.ClickCreateButton)
+                    } else if (uiState.selectedImageInputType == "Local" && uiState.selectedImageUri.isNotEmpty()) {
+                        onEventDispatchers(ConstructorContract.Intent.ClickCreateButton)
+                    } else {
+                        myToast("Not uploading")
+                    }
+                } else {
                     onEventDispatchers(ConstructorContract.Intent.ClickCreateButton)
                 }
             },

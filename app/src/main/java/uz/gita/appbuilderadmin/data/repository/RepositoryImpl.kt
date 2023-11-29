@@ -141,6 +141,8 @@ class RepositoryImpl @Inject constructor(
                                 this.child("operator").setValue(component.operator)
                                 this.child("value").setValue(component.value)
 
+                                this.child("imageUri").setValue(component.imageUri)
+
                                 this.child("isMaxLengthForTextEnabled")
                                     .setValue(component.isMaxLengthForTextEnabled)
                                 this.child("maxLengthForText").setValue(component.maxLengthForText)
@@ -179,14 +181,17 @@ class RepositoryImpl @Inject constructor(
                 }
         }
 
-    override fun uploadImage(imageUri: Uri): Flow<Boolean> = callbackFlow {
-        storage.child("images").putFile(imageUri)
-            .addOnSuccessListener {  }
+    override fun uploadImage(imageUri: Uri): Flow<Uri> = callbackFlow {
+        storage.child("images/${UUID.randomUUID()}").putFile(imageUri)
+            .addOnSuccessListener {
+                it.metadata?.reference?.downloadUrl!!
+                    .addOnSuccessListener { trySend(it) }
+                    .addOnFailureListener {  }
+            }
             .addOnFailureListener {
-                Log.d("TTT", it.message.toString())
+                Log.d("TTT", "fail: ${it.message}")
             }
 
-        send(true)
         awaitClose()
     }
 

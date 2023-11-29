@@ -42,8 +42,9 @@ interface ConstructorContract {
             "Remote"
         ),
         val selectedImageInputType: String = "Select",
-        val selectedImageColor: Int = Color.Transparent.toArgb(),
-        val selectedImageUri: String = "",
+        val selectedImageColor: Color = Color.Transparent,
+        var selectedImageUri: String = "",
+        val isShowingColorDialog: Boolean = false,
         val selectorItems: List<String> = listOf(),
         val isExist: Boolean = false,
         val multiSelectorItems: List<String> = listOf(),
@@ -223,6 +224,14 @@ interface ConstructorContract {
 
         data class ChangeImageUri(
             val imageUri: String,
+        ) : Intent
+
+        data class ChangeDialogShowing(
+            val value: Boolean
+        ) : Intent
+
+        data class ChangeColorForImage(
+            val color: Color
         ) : Intent
 
         object ClickAddButtonVisibility : Intent
