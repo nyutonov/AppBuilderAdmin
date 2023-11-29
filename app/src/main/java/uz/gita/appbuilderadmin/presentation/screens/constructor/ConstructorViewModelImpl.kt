@@ -503,7 +503,7 @@ class ConstructorViewModelImpl @Inject constructor(
                     "Phone"
                 ),
                 selectedImageInputType = "Select",
-                selectedImageColor = Color.Transparent.toArgb(),
+                selectedImageColor = Color.Transparent,
                 selectedImageUri = "",
                 selectorItems = listOf(),
                 multiSelectorItems = listOf(),
