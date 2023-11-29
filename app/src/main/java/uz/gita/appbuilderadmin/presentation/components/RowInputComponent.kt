@@ -1,7 +1,6 @@
 package uz.gita.appbuilderadmin.presentation.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -25,70 +24,61 @@ import uz.gita.appbuilderadmin.data.model.ComponentsModel
 fun RowInputComponent(
     data: ComponentsModel,
     onClick: () -> Unit = {},
+    modifier: Modifier = Modifier
 ) {
     var value by remember { mutableStateOf("") }
 
-    Column {
-        Row(
-            modifier = Modifier.weight(
-                if (data.weight == 0f) { 1f } else {
-                    data.weight
-                }
-            )
-        ) {
-            TextField(
-                value = value,
-                onValueChange = { input ->
-                    if (data.type == "Number") {
-                        val numericValue = input.filter { it.isDigit() }
+        TextField(
+            value = value,
+            onValueChange = { input ->
+                if (data.type == "Number") {
+                    val numericValue = input.filter { it.isDigit() }
 
-                        if (data.isMaxValueForNumberEnabled) {
-                            if (numericValue.isEmpty()) {
-                                value = ""
-                            } else {
-                                numericValue.toIntOrNull()?.let { number ->
-                                    if (numericValue[0] != '0' && number < data.maxValueForNumber) {
-                                        value = numericValue
-                                    }
+                    if (data.isMaxValueForNumberEnabled) {
+                        if (numericValue.isEmpty()) {
+                            value = ""
+                        } else {
+                            numericValue.toIntOrNull()?.let { number ->
+                                if (numericValue[0] != '0' && number < data.maxValueForNumber) {
+                                    value = numericValue
                                 }
                             }
-                        } else {
-                            value = numericValue
                         }
-                    } else if (data.type == "Text") {
-                        if (data.isMaxLengthForTextEnabled) {
-                            if (input.length <= data.maxLengthForText) {
-                                value = input
-                            }
-                        } else {
+                    } else {
+                        value = numericValue
+                    }
+                } else if (data.type == "Text") {
+                    if (data.isMaxLengthForTextEnabled) {
+                        if (input.length <= data.maxLengthForText) {
                             value = input
                         }
                     } else {
                         value = input
                     }
-                },
+                } else {
+                    value = input
+                }
+            },
 
-                modifier = Modifier
-                    .weight(1f)
-                    .background(Color.Transparent)
-                    .padding(20.dp),
-                placeholder = {
-                    Text(text = data.placeHolder)
-                },
-                singleLine = true,
-                textStyle = TextStyle(fontSize = 18.sp),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = when (data.type) {
-                        "Email" -> KeyboardType.Email
-                        "Number" -> KeyboardType.Number
-                        "Phone" -> KeyboardType.Phone
-                        else -> KeyboardType.Text
-                    }
-                )
+            modifier = modifier // Anvarxon aytti
+                .background(Color.Transparent)
+                .padding(20.dp),
+            placeholder = {
+                Text(text = data.placeHolder)
+            },
+            singleLine = true,
+            textStyle = TextStyle(fontSize = 18.sp),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = when (data.type) {
+                    "Email" -> KeyboardType.Email
+                    "Number" -> KeyboardType.Number
+                    "Phone" -> KeyboardType.Phone
+                    else -> KeyboardType.Text
+                }
             )
-        }
+        )
     }
-}
+
 
 
 @Composable
