@@ -44,11 +44,7 @@ fun RowSelectorComponent(
 
         Box(
             modifier = Modifier.weight(
-                if (data.weight == 0f) {
-                    1f
-                } else {
-                    data.weight
-                }
+                data.weight
             )
         ) {
 
