@@ -23,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.DatePicker
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -44,6 +45,7 @@ import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.hilt.getViewModel
 import uz.gita.appbuilderadmin.R
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
+import uz.gita.appbuilderadmin.presentation.components.ComponentsInImage
 import uz.gita.appbuilderadmin.presentation.components.ComponentsInMultiSelector
 import uz.gita.appbuilderadmin.presentation.components.ComponentsInSelector
 import uz.gita.appbuilderadmin.presentation.components.ComponentsInText
@@ -580,7 +582,14 @@ fun ConstructorScreenContent(
                                 onEventDispatchers = onEventDispatchers
                             )
 
-                        } else {
+                        } else if (uiState.selectedComponent == "Image") {
+                            ComponentsInImage(
+                                uiState = uiState,
+                                onEventDispatchers = onEventDispatchers
+                            )
+                        }
+
+                        else {
                             SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
                             VisibilityComponents(
                                 uiState = uiState,
@@ -593,6 +602,7 @@ fun ConstructorScreenContent(
                 }
             }
         }
+
         Button(
             modifier = Modifier
                 .padding(bottom = 15.dp)

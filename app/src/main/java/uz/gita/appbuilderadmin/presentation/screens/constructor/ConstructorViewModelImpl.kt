@@ -1,11 +1,16 @@
 package uz.gita.appbuilderadmin.presentation.screens.constructor
 
+import android.net.Uri
 import android.util.Log
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
@@ -26,7 +31,6 @@ class ConstructorViewModelImpl @Inject constructor(
     private var list = ArrayList<VisibilityModule>()
 
 
-
     private fun reduce(block: (ConstructorContract.UiState) -> ConstructorContract.UiState) {
         val oldValue = uiState.value
         uiState.value = block(oldValue)
@@ -35,19 +39,25 @@ class ConstructorViewModelImpl @Inject constructor(
     override fun onEventDispatchers(intent: ConstructorContract.Intent) {
         when (intent) {
 
-            ConstructorContract.Intent.ClickVisibilityAddButton ->{
+            ConstructorContract.Intent.ClickVisibilityAddButton -> {
                 reduce { it.copy(addButtonVisibilityState = true) }
             }
 
-            ConstructorContract.Intent.LoadData-> {
+            ConstructorContract.Intent.LoadData -> {
                 reduce { it.copy(listAllInputId = repository.getAllListInputId()) }
                 reduce { it.copy(listAllSelectorId = repository.getAllSelectorId()) }
                 reduce { it.copy(listAllMultiSelectorId = repository.getAllMultiSelectorId()) }
             }
 
             is ConstructorContract.Intent.ChangeSelectedMultiSelectorId -> {
-                Log.d("TTT" , "id :${intent.value}")
-                reduce { it.copy(selectedMultiSelectorList = repository.getMultiSelectorValueListById(intent.value)) }
+                Log.d("TTT", "id :${intent.value}")
+                reduce {
+                    it.copy(
+                        selectedMultiSelectorList = repository.getMultiSelectorValueListById(
+                            intent.value
+                        )
+                    )
+                }
                 reduce { it.copy(selectedMultiSelectorId = intent.value) }
                 reduce { it.copy(componentId = intent.value) }
             }
@@ -96,13 +106,15 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.ChangingSelectedInputType -> {
-                reduce { it.copy(
-                    selectedInputType = intent.type,
-                    isMinValueForNumberEnabled = false,
-                    isMaxValueForNumberEnabled = false,
-                    isMinLengthForTextEnabled = false,
-                    isMaxLengthForTextEnabled = false
-                ) }
+                reduce {
+                    it.copy(
+                        selectedInputType = intent.type,
+                        isMinValueForNumberEnabled = false,
+                        isMaxValueForNumberEnabled = false,
+                        isMinLengthForTextEnabled = false,
+                        isMaxLengthForTextEnabled = false
+                    )
+                }
             }
 
             is ConstructorContract.Intent.ChangingTextValue -> {
@@ -149,8 +161,16 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(isRequired = intent.isRequired) }
             }
 
+            is ConstructorContract.Intent.ChangeImageInputType -> {
+                reduce { it.copy(selectedImageInputType = intent.value) }
+            }
+
             is ConstructorContract.Intent.ChangeIsMaxLengthForTextEnabled -> {
                 reduce { it.copy(isMaxLengthForTextEnabled = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeImageUri -> {
+                reduce { it.copy(selectedImageUri = intent.imageUri) }
             }
 
             is ConstructorContract.Intent.ChangeMaxLengthForText -> {
@@ -185,7 +205,7 @@ class ConstructorViewModelImpl @Inject constructor(
                 myToast("Visibility is added")
                 reduce { it.copy(firstClickState = false) }
                 reduce { it.copy(addButtonVisibilityState = false) }
-                Log.d("TTT" , "id ${uiState.value.componentId}")
+                Log.d("TTT", "id ${uiState.value.componentId}")
                 uiState.value.apply {
                     list.add(
                         VisibilityModule(
@@ -201,22 +221,35 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             ConstructorContract.Intent.ClickCreateButton -> {
-
-
-
-                if(uiState.value.visibilityState && uiState.value.firstClickState) {
+                if (uiState.value.visibilityState && uiState.value.firstClickState) {
                     myToast("Firstly you need to add visibility")
-                }else {
+                } else {
                     removeAllData()
                     uiState.value.apply {
-                        Log.d("TTT" , "name : $selectedComponent")
-                        if(idValue.isNotEmpty() && selectedComponent == "Input") {
-                            repository.addVisibilityModule(VisibilityTypeModule(idValue , "Input" , listOf()))
-                        }else if(idValue.isNotEmpty() && selectedComponent == "Selector") {
-                            repository.addVisibilityModule(VisibilityTypeModule(idValue , selectedComponent , selectorItems))
-                        }else if (idValue.isNotEmpty() && selectedComponent == "MultiSelector") {
-                            Log.d("TTT" , "enter")
-                            repository.addVisibilityModule(VisibilityTypeModule(idValue , selectedComponent , multiSelectorItems))
+                        if (idValue.isNotEmpty() && selectedComponent == "Input") {
+                            repository.addVisibilityModule(
+                                VisibilityTypeModule(
+                                    idValue,
+                                    "Input",
+                                    listOf()
+                                )
+                            )
+                        } else if (idValue.isNotEmpty() && selectedComponent == "Selector") {
+                            repository.addVisibilityModule(
+                                VisibilityTypeModule(
+                                    idValue,
+                                    selectedComponent,
+                                    selectorItems
+                                )
+                            )
+                        } else if (idValue.isNotEmpty() && selectedComponent == "MultiSelector") {
+                            repository.addVisibilityModule(
+                                VisibilityTypeModule(
+                                    idValue,
+                                    selectedComponent,
+                                    multiSelectorItems
+                                )
+                            )
                         }
                     }
                     if (!uiState.value.visibilityState) {
@@ -293,7 +326,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                         operator = operator,
                                         value = visibilityValue,
                                         datePicker = selectedDate,
-                                        list = Gson().toJson(list) ,
+                                        list = Gson().toJson(list),
                                         multiSelectDataQuestion = multiSelectorAnswer,
                                         multiSelectorDataAnswers = multiSelectorItems
                                     )
@@ -312,6 +345,12 @@ class ConstructorViewModelImpl @Inject constructor(
                             direction.back()
                         }
                     }
+
+                    uiState.value.selectedImageUri?.let {
+                        repository.uploadImage(it)
+                            .onEach {  }
+                            .launchIn(viewModelScope)
+                    }
                 }
             }
         }
@@ -319,84 +358,90 @@ class ConstructorViewModelImpl @Inject constructor(
 
     private fun removeAllData() {
 
-        reduce { it.copy(
-            visibilityComponentState  =  "",
-            enteringSelectorsList  = listOf(),
-            selectorVisibilityIdCheck  = false,
-            selectedVisibilityList  =  listOf(),
-            listAllInputId  =  listOf(),
-            listAllSelectorId  =listOf(),
-            listAllMultiSelectorId  =  listOf(),
-            selectedInputId  = "",
-            selectedSelectorId  =  "",
-            selectedMultiSelectorId  =  "",
-            selectedSelectorList  = listOf(),
-            selectedMultiSelectorList = listOf() ,
-            addButtonVisibilityState = false ,
-            operator = "" ,
-            visibilityValue = ""
-        ) }
-
+        reduce {
+            it.copy(
+                visibilityComponentState = "",
+                enteringSelectorsList = listOf(),
+                selectorVisibilityIdCheck = false,
+                selectedVisibilityList = listOf(),
+                selectedImageInputType = "Select",
+                selectedImageColor = Color.Transparent.toArgb(),
+                selectedImageUri = null,
+                listAllInputId = listOf(),
+                listAllSelectorId = listOf(),
+                listAllMultiSelectorId = listOf(),
+                selectedInputId = "",
+                selectedSelectorId = "",
+                selectedMultiSelectorId = "",
+                selectedSelectorList = listOf(),
+                selectedMultiSelectorList = listOf(),
+                addButtonVisibilityState = false,
+                operator = "",
+                visibilityValue = ""
+            )
+        }
     }
 
     private fun removeUiState() {
         reduce {
             it.copy(
-            componentList = listOf(
-                "Input",
-                "Text",
-                "Selector",
-                "MultiSelector",
-                "Date Picker"
-            ),
-            inputTypeList = listOf(
-                "Text",
-                "Number",
-                "Email",
-                "Phone"
-            ),
-            selectorItems = listOf(),
-            multiSelectorItems = listOf(),
-            selectedComponent = uiState.value.componentList[0],
-            selectedInputType = uiState.value.inputTypeList[0],
-            placeHolder = "",
-            textValue = "",
-            name = "",
-            idCheckState = false,
-            idValue = "",
-            visibilityState = false,
-            componentId  = "",
-            operator  = "",
-            visibilityValue  = "",
-            selectedDate = "",
-            selecterAnswer = "",
-            isMaxLengthForTextEnabled = false,
-            maxLengthForText = 0,
-            isMinLengthForTextEnabled = false,
-            minLengthForText = 0,
-            isMaxValueForNumberEnabled = false,
-            maxValueForNumber = 0,
-            isMinValueForNumberEnabled = false,
-            minValueForNumber = 0,
-            isRequired = false,
-            multiSelectorAnswer = "",
-            visibilityCheck  = true,
-            visibilityComponentState  = "",
-            enteringSelectorsList  = listOf(),
-            selectorVisibilityIdCheck  = false,
-            selectedVisibilityList  = listOf(),
-            listAllInputId  = listOf(),
-            listAllSelectorId  = listOf(),
-            listAllMultiSelectorId  = listOf(),
-            selectedInputId  = "",
-            selectedSelectorId  = "",
-            selectedMultiSelectorId  = "",
-            selectedSelectorList  = listOf(),
-            selectedMultiSelectorList = listOf() ,
-            addButtonVisibilityState  = false ,
-            listVisibilitiesValue  = listOf()
+                componentList = listOf(
+                    "Input",
+                    "Text",
+                    "Selector",
+                    "MultiSelector",
+                    "Date Picker"
+                ),
+                inputTypeList = listOf(
+                    "Text",
+                    "Number",
+                    "Email",
+                    "Phone"
+                ),
+                selectedImageInputType = "Select",
+                selectedImageColor = Color.Transparent.toArgb(),
+                selectedImageUri = null,
+                selectorItems = listOf(),
+                multiSelectorItems = listOf(),
+                selectedComponent = uiState.value.componentList[0],
+                selectedInputType = uiState.value.inputTypeList[0],
+                placeHolder = "",
+                textValue = "",
+                name = "",
+                idCheckState = false,
+                idValue = "",
+                visibilityState = false,
+                componentId = "",
+                operator = "",
+                visibilityValue = "",
+                selectedDate = "",
+                selecterAnswer = "",
+                isMaxLengthForTextEnabled = false,
+                maxLengthForText = 0,
+                isMinLengthForTextEnabled = false,
+                minLengthForText = 0,
+                isMaxValueForNumberEnabled = false,
+                maxValueForNumber = 0,
+                isMinValueForNumberEnabled = false,
+                minValueForNumber = 0,
+                isRequired = false,
+                multiSelectorAnswer = "",
+                visibilityCheck = true,
+                visibilityComponentState = "",
+                enteringSelectorsList = listOf(),
+                selectorVisibilityIdCheck = false,
+                selectedVisibilityList = listOf(),
+                listAllInputId = listOf(),
+                listAllSelectorId = listOf(),
+                listAllMultiSelectorId = listOf(),
+                selectedInputId = "",
+                selectedSelectorId = "",
+                selectedMultiSelectorId = "",
+                selectedSelectorList = listOf(),
+                selectedMultiSelectorList = listOf(),
+                addButtonVisibilityState = false,
+                listVisibilitiesValue = listOf()
             )
         }
     }
-
 }

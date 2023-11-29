@@ -1,6 +1,8 @@
 package uz.gita.appbuilderadmin.data.repository
 
+import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -8,6 +10,7 @@ import com.google.firebase.database.getValue
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -37,6 +40,7 @@ class RepositoryImpl @Inject constructor(
     private val firebaseDatabase = Firebase.database
     private val scope = CoroutineScope(Dispatchers.IO + Job())
     private lateinit var listVisiblity : List<VisibilityTypeModule>
+    private val storage = Firebase.storage.reference
 
     init {
 
@@ -167,6 +171,17 @@ class RepositoryImpl @Inject constructor(
                         }
                 }
         }
+
+    override fun uploadImage(imageUri: Uri): Flow<Boolean> = callbackFlow {
+        storage.child("images").putFile(imageUri)
+            .addOnSuccessListener {  }
+            .addOnFailureListener {
+                Log.d("TTT", it.message.toString())
+            }
+
+        send(true)
+        awaitClose()
+    }
 
     override suspend fun deleteComponent(component: ComponentsModel, name: String) {
         val databaseReference =
