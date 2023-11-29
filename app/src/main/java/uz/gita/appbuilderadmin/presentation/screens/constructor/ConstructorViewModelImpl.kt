@@ -1,8 +1,10 @@
 package uz.gita.appbuilderadmin.presentation.screens.constructor
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -13,6 +15,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
+import uz.gita.appbuilderadmin.data.model.SelectorModule
 import uz.gita.appbuilderadmin.data.model.VisibilityModule
 import uz.gita.appbuilderadmin.data.model.VisibilityTypeModule
 import uz.gita.appbuilderadmin.domain.repository.Repository
@@ -160,7 +163,9 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.ChangeImageInputType -> {
-                reduce { it.copy(selectedImageInputType = intent.value) }
+                if (uiState.value.selectedImageInputType != intent.value) {
+                    reduce { it.copy(selectedImageInputType = intent.value, selectedImageUri = "") }
+                }
             }
 
             is ConstructorContract.Intent.ChangeIsMaxLengthForTextEnabled -> {
@@ -201,9 +206,7 @@ class ConstructorViewModelImpl @Inject constructor(
 
             ConstructorContract.Intent.ClickAddButtonVisibility -> {
                 myToast("Visibility is added")
-                reduce { it.copy(firstClickState = false) }
-                reduce { it.copy(addButtonVisibilityState = false) }
-                Log.d("TTT", "id ${uiState.value.componentId}")
+                reduce { it.copy(firstClickState = false, addButtonVisibilityState = false) }
                 uiState.value.apply {
                     list.add(
                         VisibilityModule(
@@ -374,9 +377,9 @@ class ConstructorViewModelImpl @Inject constructor(
                         }
                     }
 
-                    uiState.value.selectedImageUri?.let {
-                        repository.uploadImage(it)
-                            .onEach { }
+                    if (uiState.value.selectedImageUri.isNotEmpty()) {
+                        repository.uploadImage(uiState.value.selectedImageUri.toUri())
+                            .onEach {  }
                             .launchIn(viewModelScope)
                     }
                 }

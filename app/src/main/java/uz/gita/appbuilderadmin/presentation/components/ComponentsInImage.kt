@@ -5,6 +5,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -23,6 +24,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -31,8 +35,10 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,12 +58,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.github.skydoves.colorpicker.compose.AlphaTile
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import uz.gita.appbuilderadmin.R
 import uz.gita.appbuilderadmin.presentation.screens.constructor.ConstructorContract
 import uz.gita.appbuilderadmin.presentation.screens.constructor.SetId
+import java.io.IOException
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
@@ -66,24 +82,13 @@ fun ComponentsInImage(
     onEventDispatchers: (ConstructorContract.Intent) -> Unit,
 ) {
     val controller = rememberColorPickerController()
+    val client = OkHttpClient()
     val context = LocalContext.current
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
-            onEventDispatchers.invoke(ConstructorContract.Intent.ChangeImageUri(it!!))
+            onEventDispatchers.invoke(ConstructorContract.Intent.ChangeImageUri(it.toString()))
         }
-
-    uiState.selectedImageUri?.let {
-        if (Build.VERSION.SDK_INT < 28) {
-            bitmap.value = MediaStore.Images
-                .Media.getBitmap(context.contentResolver, it)
-
-        } else {
-            val source = ImageDecoder
-                .createSource(context.contentResolver, it)
-            bitmap.value = ImageDecoder.decodeBitmap(source)
-        }
-    }
 
     SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
 
@@ -156,6 +161,20 @@ fun ComponentsInImage(
     Spacer(modifier = Modifier.size(10.dp))
 
     if (uiState.selectedImageInputType == "Local") {
+        if (uiState.selectedImageUri.isNotEmpty()) {
+            uiState.selectedImageUri.apply {
+                if (Build.VERSION.SDK_INT < 28) {
+                    bitmap.value = MediaStore.Images
+                        .Media.getBitmap(context.contentResolver, this.toUri())
+
+                } else {
+                    val source = ImageDecoder
+                        .createSource(context.contentResolver, this.toUri())
+                    bitmap.value = ImageDecoder.decodeBitmap(source)
+                }
+            }
+        }
+
         Button(
             modifier = Modifier
                 .padding(bottom = 15.dp)
@@ -199,7 +218,52 @@ fun ComponentsInImage(
             }
         }
     } else if (uiState.selectedImageInputType == "Remote") {
+        var isCheck by remember { mutableStateOf(false) }
+        var isExist by remember { mutableStateOf(false) }
 
+        TextField(
+            value = uiState.selectedImageUri,
+            onValueChange = { onEventDispatchers.invoke(ConstructorContract.Intent.ChangeImageUri(it)) }
+        )
+
+        Button(onClick = {
+            isCheck = true
+        }) {
+            Text(text = "Check")
+        }
+
+        if (isCheck) {
+            var uri = uiState.selectedImageUri
+
+            if (!(uri.startsWith("https:") || uri.startsWith("http:"))) {
+                uri = "https://1"
+            }
+
+            val request = Request.Builder()
+                .url(uri)
+                .head()
+                .build()
+
+            val call: Call = client.newCall(request)
+
+            call.enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    isExist = false
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    isExist = response.isSuccessful
+                }
+            })
+
+            isCheck = false
+        }
+
+        Icon(
+            imageVector = if (isExist) Icons.Default.Done else Icons.Default.Close,
+            contentDescription = "",
+            tint = if (isExist) Color.Green else Color.Red
+        )
     }
 
 //    AlphaTile(
