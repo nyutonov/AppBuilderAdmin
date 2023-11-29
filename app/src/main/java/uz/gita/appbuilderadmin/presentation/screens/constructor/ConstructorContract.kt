@@ -45,7 +45,7 @@ interface ConstructorContract {
         ),
         val selectedImageInputType: String = "Select",
         val selectedImageColor: Int = Color.Transparent.toArgb(),
-        val selectedImageUri: Uri? = null,
+        val selectedImageUri: String = "",
         val selectorItems: List<String> = listOf(),
         val multiSelectorItems: List<String> = listOf(),
         val selectedComponent: String = componentList[0],
@@ -214,7 +214,7 @@ interface ConstructorContract {
         ) : Intent
 
         data class ChangeImageUri(
-            val imageUri: Uri
+            val imageUri: String
         ) : Intent
 
         object ClickAddButtonVisibility : Intent

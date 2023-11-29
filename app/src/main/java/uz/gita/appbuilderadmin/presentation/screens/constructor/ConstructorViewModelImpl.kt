@@ -4,6 +4,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -162,7 +163,9 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.ChangeImageInputType -> {
-                reduce { it.copy(selectedImageInputType = intent.value) }
+                if (uiState.value.selectedImageInputType != intent.value) {
+                    reduce { it.copy(selectedImageInputType = intent.value, selectedImageUri = "") }
+                }
             }
 
             is ConstructorContract.Intent.ChangeIsMaxLengthForTextEnabled -> {
@@ -203,9 +206,7 @@ class ConstructorViewModelImpl @Inject constructor(
 
             ConstructorContract.Intent.ClickAddButtonVisibility -> {
                 myToast("Visibility is added")
-                reduce { it.copy(firstClickState = false) }
-                reduce { it.copy(addButtonVisibilityState = false) }
-                Log.d("TTT", "id ${uiState.value.componentId}")
+                reduce { it.copy(firstClickState = false, addButtonVisibilityState = false) }
                 uiState.value.apply {
                     list.add(
                         VisibilityModule(
@@ -346,8 +347,8 @@ class ConstructorViewModelImpl @Inject constructor(
                         }
                     }
 
-                    uiState.value.selectedImageUri?.let {
-                        repository.uploadImage(it)
+                    if (uiState.value.selectedImageUri.isNotEmpty()) {
+                        repository.uploadImage(uiState.value.selectedImageUri.toUri())
                             .onEach {  }
                             .launchIn(viewModelScope)
                     }
@@ -366,7 +367,7 @@ class ConstructorViewModelImpl @Inject constructor(
                 selectedVisibilityList = listOf(),
                 selectedImageInputType = "Select",
                 selectedImageColor = Color.Transparent.toArgb(),
-                selectedImageUri = null,
+                selectedImageUri = "",
                 listAllInputId = listOf(),
                 listAllSelectorId = listOf(),
                 listAllMultiSelectorId = listOf(),
@@ -400,7 +401,7 @@ class ConstructorViewModelImpl @Inject constructor(
                 ),
                 selectedImageInputType = "Select",
                 selectedImageColor = Color.Transparent.toArgb(),
-                selectedImageUri = null,
+                selectedImageUri = "",
                 selectorItems = listOf(),
                 multiSelectorItems = listOf(),
                 selectedComponent = uiState.value.componentList[0],
