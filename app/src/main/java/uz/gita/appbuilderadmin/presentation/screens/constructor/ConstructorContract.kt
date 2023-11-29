@@ -1,5 +1,9 @@
 package uz.gita.appbuilderadmin.presentation.screens.constructor
 
+import android.net.Uri
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.core.net.toUri
 import kotlinx.coroutines.flow.StateFlow
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.data.model.SelectorModule
@@ -17,15 +21,14 @@ interface ConstructorContract {
 
 
     data class UiState(
-
-
         val componentList: List<String> = listOf(
             "Input",
             "Text",
             "Selector",
             "MultiSelector",
             "Date Picker",
-            "Row"
+            "Row",
+            "Image"
         ),
         val inputTypeList: List<String> = listOf(
             "Text",
@@ -34,9 +37,15 @@ interface ConstructorContract {
             "Phone"
         ),
 
-        val rowType:List<ComponentsModel> = listOf(),
+        val rowType: List<ComponentsModel> = listOf(),
 
-
+        val imageInputTypes: List<String> = listOf(
+            "Local",
+            "Remote"
+        ),
+        val selectedImageInputType: String = "Select",
+        val selectedImageColor: Int = Color.Transparent.toArgb(),
+        val selectedImageUri: Uri? = null,
         val selectorItems: List<String> = listOf(),
         val multiSelectorItems: List<String> = listOf(),
         val selectedComponent: String = componentList[0],
@@ -47,9 +56,9 @@ interface ConstructorContract {
         val idCheckState: Boolean = false,
         val idValue: String = "",
         val visibilityState: Boolean = false,
-        val componentId : String = "",
-        val operator : String = "",
-        val visibilityValue : String = "",
+        val componentId: String = "",
+        val operator: String = "",
+        val visibilityValue: String = "",
         val selectedDate: String = "",
         val selecterAnswer: String = "",
         val isMaxLengthForTextEnabled: Boolean = false,
@@ -62,50 +71,54 @@ interface ConstructorContract {
         val minValueForNumber: Int = 0,
         val isRequired: Boolean = false,
         val multiSelectorAnswer: String = "",
-        val visibilityCheck : Boolean = true,
-        val visibilityComponentState : String = "",
-        val enteringSelectorsList : List<SelectorModule> = listOf(),
-        val selectorVisibilityIdCheck : Boolean = false,
-        val selectedVisibilityList : List<String> = listOf(),
-        val listAllInputId : List<String> = listOf(),
-        val listAllSelectorId : List<String> = listOf(),
-        val listAllMultiSelectorId : List<String> = listOf(),
-        val selectedInputId : String = "",
-        val selectedSelectorId : String = "",
-        val selectedMultiSelectorId : String = "",
-        val selectedSelectorList : List<String> = listOf(),
-        val selectedMultiSelectorList: List<String> = listOf() ,
-        val addButtonVisibilityState : Boolean = false ,
-        val listVisibilitiesValue : List<VisibilityModule> = listOf() ,
-        val firstClickState : Boolean = true
+        val visibilityCheck: Boolean = true,
+        val visibilityComponentState: String = "",
+        val enteringSelectorsList: List<SelectorModule> = listOf(),
+        val selectorVisibilityIdCheck: Boolean = false,
+        val selectedVisibilityList: List<String> = listOf(),
+        val listAllInputId: List<String> = listOf(),
+        val listAllSelectorId: List<String> = listOf(),
+        val listAllMultiSelectorId: List<String> = listOf(),
+        val selectedInputId: String = "",
+        val selectedSelectorId: String = "",
+        val selectedMultiSelectorId: String = "",
+        val selectedSelectorList: List<String> = listOf(),
+        val selectedMultiSelectorList: List<String> = listOf(),
+        val addButtonVisibilityState: Boolean = false,
+        val listVisibilitiesValue: List<VisibilityModule> = listOf(),
+        val firstClickState: Boolean = true
     )
+
     interface Intent {
 
         object ClickVisibilityAddButton : Intent
         object LoadData : Intent
         data class ChangeSelectedMultiSelectorId(
-            val value : String
+            val value: String
         ) : Intent
+
         data class ChangeSelectedSelectorId(
-            val value : String
+            val value: String
         ) : Intent
+
         data class ChangeSelectedInputId(
-            val value : String
+            val value: String
         ) : Intent
+
         data class ChangingSelectedComponent(
             val component: String
         ) : Intent
 
-        data class ChangingVisibilityValue (
-            val value : String
+        data class ChangingVisibilityValue(
+            val value: String
         ) : Intent
 
         data class OnChangeVisibilityComponentState(
-            val value  :String
+            val value: String
         ) : Intent
 
         data class ChangingOperator(
-            val value : String
+            val value: String
         ) : Intent
 
         data class ChangingIdValue(
@@ -113,7 +126,7 @@ interface ConstructorContract {
         ) : Intent
 
         data class ChangingComponentId(
-            val value : String
+            val value: String
         ) : Intent
 
         data class EnteringName(
@@ -194,6 +207,14 @@ interface ConstructorContract {
 
         data class ChangeMinValueForNumber(
             val value: Int
+        ) : Intent
+
+        data class ChangeImageInputType(
+            val value: String
+        ) : Intent
+
+        data class ChangeImageUri(
+            val imageUri: Uri
         ) : Intent
 
         object ClickAddButtonVisibility : Intent

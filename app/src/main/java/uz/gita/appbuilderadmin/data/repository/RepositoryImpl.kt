@@ -1,13 +1,15 @@
 package uz.gita.appbuilderadmin.data.repository
 
+import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.getValue
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -31,12 +33,13 @@ import java.util.UUID
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
-    private val visibilityDao: VisibilityDao
+    private val visibilityDao: VisibilityDao,
 ) : Repository {
     private val firebasePref = Firebase.firestore
     private val firebaseDatabase = Firebase.database
     private val scope = CoroutineScope(Dispatchers.IO + Job())
-    private lateinit var listVisiblity : List<VisibilityTypeModule>
+    private lateinit var listVisiblity: List<VisibilityTypeModule>
+    private val storage = Firebase.storage.reference
 
     init {
 
@@ -138,21 +141,28 @@ class RepositoryImpl @Inject constructor(
                                 this.child("operator").setValue(component.operator)
                                 this.child("value").setValue(component.value)
 
-                                this.child("isMaxLengthForTextEnabled").setValue(component.isMaxLengthForTextEnabled)
+                                this.child("isMaxLengthForTextEnabled")
+                                    .setValue(component.isMaxLengthForTextEnabled)
                                 this.child("maxLengthForText").setValue(component.maxLengthForText)
-                                this.child("isMinLengthForTextEnabled").setValue(component.isMinLengthForTextEnabled)
+                                this.child("isMinLengthForTextEnabled")
+                                    .setValue(component.isMinLengthForTextEnabled)
                                 this.child("minLengthForText").setValue(component.minLengthForText)
-                                this.child("isMaxValueForNumberEnabled").setValue(component.isMaxValueForNumberEnabled)
-                                this.child("maxValueForNumber").setValue(component.maxValueForNumber)
-                                this.child("isMinValueForNumberEnabled").setValue(component.isMinValueForNumberEnabled)
-                                this.child("minValueForNumber").setValue(component.minValueForNumber)
+                                this.child("isMaxValueForNumberEnabled")
+                                    .setValue(component.isMaxValueForNumberEnabled)
+                                this.child("maxValueForNumber")
+                                    .setValue(component.maxValueForNumber)
+                                this.child("isMinValueForNumberEnabled")
+                                    .setValue(component.isMinValueForNumberEnabled)
+                                this.child("minValueForNumber")
+                                    .setValue(component.minValueForNumber)
                                 this.child("isRequired").setValue(component.isRequired)
 
                                 this.child("text").setValue(component.text)
                                 this.child("color").setValue(component.color)
                                 this.child("list").setValue(component.list)
 
-                                this.child("selectorDataQuestion").setValue(component.selectorDataQuestion)
+                                this.child("selectorDataQuestion")
+                                    .setValue(component.selectorDataQuestion)
                                 this.child("selectorDataAnswers")
                                     .setValue(component.selectorDataAnswers.joinToString(":"))
 
@@ -162,11 +172,23 @@ class RepositoryImpl @Inject constructor(
                                     .setValue(component.multiSelectorDataAnswers.joinToString(":"))
 
                                 this.child("datePicker").setValue(component.datePicker)
-                                this.child("id").setValue(component.id.ifEmpty { UUID.randomUUID().toString() })
+                                this.child("id")
+                                    .setValue(component.id.ifEmpty { UUID.randomUUID().toString() })
                             }
                         }
                 }
         }
+
+    override fun uploadImage(imageUri: Uri): Flow<Boolean> = callbackFlow {
+        storage.child("images").putFile(imageUri)
+            .addOnSuccessListener {  }
+            .addOnFailureListener {
+                Log.d("TTT", it.message.toString())
+            }
+
+        send(true)
+        awaitClose()
+    }
 
     override suspend fun deleteComponent(component: ComponentsModel, name: String) {
         val databaseReference =
@@ -202,7 +224,7 @@ class RepositoryImpl @Inject constructor(
     override fun getAllSelectorId(): List<String> {
         val list = ArrayList<String>()
         listVisiblity.forEach {
-            if (it.type == "Selector")  {
+            if (it.type == "Selector") {
                 list.add(it.id)
             }
         }
@@ -212,7 +234,7 @@ class RepositoryImpl @Inject constructor(
     override fun getAllMultiSelectorId(): List<String> {
         val list = ArrayList<String>()
         listVisiblity.forEach {
-            if (it.type == "MultiSelector")  {
+            if (it.type == "MultiSelector") {
                 list.add(it.id)
             }
         }
