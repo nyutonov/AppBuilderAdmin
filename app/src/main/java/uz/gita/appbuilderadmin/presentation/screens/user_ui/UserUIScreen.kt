@@ -41,6 +41,7 @@ import uz.gita.appbuilderadmin.presentation.components.DeleteDialog
 import uz.gita.appbuilderadmin.presentation.components.ImageComponent
 import uz.gita.appbuilderadmin.presentation.components.InputComponent
 import uz.gita.appbuilderadmin.presentation.components.MultiSelectorComponent
+import uz.gita.appbuilderadmin.presentation.components.RowComponent
 import uz.gita.appbuilderadmin.presentation.components.SampleSpinner
 import uz.gita.appbuilderadmin.presentation.components.TextComponent
 import uz.gita.appbuilderadmin.ui.theme.AppBuilderAdminTheme
@@ -124,6 +125,11 @@ private fun MainContent(
                 items(uiState.value.components) {
 
                     when (it.componentsName) {
+                        "Row"->{
+                            RowComponent(componentsModel = it.lsRow)
+                        }
+
+
                         "Text" -> {
                             textTopComponent(text = "Text")
                             TextComponent(
