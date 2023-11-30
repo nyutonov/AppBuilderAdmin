@@ -229,8 +229,24 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(isExist = intent.value) }
             }
 
+            is ConstructorContract.Intent.ChangeImageHeightPx -> {
+                reduce { it.copy(imageHeightPx = intent.value) }
+            }
+
             is ConstructorContract.Intent.ChangeMinValueForNumber -> {
                 reduce { it.copy(minValueForNumber = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeImageSize -> {
+                reduce { it.copy(selectedSize = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeAspectRatioX -> {
+                reduce { it.copy(aspectRatioX = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeAspectRatioY -> {
+                reduce { it.copy(aspectRatioY = intent.value) }
             }
 
             ConstructorContract.Intent.ClickAddButtonVisibility -> {
@@ -264,7 +280,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                 type = selectedInputType,
                                 text = textValue,
                                 id = idValue,
-                                color = 0xFF0F1C2,
+                                color = selectedImageColor,
                                 selectorDataQuestion = selecterAnswer,
                                 selectorDataAnswers = selectorItems,
                                 idVisibility = componentId,
@@ -280,7 +296,6 @@ class ConstructorViewModelImpl @Inject constructor(
                 }
             }
 
-
             ConstructorContract.Intent.ClickCreateButton -> {
                 if (uiState.value.selectedComponent == "Image") {
                     if (uiState.value.selectedImageInputType == "Local") {
@@ -295,7 +310,10 @@ class ConstructorViewModelImpl @Inject constructor(
                                                 componentsName = selectedComponent,
                                                 id = idValue,
                                                 imageUri = selectedImageUri,
-                                                color = 0xFF0F1C2,
+                                                selectedImageSize = selectedSize,
+                                                aspectRatio = if (aspectRatioX == 0f && aspectRatioY == 0f) 0f else aspectRatioX / aspectRatioY,
+                                                heightImage = imageHeightPx.toFloat(),
+                                                color = selectedImageColor,
                                                 idVisibility = componentId,
                                             )
                                         )
@@ -314,8 +332,11 @@ class ConstructorViewModelImpl @Inject constructor(
                                     name, ComponentsModel(
                                         componentsName = selectedComponent,
                                         id = idValue,
+                                        heightImage = imageHeightPx.toFloat(),
+                                        selectedImageSize = selectedSize,
+                                        aspectRatio = if (aspectRatioX == 0f && aspectRatioY == 0f) 0f else aspectRatioX / aspectRatioY,
                                         imageUri = selectedImageUri,
-                                        color = 0xFF0F1C2,
+                                        color = selectedImageColor,
                                         idVisibility = componentId,
                                     )
                                 )
@@ -378,7 +399,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                         isMinValueForNumberEnabled = isMinValueForNumberEnabled,
                                         minValueForNumber = minValueForNumber,
                                         isRequired = isRequired,
-                                        color = 0xFF0F1C2,
+                                        color = selectedImageColor,
                                         selectorDataQuestion = selecterAnswer,
                                         selectorDataAnswers = selectorItems,
                                         idVisibility = componentId,
@@ -416,7 +437,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                         text = textValue,
                                         id = idValue,
                                         imageUri = selectedImageUri,
-                                        color = 0xFF0F1C2,
+                                        color = selectedImageColor,
                                         selectorDataQuestion = selecterAnswer,
                                         selectorDataAnswers = selectorItems,
                                         idVisibility = componentId,
@@ -466,7 +487,7 @@ class ConstructorViewModelImpl @Inject constructor(
                 selectorVisibilityIdCheck = false,
                 selectedVisibilityList = listOf(),
                 selectedImageInputType = "Select",
-                selectedImageColor = Color.Transparent,
+                selectedImageColor = 0U,
                 selectedImageUri = "",
                 listAllInputId = listOf(),
                 listAllSelectorId = listOf(),
@@ -503,7 +524,7 @@ class ConstructorViewModelImpl @Inject constructor(
                     "Phone"
                 ),
                 selectedImageInputType = "Select",
-                selectedImageColor = Color.Transparent,
+                selectedImageColor = 0U,
                 selectedImageUri = "",
                 selectorItems = listOf(),
                 multiSelectorItems = listOf(),
@@ -568,7 +589,7 @@ class ConstructorViewModelImpl @Inject constructor(
                     "Phone"
                 ),
                 selectedImageInputType = "Select",
-                selectedImageColor = Color.Transparent,
+                selectedImageColor = 0U,
                 selectedImageUri = "",
                 selectorItems = listOf(),
                 multiSelectorItems = listOf(),

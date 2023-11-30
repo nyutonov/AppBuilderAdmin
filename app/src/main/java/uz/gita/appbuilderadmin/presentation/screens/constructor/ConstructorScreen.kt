@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
@@ -42,6 +43,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -96,12 +99,18 @@ fun ConstructorScreenContent(
     uiState: ConstructorContract.UiState,
     onEventDispatchers: (ConstructorContract.Intent) -> Unit,
 ) {
-
-
     Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
+        val configuration = LocalConfiguration.current
+        val density = LocalDensity.current
+        val state = rememberLazyListState()
+
+        if (uiState.imageHeightPx.isEmpty()) {
+            uiState.imageHeightPx = with(density) { configuration.screenWidthDp.dp.roundToPx() / 3 }.toString()
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -128,102 +137,101 @@ fun ConstructorScreenContent(
                 )
             }
 
-            Column(
-                modifier = Modifier
-                    .padding(10.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .border(2.dp, Color.LightGray)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    modifier = Modifier
-                        .padding(top = 5.dp),
-                    text = "Preview",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
-                        fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
-                        fontWeight = FontWeight.W400,
-                        color = Color.LightGray
-                    )
-                )
-                Spacer(modifier = Modifier.size(10.dp))
-
-                Log.d("TTT", "ConstructorScreenContent: ${uiState.selectedComponent}")
-                when (uiState.selectedComponent) {
-
-
-                    "Input" -> {
-                        InputComponent(
-                            data = ComponentsModel(
-                                type = uiState.selectedInputType,
-                                placeHolder = uiState.placeHolder
-                            )
-                        ) {}
-                    }
-
-                    "Row" -> {
-                        Log.d("TTT", "ConstructorScreenContent: ${uiState.rowType} ")
-                        RowComponent(componentsModel = uiState.rowType)
-                    }
-
-                    "Text" -> {
-                        TextComponent(
-                            data = ComponentsModel(
-                                text = uiState.textValue
-                            )
-                        ) {}
-                    }
-
-                    "Selector" -> {
-                        Text(
-                            text = uiState.selecterAnswer,
-                            color = Color.White,
-                            modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp)
-                        )
-
-                        DemoSpinner(
-                            list = uiState.selectorItems,
-                            preselected = "Enter",
-                            onSelectionChanged = {},
-                            modifier = Modifier
-                                .padding(vertical = 10.dp)
-                                .fillMaxWidth()
-                                .height(56.dp)
-                        ) {}
-                    }
-
-                    "MultiSelector" -> {
-                        MultiSelectorComponent(
-                            list = uiState.multiSelectorItems,
-                            question = uiState.multiSelectorAnswer,
-                            onClickDelete = {},
-                            onLongClick = {},
-//                            data = ComponentsModel()
-                        )
-                    }
-
-                    "Date Picker" -> {
-                        DateComponent(date = "", listener = {
-                            onEventDispatchers(
-                                ConstructorContract.Intent.SetSelectedDate(
-                                    it
-                                )
-                            )
-                        }) {}
-                    }
-
-                    "Image" -> {
-                        ImageComponent(uri = uiState.selectedImageUri, color = uiState.selectedImageColor)
-                    }
-                }
-            }
-
             LazyColumn(
+                state = state,
                 modifier = Modifier
                     .padding(bottom = 70.dp)
             ) {
+                item {
+                    Column(
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .border(2.dp, Color.LightGray)
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 5.dp),
+                            text = "Preview",
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                lineHeight = 24.sp,
+                                fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
+                                fontWeight = FontWeight.W400,
+                                color = Color.LightGray
+                            )
+                        )
+                        Spacer(modifier = Modifier.size(10.dp))
+
+                        when (uiState.selectedComponent) {
+                            "Input" -> {
+                                InputComponent(
+                                    data = ComponentsModel(
+                                        type = uiState.selectedInputType,
+                                        placeHolder = uiState.placeHolder
+                                    )
+                                ) {}
+                            }
+
+                            "Row" -> {
+                                RowComponent(componentsModel = uiState.rowType)
+                            }
+
+                            "Text" -> {
+                                TextComponent(
+                                    data = ComponentsModel(
+                                        text = uiState.textValue
+                                    )
+                                ) {}
+                            }
+
+                            "Selector" -> {
+                                Text(
+                                    text = uiState.selecterAnswer,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp)
+                                )
+
+                                DemoSpinner(
+                                    list = uiState.selectorItems,
+                                    preselected = "Enter",
+                                    onSelectionChanged = {},
+                                    modifier = Modifier
+                                        .padding(vertical = 10.dp)
+                                        .fillMaxWidth()
+                                        .height(56.dp)
+                                ) {}
+                            }
+
+                            "MultiSelector" -> {
+                                MultiSelectorComponent(
+                                    list = uiState.multiSelectorItems,
+                                    question = uiState.multiSelectorAnswer,
+                                    onClickDelete = {},
+                                    onLongClick = {},
+//                            data = ComponentsModel()
+                                )
+                            }
+
+                            "Date Picker" -> {
+                                DateComponent(date = "", listener = {
+                                    onEventDispatchers(
+                                        ConstructorContract.Intent.SetSelectedDate(
+                                            it
+                                        )
+                                    )
+                                }) {}
+                            }
+
+                            "Image" -> {
+                                ImageComponent(ComponentsModel(selectedImageSize = uiState.selectedSize, imageUri = uiState.selectedImageUri, color = uiState.selectedImageColor, heightImage = uiState.imageHeightPx.toFloat(), aspectRatio = if (uiState.aspectRatioY == 0f) 0f else uiState.aspectRatioX / uiState.aspectRatioY))
+                            }
+                        }
+                    }
+                }
+
                 item {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -618,14 +626,20 @@ fun ConstructorScreenContent(
                             "Image" -> {
                                 ComponentsInImage(
                                     uiState = uiState,
-                                    onEventDispatchers = onEventDispatchers
+                                    onEventDispatchers = onEventDispatchers,
+                                    configuration,
+                                    density,
+                                    state
                                 )
                             }
 
                             "Row" -> {
                                 ComponentsInRow(
                                     uiState = uiState,
-                                    onEventDispatchers = onEventDispatchers
+                                    onEventDispatchers = onEventDispatchers,
+                                    configuration,
+                                    density,
+                                    state
                                 )
                             }
 
@@ -684,7 +698,7 @@ fun ConstructorScreenContent(
                                 .width(310.dp)
                                 .height(50.dp),
                             onClick = {
-                                onEventDispatchers.invoke(ConstructorContract.Intent.ChangeColorForImage(controller.selectedColor.value))
+                                onEventDispatchers.invoke(ConstructorContract.Intent.ChangeColorForImage(controller.selectedColor.value.value))
                             },
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xff4d648d))

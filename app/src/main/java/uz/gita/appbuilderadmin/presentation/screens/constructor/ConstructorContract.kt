@@ -1,7 +1,6 @@
 package uz.gita.appbuilderadmin.presentation.screens.constructor
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import kotlinx.coroutines.flow.StateFlow
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.data.model.SelectorModule
@@ -42,9 +41,18 @@ interface ConstructorContract {
             "Local",
             "Remote"
         ),
+        val sizes: List<String> = listOf(
+            "Auto",
+            "Custom",
+            "Ratio"
+        ),
         val selectedImageInputType: String = "Select",
-        val selectedImageColor: Color = Color.Transparent,
+        val selectedImageColor: ULong = 0U,
         var selectedImageUri: String = "",
+        var imageHeightPx: String = "",
+        val selectedSize: String = "Auto",
+        val aspectRatioX: Float = 1f,
+        val aspectRatioY: Float = 1f,
         val isShowingColorDialog: Boolean = false,
         val selectorItems: List<String> = listOf(),
         val isExist: Boolean = false,
@@ -238,13 +246,29 @@ interface ConstructorContract {
         ) : Intent
 
         data class ChangeColorForImage(
-            val color: Color
+            val color: ULong
         ) : Intent
 
         object ClickAddButtonVisibility : Intent
 
         data class ChangeIsExist(
             val value: Boolean
+        ) : Intent
+
+        data class ChangeImageHeightPx(
+            val value: String
+        ) : Intent
+
+        data class ChangeImageSize(
+            val value: String
+        ) : Intent
+
+        data class ChangeAspectRatioX(
+            val value: Float
+        ) : Intent
+
+        data class ChangeAspectRatioY(
+            val value: Float
         ) : Intent
     }
 }

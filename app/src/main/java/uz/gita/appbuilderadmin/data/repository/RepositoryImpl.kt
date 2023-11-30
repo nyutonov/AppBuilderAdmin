@@ -2,7 +2,6 @@ package uz.gita.appbuilderadmin.data.repository
 
 import android.net.Uri
 import android.util.Log
-import androidx.core.net.toUri
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -142,6 +141,10 @@ class RepositoryImpl @Inject constructor(
                                 this.child("value").setValue(component.value)
 
                                 this.child("imageUri").setValue(component.imageUri)
+                                this.child("color").setValue(component.color.toLong())
+                                this.child("heightImage").setValue(component.heightImage)
+                                this.child("selectedImageSize").setValue(component.selectedImageSize)
+                                this.child("aspectRatio").setValue(component.aspectRatio)
 
                                 this.child("isMaxLengthForTextEnabled")
                                     .setValue(component.isMaxLengthForTextEnabled)
@@ -160,7 +163,6 @@ class RepositoryImpl @Inject constructor(
                                 this.child("isRequired").setValue(component.isRequired)
 
                                 this.child("text").setValue(component.text)
-                                this.child("color").setValue(component.color)
                                 this.child("list").setValue(component.list)
 
                                 this.child("selectorDataQuestion")
@@ -176,6 +178,8 @@ class RepositoryImpl @Inject constructor(
                                 this.child("datePicker").setValue(component.datePicker)
                                 this.child("id")
                                     .setValue(component.id.ifEmpty { UUID.randomUUID().toString() })
+
+                                this.child("rowType").setValue(component.rowType)
                             }
                         }
                 }
