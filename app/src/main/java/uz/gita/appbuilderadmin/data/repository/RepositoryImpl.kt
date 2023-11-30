@@ -174,7 +174,7 @@ class RepositoryImpl @Inject constructor(
                                     .setValue(component.multiSelectDataQuestion)
                                 this.child("multiSelectorDataAnswers")
                                     .setValue(component.multiSelectorDataAnswers.joinToString(":"))
-
+                  this.child("rowType").setValue(component.rowType)
                                 this.child("datePicker").setValue(component.datePicker)
                                 this.child("id")
                                     .setValue(component.id.ifEmpty { UUID.randomUUID().toString() })

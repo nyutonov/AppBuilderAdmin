@@ -99,6 +99,8 @@ fun ConstructorScreenContent(
     uiState: ConstructorContract.UiState,
     onEventDispatchers: (ConstructorContract.Intent) -> Unit,
 ) {
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -810,11 +812,12 @@ fun SetId(
         Spacer(modifier = Modifier.size(5.dp))
     }
 }
+
 @Composable
 fun InputWeight(
     uiState: ConstructorContract.UiState,
     onEventDispatchers: (ConstructorContract.Intent) -> Unit,
-    onChangeWeight:(Float)->Unit={}
+    onChangeWeight: (Float) -> Unit = {}
 ) {
     var isCheck by remember {
         mutableStateOf(false)
@@ -844,7 +847,7 @@ fun InputWeight(
         Checkbox(
             checked = isCheck,
             onCheckedChange = {
-                isCheck=it
+                isCheck = it
             },
             colors = CheckboxDefaults.colors(
                 checkedColor = Color(0xff4d648d)
@@ -858,9 +861,8 @@ fun InputWeight(
             value = weight,
             singleLine = true,
             onValueChange = {
-                weight=it
-                 onEventDispatchers(ConstructorContract.Intent.ChangeWeight(if (it.isEmpty())0f else it.toFloat()))
-
+                weight = it
+                onEventDispatchers(ConstructorContract.Intent.ChangeWeight(if (it.isEmpty()) 0f else it.toFloat()))
             },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.LightGray,
@@ -869,8 +871,8 @@ fun InputWeight(
                 unfocusedTextColor = Color.LightGray
             ),
             keyboardOptions = KeyboardOptions(
-               keyboardType = KeyboardType.Number
-           ),
+                keyboardType = KeyboardType.Number
+            ),
             shape = RoundedCornerShape(5.dp),
             enabled = isCheck
         )

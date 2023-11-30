@@ -1,6 +1,11 @@
 package uz.gita.appbuilderadmin.utils.mapper
 
+import androidx.compose.ui.graphics.Color
+import androidx.core.graphics.toColor
+import com.google.common.reflect.TypeToken
 import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.getValue
+import com.google.gson.Gson
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.data.model.VisibilityTypeModule
 import uz.gita.appbuilderadmin.data.source.local.room.VisibilityEntity
@@ -45,8 +50,13 @@ fun DataSnapshot.toComponentData(): ComponentsModel = ComponentsModel(
     operator = child("operator").getValue(String::class.java) ?: "",
     value = child("value").getValue(String::class.java) ?: "",
     id = child("id").getValue(String::class.java) ?: UUID.randomUUID().toString(),
-
-    rowType = child("rowType").getValue(String::class.java) ?: ""
+    lsRow =if(child("rowType").getValue(String::class.java).isNullOrEmpty()){
+        listOf()
+    }else{
+        Gson().fromJson(child("rowType").getValue(String::class.java) ,
+            object : TypeToken<List<ComponentsModel>>(){}.type
+        )
+    }
 )
 
 fun VisibilityEntity.toData() : VisibilityTypeModule = VisibilityTypeModule(
