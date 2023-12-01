@@ -110,8 +110,8 @@ class RepositoryImpl @Inject constructor(
         awaitClose()
     }
 
-    override suspend fun addComponent(name: String, component: ComponentsModel): Unit =
-        withContext(Dispatchers.IO) {
+    override fun addComponent(name: String, component: ComponentsModel): Flow<Boolean> =
+        callbackFlow {
             val uuid = UUID.randomUUID().toString()
 
             firebaseDatabase
@@ -179,6 +179,9 @@ class RepositoryImpl @Inject constructor(
                             }
                         }
                 }
+
+            trySend(true)
+            awaitClose()
         }
 
     override fun uploadImage(imageUri: Uri): Flow<Uri> = callbackFlow {
@@ -186,7 +189,7 @@ class RepositoryImpl @Inject constructor(
             .addOnSuccessListener {
                 it.metadata?.reference?.downloadUrl!!
                     .addOnSuccessListener { trySend(it) }
-                    .addOnFailureListener {  }
+                    .addOnFailureListener { }
             }
             .addOnFailureListener {
                 Log.d("TTT", "fail: ${it.message}")

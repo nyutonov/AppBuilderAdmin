@@ -90,7 +90,9 @@ interface ConstructorContract {
         val listVisibilitiesValue: List<VisibilityModule> = listOf(),
         val firstClickState: Boolean = true,
 
-        val isChanged:Boolean=false
+        val isChanged:Boolean=false,
+
+        var progressBar: Boolean = false
     )
 
     interface Intent {
@@ -246,5 +248,8 @@ interface ConstructorContract {
         data class ChangeIsExist(
             val value: Boolean
         ) : Intent
+        data class ProgresBar(
+            var progressBar: Boolean = false
+        ):Intent
     }
 }

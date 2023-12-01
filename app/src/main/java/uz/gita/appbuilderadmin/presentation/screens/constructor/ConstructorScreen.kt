@@ -215,7 +215,12 @@ fun ConstructorScreenContent(
                     }
 
                     "Image" -> {
-                        ImageComponent(uri = uiState.selectedImageUri, color = uiState.selectedImageColor)
+                        ImageComponent(
+                            uri = uiState.selectedImageUri,
+                            color = uiState.selectedImageColor,
+                            uiState = uiState,
+                            onEventDispatchers = onEventDispatchers::invoke
+                        )
                     }
                 }
             }
@@ -673,9 +678,7 @@ fun ConstructorScreenContent(
                                 .height(300.dp)
                                 .padding(10.dp),
                             controller = controller,
-                            onColorChanged = {
-
-                            }
+                            onColorChanged = {}
                         )
 
                         Button(
@@ -684,7 +687,11 @@ fun ConstructorScreenContent(
                                 .width(310.dp)
                                 .height(50.dp),
                             onClick = {
-                                onEventDispatchers.invoke(ConstructorContract.Intent.ChangeColorForImage(controller.selectedColor.value))
+                                onEventDispatchers.invoke(
+                                    ConstructorContract.Intent.ChangeColorForImage(
+                                        controller.selectedColor.value
+                                    )
+                                )
                             },
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xff4d648d))
@@ -712,10 +719,13 @@ fun ConstructorScreenContent(
                 .align(Alignment.BottomCenter),
             onClick = {
                 if (uiState.selectedComponent == "Image") {
+
                     if (uiState.selectedImageInputType == "Remote" && uiState.isExist) {
                         onEventDispatchers(ConstructorContract.Intent.ClickCreateButton)
+
                     } else if (uiState.selectedImageInputType == "Local" && uiState.selectedImageUri.isNotEmpty()) {
                         onEventDispatchers(ConstructorContract.Intent.ClickCreateButton)
+
                     } else {
                         myToast("Not uploading")
                     }
@@ -796,11 +806,12 @@ fun SetId(
         Spacer(modifier = Modifier.size(5.dp))
     }
 }
+
 @Composable
 fun InputWeight(
     uiState: ConstructorContract.UiState,
     onEventDispatchers: (ConstructorContract.Intent) -> Unit,
-    onChangeWeight:(Float)->Unit={}
+    onChangeWeight: (Float) -> Unit = {}
 ) {
     var isCheck by remember {
         mutableStateOf(false)
@@ -830,7 +841,7 @@ fun InputWeight(
         Checkbox(
             checked = isCheck,
             onCheckedChange = {
-                isCheck=it
+                isCheck = it
             },
             colors = CheckboxDefaults.colors(
                 checkedColor = Color(0xff4d648d)
@@ -844,8 +855,8 @@ fun InputWeight(
             value = weight,
             singleLine = true,
             onValueChange = {
-                weight=it
-                 onEventDispatchers(ConstructorContract.Intent.ChangeWeight(if (it.isEmpty())0f else it.toFloat()))
+                weight = it
+                onEventDispatchers(ConstructorContract.Intent.ChangeWeight(if (it.isEmpty()) 0f else it.toFloat()))
 
             },
             colors = OutlinedTextFieldDefaults.colors(
@@ -855,8 +866,8 @@ fun InputWeight(
                 unfocusedTextColor = Color.LightGray
             ),
             keyboardOptions = KeyboardOptions(
-               keyboardType = KeyboardType.Number
-           ),
+                keyboardType = KeyboardType.Number
+            ),
             shape = RoundedCornerShape(5.dp),
             enabled = isCheck
         )

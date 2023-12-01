@@ -11,7 +11,7 @@ interface Repository {
     fun addUser(userModel: UserModel): Flow<Boolean>
     fun getAllUsers(): Flow<List<UserModel>>
     fun getAllData(name: String): Flow<List<ComponentsModel>>
-    suspend fun addComponent(name: String, component: ComponentsModel)
+    fun addComponent(name: String, component: ComponentsModel): Flow<Boolean>
 
     fun uploadImage(imageUri: Uri): Flow<Uri>
 

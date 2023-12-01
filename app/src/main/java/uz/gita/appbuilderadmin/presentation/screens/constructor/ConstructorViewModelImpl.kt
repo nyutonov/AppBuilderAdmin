@@ -41,10 +41,13 @@ class ConstructorViewModelImpl @Inject constructor(
         when (intent) {
             is ConstructorContract.Intent.ChangeWeight -> {
 
-                uiState.update { it.copy(weight =
-                if (intent.weight==0f)1f else intent.weight
+                uiState.update {
+                    it.copy(
+                        weight =
+                        if (intent.weight == 0f) 1f else intent.weight
 
-                ) }
+                    )
+                }
             }
 
             ConstructorContract.Intent.ClickVisibilityAddButton -> {
@@ -189,6 +192,7 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(isMaxLengthForTextEnabled = intent.value) }
             }
 
+
             is ConstructorContract.Intent.ChangeImageUri -> {
                 reduce { it.copy(selectedImageUri = intent.imageUri) }
             }
@@ -231,6 +235,10 @@ class ConstructorViewModelImpl @Inject constructor(
 
             is ConstructorContract.Intent.ChangeMinValueForNumber -> {
                 reduce { it.copy(minValueForNumber = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ProgresBar ->{
+                reduce { it.copy(progressBar = intent.progressBar) }
             }
 
             ConstructorContract.Intent.ClickAddButtonVisibility -> {
@@ -282,12 +290,12 @@ class ConstructorViewModelImpl @Inject constructor(
 
 
             ConstructorContract.Intent.ClickCreateButton -> {
+
                 if (uiState.value.selectedComponent == "Image") {
                     if (uiState.value.selectedImageInputType == "Local") {
-                        repository.uploadImage(uiState.value.selectedImageUri.toUri())
-                            .onEach {
+                        reduce { it.copy(progressBar = true) }
+                        repository.uploadImage(uiState.value.selectedImageUri.toUri()).onEach {
                                 uiState.value.selectedImageUri = it.toString()
-
                                 viewModelScope.launch {
                                     uiState.value.apply {
                                         repository.addComponent(
@@ -299,17 +307,19 @@ class ConstructorViewModelImpl @Inject constructor(
                                                 idVisibility = componentId,
                                             )
                                         )
+                                            .onEach { reduce { it.copy(progressBar = false) } }
+                                            .launchIn(viewModelScope)
                                     }
 
                                     removeUiState()
-
                                     direction.back()
                                 }
-                            }
-                            .launchIn(viewModelScope)
+                            }.launchIn(viewModelScope)
+
                     } else if (uiState.value.selectedImageInputType == "Remote") {
                         viewModelScope.launch {
                             uiState.value.apply {
+
                                 repository.addComponent(
                                     name, ComponentsModel(
                                         componentsName = selectedComponent,
@@ -320,9 +330,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                     )
                                 )
                             }
-
                             removeUiState()
-
                             direction.back()
                         }
                     }
@@ -503,7 +511,7 @@ class ConstructorViewModelImpl @Inject constructor(
                     "Phone"
                 ),
                 selectedImageInputType = "Select",
-                selectedImageColor = Color.Transparent.toArgb(),
+                selectedImageColor = Color.Transparent,
                 selectedImageUri = "",
                 selectorItems = listOf(),
                 multiSelectorItems = listOf(),

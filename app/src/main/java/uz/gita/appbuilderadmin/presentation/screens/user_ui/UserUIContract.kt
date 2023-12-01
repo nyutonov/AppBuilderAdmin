@@ -26,6 +26,11 @@ interface UserUIContract {
             val componentsModel: ComponentsModel,
             val name:String
         ):Intent
+
+        data class ProgresBar(
+            val progresBar: Boolean
+        ):Intent
+
     }
 
     data class UIState(

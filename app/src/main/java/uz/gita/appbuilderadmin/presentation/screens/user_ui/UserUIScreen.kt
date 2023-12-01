@@ -43,6 +43,7 @@ import uz.gita.appbuilderadmin.presentation.components.InputComponent
 import uz.gita.appbuilderadmin.presentation.components.MultiSelectorComponent
 import uz.gita.appbuilderadmin.presentation.components.SampleSpinner
 import uz.gita.appbuilderadmin.presentation.components.TextComponent
+import uz.gita.appbuilderadmin.presentation.screens.constructor.ConstructorContract
 import uz.gita.appbuilderadmin.ui.theme.AppBuilderAdminTheme
 
 class UserUIScreen(private val name: String) : AndroidScreen() {
@@ -279,13 +280,12 @@ private fun MainContent(
 
                         "Image" -> {
                             textTopComponent(text = "Image")
-                            ImageComponent(uri = it.imageUri)
+                            ImageComponent(uri = it.imageUri,uiState = ConstructorContract.UiState(), onEventDispatchers = {})
                         }
                     }
                 }
             }
         }
-
     }
 }
 

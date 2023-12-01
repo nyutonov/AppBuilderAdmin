@@ -80,6 +80,8 @@ fun ComponentsInImage(
             onEventDispatchers.invoke(ConstructorContract.Intent.ChangeImageUri(it.toString()))
         }
 
+
+
     SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
 
     Text(
@@ -149,7 +151,6 @@ fun ComponentsInImage(
     }
 
     Spacer(modifier = Modifier.size(10.dp))
-
     if (uiState.selectedImageInputType == "Local") {
         if (uiState.selectedImageUri.isNotEmpty()) {
             uiState.selectedImageUri.apply {
@@ -185,6 +186,8 @@ fun ComponentsInImage(
             )
         }
     } else if (uiState.selectedImageInputType == "Remote") {
+
+
         var isCheck by remember { mutableStateOf(false) }
 
         TextField(
@@ -199,6 +202,7 @@ fun ComponentsInImage(
         }
 
         if (isCheck) {
+
             var uri = uiState.selectedImageUri
 
             if (!(uri.startsWith("https:") || uri.startsWith("http:"))) {
@@ -212,6 +216,8 @@ fun ComponentsInImage(
 
             val call: Call = client.newCall(request)
 
+
+
             call.enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     onEventDispatchers.invoke(ConstructorContract.Intent.ChangeIsExist(false))
@@ -219,17 +225,22 @@ fun ComponentsInImage(
 
                 override fun onResponse(call: Call, response: Response) {
                     onEventDispatchers.invoke(ConstructorContract.Intent.ChangeIsExist(response.isSuccessful))
+
                 }
             })
-
             isCheck = false
         }
 
         Icon(
             imageVector = if (uiState.isExist) Icons.Default.Done else Icons.Default.Close,
             contentDescription = "",
-            tint = if (uiState.isExist) Color.Green else Color.Red
+            tint = if (uiState.isExist){
+                Color.Green
+            } else{
+                Color.Red
+            }
         )
+
     }
 
     Button(
