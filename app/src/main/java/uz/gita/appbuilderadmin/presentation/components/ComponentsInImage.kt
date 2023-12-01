@@ -71,6 +71,9 @@ import java.io.IOException
 fun ComponentsInImage(
     uiState: ConstructorContract.UiState,
     onEventDispatchers: (ConstructorContract.Intent) -> Unit,
+    configuration: Configuration,
+    density: Density,
+    state: LazyListState
 ) {
     val client = OkHttpClient()
     val context = LocalContext.current
@@ -79,10 +82,72 @@ fun ComponentsInImage(
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
             onEventDispatchers.invoke(ConstructorContract.Intent.ChangeImageUri(it.toString()))
         }
+    val scope = rememberCoroutineScope()
 
+    var expandedId by remember { mutableStateOf(false) }
 
+    Row {
+        Checkbox(
+            modifier = Modifier
+                .align(Alignment.CenterVertically),
+            checked = uiState.isIdInputted,
+            onCheckedChange = { onEventDispatchers.invoke(ConstructorContract.Intent.ChangeIsIdInputted(it)) }
+        )
 
-    SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
+        Box {
+            Column {
+                OutlinedTextField(
+                    value = uiState.selectedIdForImage,
+                    onValueChange = { },
+                    modifier = Modifier
+                        .padding(horizontal = 15.dp)
+                        .fillMaxWidth(),
+                    trailingIcon = { Icon(Icons.Outlined.ArrowDropDown, null) },
+                    readOnly = true,
+                    colors = TextFieldDefaults.colors(Color.Black),
+                    enabled = uiState.isIdInputted
+                )
+                DropdownMenu(
+                    modifier = Modifier.fillMaxWidth(),
+                    expanded = expandedId,
+                    onDismissRequest = { expandedId = false },
+                ) {
+                    uiState.listAllInputId.forEach { entry ->
+                        DropdownMenuItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                expandedId = false
+
+                                onEventDispatchers.invoke(
+                                    ConstructorContract.Intent.ChangeImageId(
+                                        entry
+                                    )
+                                )
+                            }, text = {
+                                Text(
+                                    text = entry,
+                                    modifier = Modifier
+                                        .wrapContentWidth()
+                                        .align(Alignment.Start),
+                                    color = Color.Black
+                                )
+                            }
+                        )
+                    }
+                }
+            }
+
+            if (uiState.isIdInputted) {
+                Spacer(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(Color.Transparent)
+                        .padding(10.dp)
+                        .clickable(onClick = { expandedId = !expandedId })
+                )
+            }
+        }
+    }
 
     Text(
         text = "Choose",
@@ -151,6 +216,7 @@ fun ComponentsInImage(
     }
 
     Spacer(modifier = Modifier.size(10.dp))
+
     if (uiState.selectedImageInputType == "Local") {
         if (uiState.selectedImageUri.isNotEmpty()) {
             uiState.selectedImageUri.apply {
@@ -186,8 +252,6 @@ fun ComponentsInImage(
             )
         }
     } else if (uiState.selectedImageInputType == "Remote") {
-
-
         var isCheck by remember { mutableStateOf(false) }
 
         TextField(
@@ -202,7 +266,6 @@ fun ComponentsInImage(
         }
 
         if (isCheck) {
-
             var uri = uiState.selectedImageUri
 
             if (!(uri.startsWith("https:") || uri.startsWith("http:"))) {
@@ -216,8 +279,6 @@ fun ComponentsInImage(
 
             val call: Call = client.newCall(request)
 
-
-
             call.enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     onEventDispatchers.invoke(ConstructorContract.Intent.ChangeIsExist(false))
@@ -225,22 +286,17 @@ fun ComponentsInImage(
 
                 override fun onResponse(call: Call, response: Response) {
                     onEventDispatchers.invoke(ConstructorContract.Intent.ChangeIsExist(response.isSuccessful))
-
                 }
             })
+
             isCheck = false
         }
 
         Icon(
             imageVector = if (uiState.isExist) Icons.Default.Done else Icons.Default.Close,
             contentDescription = "",
-            tint = if (uiState.isExist){
-                Color.Green
-            } else{
-                Color.Red
-            }
+            tint = if (uiState.isExist) Color.Green else Color.Red
         )
-
     }
 
     Button(
@@ -265,11 +321,172 @@ fun ComponentsInImage(
         )
     }
 
-    Box(
-        modifier = Modifier
-            .padding(bottom = 15.dp)
-            .width(310.dp)
-            .height(50.dp)
-            .background(color = uiState.selectedImageColor)
-    )
+    Spacer(modifier = Modifier.size(5.dp))
+
+    var expandedSize by remember { mutableStateOf(false) }
+
+    Box {
+        Column {
+            OutlinedTextField(
+                value = uiState.selectedSize,
+                onValueChange = { },
+                modifier = Modifier
+                    .padding(horizontal = 15.dp)
+                    .fillMaxWidth(),
+                trailingIcon = { Icon(Icons.Outlined.ArrowDropDown, null) },
+                readOnly = true,
+                colors = TextFieldDefaults.colors(Color.Black)
+            )
+            DropdownMenu(
+                modifier = Modifier.fillMaxWidth(),
+                expanded = expandedSize,
+                onDismissRequest = { expandedSize = false },
+            ) {
+                uiState.sizes.forEach { entry ->
+                    DropdownMenuItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            expandedSize = false
+
+                            onEventDispatchers.invoke(
+                                ConstructorContract.Intent.ChangeImageSize(
+                                    entry
+                                )
+                            )
+                        }, text = {
+                            Text(
+                                text = entry,
+                                modifier = Modifier
+                                    .wrapContentWidth()
+                                    .align(Alignment.Start),
+                                color = Color.Black
+                            )
+                        }
+                    )
+                }
+            }
+        }
+
+        Spacer(
+            modifier = Modifier
+                .matchParentSize()
+                .background(Color.Transparent)
+                .padding(10.dp)
+                .clickable(onClick = { expandedSize = !expandedSize })
+        )
+    }
+
+    Spacer(modifier = Modifier.size(5.dp))
+
+    when (uiState.selectedSize) {
+        "Custom" -> {
+            Column {
+                val width by remember { mutableIntStateOf(with(density) { configuration.screenWidthDp.dp.roundToPx() }) }
+
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    text = "\"height\" ${width / 3 } dan ${width * 2} gacha px oralig'ida bo'lishi kerak",
+                    textAlign = TextAlign.Center,
+                    color = Color.White
+                )
+
+                Spacer(modifier = Modifier.size(18.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        var height by remember { mutableStateOf(uiState.imageHeightPx) }
+
+                        OutlinedTextField(
+                            value = height,
+                            onValueChange = {
+                                var float = it.filter { it.isDigit() || it == '.' }
+                                float = if (float.length > 15) float.substring(0, 15) else float
+
+                                if (float.length > height.length) {
+                                    if ((!height.contains(".") || (float.count { it == '.' } < 2)) && float.first() != '.') {
+                                        height = float
+                                    }
+                                } else {
+                                    height = float
+                                }
+                            },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            singleLine = true,
+                            label = { Text(text = "height") },
+                            keyboardActions = KeyboardActions(
+                                onDone = {
+                                    if (height.isEmpty()) height = "0"
+
+                                    if (height.toFloat() < width / 3) height = (width / 3).toString()
+                                    if (height.toFloat() > width * 2) height = (width * 2).toString()
+
+                                    onEventDispatchers.invoke(ConstructorContract.Intent.ChangeImageHeightPx(height))
+
+                                    scope.launch { state.animateScrollToItem(1) }
+                                }
+                            ),
+                            colors = TextFieldDefaults.colors(Color.Black)
+                        )
+                    }
+                }
+            }
+        }
+
+        "Ratio" -> {
+            Spacer(modifier = Modifier.size(18.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    OutlinedTextField(
+                        value = if (uiState.aspectRatioX == 0f) "" else uiState.aspectRatioX.toInt().toString(),
+                        onValueChange = {
+                            var number = it.filter { it.isDigit() }
+                            number = if (number.length > 10) number.substring(0, 10) else number
+
+                            onEventDispatchers.invoke(ConstructorContract.Intent.ChangeAspectRatioX(if (number.isEmpty()) 0f else number.toFloat()))
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true,
+                        label = { Text(text = "x") },
+                        colors = TextFieldDefaults.colors(Color.Black)
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    OutlinedTextField(
+                        value = if (uiState.aspectRatioY == 0f) "" else uiState.aspectRatioY.toInt().toString(),
+                        onValueChange = {
+                            var number = it.filter { it.isDigit() }
+                            number = if (number.length > 10) number.substring(0, 10) else number
+
+                            onEventDispatchers.invoke(ConstructorContract.Intent.ChangeAspectRatioY(if (number.isEmpty()) 0f else number.toFloat()))
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true,
+                        label = { Text(text = "y") },
+                        colors = TextFieldDefaults.colors(Color.Black)
+                    )
+                }
+            }
+        }
+    }
 }

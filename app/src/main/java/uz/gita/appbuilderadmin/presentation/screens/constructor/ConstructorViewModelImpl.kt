@@ -41,13 +41,10 @@ class ConstructorViewModelImpl @Inject constructor(
         when (intent) {
             is ConstructorContract.Intent.ChangeWeight -> {
 
-                uiState.update {
-                    it.copy(
-                        weight =
-                        if (intent.weight == 0f) 1f else intent.weight
+                uiState.update { it.copy(weight =
+                if (intent.weight==0f)1f else intent.weight
 
-                    )
-                }
+                ) }
             }
 
             ConstructorContract.Intent.ClickVisibilityAddButton -> {
@@ -61,7 +58,6 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.ChangeSelectedMultiSelectorId -> {
-                Log.d("TTT", "id :${intent.value}")
                 reduce {
                     it.copy(
                         selectedMultiSelectorList = repository.getMultiSelectorValueListById(
@@ -77,6 +73,10 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(selectedSelectorList = repository.getSelectorValueListById(intent.value)) }
                 reduce { it.copy(selectedSelectorId = intent.value) }
                 reduce { it.copy(componentId = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeIsIdInputted -> {
+                reduce { it.copy(isIdInputted = intent.value) }
             }
 
             is ConstructorContract.Intent.ChangeSelectedInputId -> {
@@ -113,6 +113,10 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.ChangingSelectedComponent -> {
+                if (intent.component == "Image") {
+                    reduce { it.copy(listAllInputId = repository.getAllListInputId()) }
+                }
+
                 reduce { it.copy(selectedComponent = intent.component) }
             }
 
@@ -192,7 +196,6 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(isMaxLengthForTextEnabled = intent.value) }
             }
 
-
             is ConstructorContract.Intent.ChangeImageUri -> {
                 reduce { it.copy(selectedImageUri = intent.imageUri) }
             }
@@ -233,12 +236,32 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(isExist = intent.value) }
             }
 
+            is ConstructorContract.Intent.ChangeImageHeightPx -> {
+                reduce { it.copy(imageHeightPx = intent.value) }
+            }
+
             is ConstructorContract.Intent.ChangeMinValueForNumber -> {
                 reduce { it.copy(minValueForNumber = intent.value) }
             }
 
             is ConstructorContract.Intent.ProgresBar ->{
                 reduce { it.copy(progressBar = intent.progressBar) }
+            }
+
+            is ConstructorContract.Intent.ChangeImageSize -> {
+                reduce { it.copy(selectedSize = intent.value, imageHeightPx = uiState.value.constImageHeightPx, aspectRatioY = 1f, aspectRatioX = 1f) }
+            }
+
+            is ConstructorContract.Intent.ChangeAspectRatioX -> {
+                reduce { it.copy(aspectRatioX = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeAspectRatioY -> {
+                reduce { it.copy(aspectRatioY = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeImageId -> {
+                reduce { it.copy(selectedIdForImage = intent.value) }
             }
 
             ConstructorContract.Intent.ClickAddButtonVisibility -> {
@@ -271,8 +294,12 @@ class ConstructorViewModelImpl @Inject constructor(
                                 placeHolder = placeHolder,
                                 type = selectedInputType,
                                 text = textValue,
+                                imageUri = selectedImageUri,
+                                color = selectedImageColor,
+                                heightImage = imageHeightPx.toFloat(),
+                                aspectRatio = if (aspectRatioY != 0f) (aspectRatioX / aspectRatioY) else 1f,
+                                selectedImageSize = selectedSize,
                                 id = idValue,
-                                color = 0xFF0F1C2,
                                 selectorDataQuestion = selecterAnswer,
                                 selectorDataAnswers = selectorItems,
                                 idVisibility = componentId,
@@ -290,12 +317,12 @@ class ConstructorViewModelImpl @Inject constructor(
 
 
             ConstructorContract.Intent.ClickCreateButton -> {
-
                 if (uiState.value.selectedComponent == "Image") {
                     if (uiState.value.selectedImageInputType == "Local") {
                         reduce { it.copy(progressBar = true) }
                         repository.uploadImage(uiState.value.selectedImageUri.toUri()).onEach {
                                 uiState.value.selectedImageUri = it.toString()
+
                                 viewModelScope.launch {
                                     uiState.value.apply {
                                         repository.addComponent(
@@ -303,7 +330,10 @@ class ConstructorViewModelImpl @Inject constructor(
                                                 componentsName = selectedComponent,
                                                 id = idValue,
                                                 imageUri = selectedImageUri,
-                                                color = 0xFF0F1C2,
+                                                selectedImageSize = selectedSize,
+                                                aspectRatio = if (aspectRatioX == 0f && aspectRatioY == 0f) 0f else aspectRatioX / aspectRatioY,
+                                                heightImage = imageHeightPx.toFloat(),
+                                                color = selectedImageColor,
                                                 idVisibility = componentId,
                                             )
                                         )
@@ -312,6 +342,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                     }
 
                                     removeUiState()
+
                                     direction.back()
                                 }
                             }.launchIn(viewModelScope)
@@ -319,18 +350,24 @@ class ConstructorViewModelImpl @Inject constructor(
                     } else if (uiState.value.selectedImageInputType == "Remote") {
                         viewModelScope.launch {
                             uiState.value.apply {
-
                                 repository.addComponent(
                                     name, ComponentsModel(
                                         componentsName = selectedComponent,
                                         id = idValue,
+                                        heightImage = imageHeightPx.toFloat(),
+                                        selectedImageSize = selectedSize,
+                                        selectedIdForImage = selectedIdForImage,
+                                        isIdInputted = isIdInputted,
+                                        aspectRatio = if (aspectRatioX == 0f && aspectRatioY == 0f) 0f else aspectRatioX / aspectRatioY,
                                         imageUri = selectedImageUri,
-                                        color = 0xFF0F1C2,
+                                        color = selectedImageColor,
                                         idVisibility = componentId,
                                     )
                                 )
                             }
+
                             removeUiState()
+
                             direction.back()
                         }
                     }
@@ -386,7 +423,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                         isMinValueForNumberEnabled = isMinValueForNumberEnabled,
                                         minValueForNumber = minValueForNumber,
                                         isRequired = isRequired,
-                                        color = 0xFF0F1C2,
+                                        color = selectedImageColor,
                                         selectorDataQuestion = selecterAnswer,
                                         selectorDataAnswers = selectorItems,
                                         idVisibility = componentId,
@@ -424,7 +461,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                         text = textValue,
                                         id = idValue,
                                         imageUri = selectedImageUri,
-                                        color = 0xFF0F1C2,
+                                        color = selectedImageColor,
                                         selectorDataQuestion = selecterAnswer,
                                         selectorDataAnswers = selectorItems,
                                         idVisibility = componentId,
@@ -441,7 +478,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                         operator = operator,
                                         value = visibilityValue,
                                         datePicker = selectedDate,
-                                        list = Gson().toJson(list),
+                                        list = list,
                                         multiSelectDataQuestion = multiSelectorAnswer,
                                         multiSelectorDataAnswers = multiSelectorItems
                                     )
@@ -473,9 +510,6 @@ class ConstructorViewModelImpl @Inject constructor(
                 enteringSelectorsList = listOf(),
                 selectorVisibilityIdCheck = false,
                 selectedVisibilityList = listOf(),
-                selectedImageInputType = "Select",
-                selectedImageColor = Color.Transparent,
-                selectedImageUri = "",
                 listAllInputId = listOf(),
                 listAllSelectorId = listOf(),
                 listAllMultiSelectorId = listOf(),
@@ -510,10 +544,19 @@ class ConstructorViewModelImpl @Inject constructor(
                     "Email",
                     "Phone"
                 ),
+                imageHeightPx = "",
+                constImageHeightPx = "",
+                selectedSize = "Auto",
+                aspectRatioX = 1f,
+                aspectRatioY = 1f,
+                isShowingColorDialog = false,
+                isExist = false,
                 selectedImageInputType = "Select",
-                selectedImageColor = Color.Transparent,
+                selectedImageColor = 0U,
                 selectedImageUri = "",
                 selectorItems = listOf(),
+                selectedIdForImage = "Select Id",
+                isIdInputted = false,
                 multiSelectorItems = listOf(),
                 selectedComponent = uiState.value.componentList[0],
                 selectedInputType = uiState.value.inputTypeList[0],
@@ -575,9 +618,17 @@ class ConstructorViewModelImpl @Inject constructor(
                     "Email",
                     "Phone"
                 ),
+                imageHeightPx = "",
+                constImageHeightPx = "",
+                selectedSize = "Auto",
+                aspectRatioX = 1f,
+                aspectRatioY = 1f,
+                isShowingColorDialog = false,
+                isExist = false,
                 selectedImageInputType = "Select",
-                selectedImageColor = Color.Transparent,
+                selectedImageColor = 0U,
                 selectedImageUri = "",
+                selectedIdForImage = "Select Id",
                 selectorItems = listOf(),
                 multiSelectorItems = listOf(),
                 selectedComponent = "Row",
