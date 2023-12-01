@@ -9,6 +9,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -145,6 +146,8 @@ class RepositoryImpl @Inject constructor(
                                 this.child("heightImage").setValue(component.heightImage)
                                 this.child("selectedImageSize").setValue(component.selectedImageSize)
                                 this.child("aspectRatio").setValue(component.aspectRatio)
+                                this.child("selectedIdForImage").setValue(component.selectedIdForImage)
+                                this.child("isIdInputted").setValue(component.isIdInputted)
 
                                 this.child("isMaxLengthForTextEnabled")
                                     .setValue(component.isMaxLengthForTextEnabled)
@@ -163,7 +166,7 @@ class RepositoryImpl @Inject constructor(
                                 this.child("isRequired").setValue(component.isRequired)
 
                                 this.child("text").setValue(component.text)
-                                this.child("list").setValue(component.list)
+                                this.child("list").setValue(Gson().toJson(component.list))
 
                                 this.child("selectorDataQuestion")
                                     .setValue(component.selectorDataQuestion)

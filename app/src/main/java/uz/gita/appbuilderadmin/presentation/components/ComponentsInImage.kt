@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -87,7 +88,70 @@ fun ComponentsInImage(
         }
     val scope = rememberCoroutineScope()
 
-    SetId(uiState = uiState, onEventDispatchers = onEventDispatchers)
+    var expandedId by remember { mutableStateOf(false) }
+
+    Row {
+        Checkbox(
+            modifier = Modifier
+                .align(Alignment.CenterVertically),
+            checked = uiState.isIdInputted,
+            onCheckedChange = { onEventDispatchers.invoke(ConstructorContract.Intent.ChangeIsIdInputted(it)) }
+        )
+
+        Box {
+            Column {
+                OutlinedTextField(
+                    value = uiState.selectedIdForImage,
+                    onValueChange = { },
+                    modifier = Modifier
+                        .padding(horizontal = 15.dp)
+                        .fillMaxWidth(),
+                    trailingIcon = { Icon(Icons.Outlined.ArrowDropDown, null) },
+                    readOnly = true,
+                    colors = TextFieldDefaults.colors(Color.Black),
+                    enabled = uiState.isIdInputted
+                )
+                DropdownMenu(
+                    modifier = Modifier.fillMaxWidth(),
+                    expanded = expandedId,
+                    onDismissRequest = { expandedId = false },
+                ) {
+                    uiState.listAllInputId.forEach { entry ->
+                        DropdownMenuItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                expandedId = false
+
+                                onEventDispatchers.invoke(
+                                    ConstructorContract.Intent.ChangeImageId(
+                                        entry
+                                    )
+                                )
+                            }, text = {
+                                Text(
+                                    text = entry,
+                                    modifier = Modifier
+                                        .wrapContentWidth()
+                                        .align(Alignment.Start),
+                                    color = Color.Black
+                                )
+                            }
+                        )
+                    }
+                }
+            }
+
+            if (uiState.isIdInputted) {
+                Spacer(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(Color.Transparent)
+                        .padding(10.dp)
+                        .clickable(onClick = { expandedId = !expandedId })
+                )
+            }
+        }
+    }
 
     Text(
         text = "Choose",

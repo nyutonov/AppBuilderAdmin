@@ -124,6 +124,7 @@ private fun MainContent(
 
                     when (it.componentsName) {
                         "Row"->{
+                            textTopComponent(text = "Row")
                             RowComponent(componentsModel = it.lsRow)
                         }
 
@@ -283,7 +284,13 @@ private fun MainContent(
 
                         "Image" -> {
                             textTopComponent(text = "Image")
-                            ImageComponent(it)
+                            ImageComponent(
+                                it.selectedImageSize,
+                                it.imageUri,
+                                it.color,
+                                it.heightImage,
+                                it.aspectRatio
+                            )
                         }
                     }
                 }

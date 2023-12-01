@@ -26,40 +26,41 @@ import uz.gita.appbuilderadmin.data.model.ComponentsModel
 
 @Composable
 fun ImageComponent(
-    data: ComponentsModel
+    size: String,
+    uri: String,
+    color: ULong,
+    height: Float,
+    aspectRatio: Float
 ) {
     var loader by remember { mutableStateOf(false) }
     val density = LocalDensity.current
 
     Box(
-        modifier = when (data.selectedImageSize) {
+        modifier = when (size) {
             "Custom" -> {
                 Modifier
                     .fillMaxWidth()
-                    .height(with(density) { data.heightImage.toDp() })
-                    .background(Color(data.color))
+                    .height(with(density) { height.toDp() })
+                    .background(Color(color))
             }
 
             "Ratio" -> {
                 Modifier
-                    .aspectRatio(if (data.aspectRatio == 0f) 1f else data.aspectRatio)
-                    .background(Color(data.color))
-            }
-
-            "Auto" -> {
-                Modifier
-                    .background(Color(data.color))
+                    .aspectRatio(if (aspectRatio == 0f) 1f else aspectRatio)
+                    .background(Color(color))
             }
 
             else -> {
                 Modifier
+                    .fillMaxWidth()
+                    .background(Color(color))
             }
         }
     ) {
         AsyncImage(
             modifier = Modifier
                 .align(Alignment.Center),
-            model = data.imageUri.toUri(),
+            model = uri.toUri(),
             contentDescription = "",
             onLoading = { loader = true },
             onSuccess = { loader = false },

@@ -50,12 +50,15 @@ interface ConstructorContract {
         val selectedImageColor: ULong = 0U,
         var selectedImageUri: String = "",
         var imageHeightPx: String = "",
+        var constImageHeightPx: String = "",
         val selectedSize: String = "Auto",
         val aspectRatioX: Float = 1f,
         val aspectRatioY: Float = 1f,
         val isShowingColorDialog: Boolean = false,
-        val selectorItems: List<String> = listOf(),
         val isExist: Boolean = false,
+        val selectedIdForImage: String = "Select Id",
+        val isIdInputted: Boolean = false,
+        val selectorItems: List<String> = listOf(),
         val multiSelectorItems: List<String> = listOf(),
         val selectedComponent: String = componentList[0],
         val selectedComponentInRow: String = componentList[0],
@@ -269,6 +272,14 @@ interface ConstructorContract {
 
         data class ChangeAspectRatioY(
             val value: Float
+        ) : Intent
+
+        data class ChangeImageId(
+            val value: String
+        ) : Intent
+
+        data class ChangeIsIdInputted(
+            val value: Boolean
         ) : Intent
     }
 }

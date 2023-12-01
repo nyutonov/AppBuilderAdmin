@@ -31,7 +31,6 @@ class ConstructorViewModelImpl @Inject constructor(
     private var name = ""
     private var list = ArrayList<VisibilityModule>()
 
-
     private fun reduce(block: (ConstructorContract.UiState) -> ConstructorContract.UiState) {
         val oldValue = uiState.value
         uiState.value = block(oldValue)
@@ -58,7 +57,6 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.ChangeSelectedMultiSelectorId -> {
-                Log.d("TTT", "id :${intent.value}")
                 reduce {
                     it.copy(
                         selectedMultiSelectorList = repository.getMultiSelectorValueListById(
@@ -74,6 +72,10 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(selectedSelectorList = repository.getSelectorValueListById(intent.value)) }
                 reduce { it.copy(selectedSelectorId = intent.value) }
                 reduce { it.copy(componentId = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeIsIdInputted -> {
+                reduce { it.copy(isIdInputted = intent.value) }
             }
 
             is ConstructorContract.Intent.ChangeSelectedInputId -> {
@@ -110,6 +112,10 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.ChangingSelectedComponent -> {
+                if (intent.component == "Image") {
+                    reduce { it.copy(listAllInputId = repository.getAllListInputId()) }
+                }
+
                 reduce { it.copy(selectedComponent = intent.component) }
             }
 
@@ -238,7 +244,7 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.ChangeImageSize -> {
-                reduce { it.copy(selectedSize = intent.value) }
+                reduce { it.copy(selectedSize = intent.value, imageHeightPx = uiState.value.constImageHeightPx, aspectRatioY = 1f, aspectRatioX = 1f) }
             }
 
             is ConstructorContract.Intent.ChangeAspectRatioX -> {
@@ -247,6 +253,10 @@ class ConstructorViewModelImpl @Inject constructor(
 
             is ConstructorContract.Intent.ChangeAspectRatioY -> {
                 reduce { it.copy(aspectRatioY = intent.value) }
+            }
+
+            is ConstructorContract.Intent.ChangeImageId -> {
+                reduce { it.copy(selectedIdForImage = intent.value) }
             }
 
             ConstructorContract.Intent.ClickAddButtonVisibility -> {
@@ -279,8 +289,12 @@ class ConstructorViewModelImpl @Inject constructor(
                                 placeHolder = placeHolder,
                                 type = selectedInputType,
                                 text = textValue,
-                                id = idValue,
+                                imageUri = selectedImageUri,
                                 color = selectedImageColor,
+                                heightImage = imageHeightPx.toFloat(),
+                                aspectRatio = if (aspectRatioY != 0f) (aspectRatioX / aspectRatioY) else 1f,
+                                selectedImageSize = selectedSize,
+                                id = idValue,
                                 selectorDataQuestion = selecterAnswer,
                                 selectorDataAnswers = selectorItems,
                                 idVisibility = componentId,
@@ -334,6 +348,8 @@ class ConstructorViewModelImpl @Inject constructor(
                                         id = idValue,
                                         heightImage = imageHeightPx.toFloat(),
                                         selectedImageSize = selectedSize,
+                                        selectedIdForImage = selectedIdForImage,
+                                        isIdInputted = isIdInputted,
                                         aspectRatio = if (aspectRatioX == 0f && aspectRatioY == 0f) 0f else aspectRatioX / aspectRatioY,
                                         imageUri = selectedImageUri,
                                         color = selectedImageColor,
@@ -454,7 +470,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                         operator = operator,
                                         value = visibilityValue,
                                         datePicker = selectedDate,
-                                        list = Gson().toJson(list),
+                                        list = list,
                                         multiSelectDataQuestion = multiSelectorAnswer,
                                         multiSelectorDataAnswers = multiSelectorItems
                                     )
@@ -486,9 +502,6 @@ class ConstructorViewModelImpl @Inject constructor(
                 enteringSelectorsList = listOf(),
                 selectorVisibilityIdCheck = false,
                 selectedVisibilityList = listOf(),
-                selectedImageInputType = "Select",
-                selectedImageColor = 0U,
-                selectedImageUri = "",
                 listAllInputId = listOf(),
                 listAllSelectorId = listOf(),
                 listAllMultiSelectorId = listOf(),
@@ -523,10 +536,19 @@ class ConstructorViewModelImpl @Inject constructor(
                     "Email",
                     "Phone"
                 ),
+                imageHeightPx = "",
+                constImageHeightPx = "",
+                selectedSize = "Auto",
+                aspectRatioX = 1f,
+                aspectRatioY = 1f,
+                isShowingColorDialog = false,
+                isExist = false,
                 selectedImageInputType = "Select",
                 selectedImageColor = 0U,
                 selectedImageUri = "",
                 selectorItems = listOf(),
+                selectedIdForImage = "Select Id",
+                isIdInputted = false,
                 multiSelectorItems = listOf(),
                 selectedComponent = uiState.value.componentList[0],
                 selectedInputType = uiState.value.inputTypeList[0],
@@ -588,9 +610,17 @@ class ConstructorViewModelImpl @Inject constructor(
                     "Email",
                     "Phone"
                 ),
+                imageHeightPx = "",
+                constImageHeightPx = "",
+                selectedSize = "Auto",
+                aspectRatioX = 1f,
+                aspectRatioY = 1f,
+                isShowingColorDialog = false,
+                isExist = false,
                 selectedImageInputType = "Select",
                 selectedImageColor = 0U,
                 selectedImageUri = "",
+                selectedIdForImage = "Select Id",
                 selectorItems = listOf(),
                 multiSelectorItems = listOf(),
                 selectedComponent = "Row",

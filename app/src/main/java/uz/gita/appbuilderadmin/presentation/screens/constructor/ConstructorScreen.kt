@@ -111,6 +111,7 @@ fun ConstructorScreenContent(
 
         if (uiState.imageHeightPx.isEmpty()) {
             uiState.imageHeightPx = with(density) { configuration.screenWidthDp.dp.roundToPx() / 3 }.toString()
+            uiState.constImageHeightPx = with(density) { configuration.screenWidthDp.dp.roundToPx() / 3 }.toString()
         }
 
         Column(
@@ -166,6 +167,11 @@ fun ConstructorScreenContent(
                             )
                         )
                         Spacer(modifier = Modifier.size(10.dp))
+
+                        Log.d(
+                            "TTT",
+                            "ConstructorScreenContent: ${uiState.selectedSize} ${uiState.selectedComponent}"
+                        )
 
                         when (uiState.selectedComponent) {
                             "Input" -> {
@@ -228,7 +234,13 @@ fun ConstructorScreenContent(
                             }
 
                             "Image" -> {
-                                ImageComponent(ComponentsModel(selectedImageSize = uiState.selectedSize, imageUri = uiState.selectedImageUri, color = uiState.selectedImageColor, heightImage = uiState.imageHeightPx.toFloat(), aspectRatio = if (uiState.aspectRatioY == 0f) 0f else uiState.aspectRatioX / uiState.aspectRatioY))
+                                ImageComponent(
+                                    uiState.selectedSize,
+                                    uiState.selectedImageUri,
+                                    uiState.selectedImageColor,
+                                    uiState.imageHeightPx.toFloat(),
+                                    if (uiState.aspectRatioY == 0f) 0f else uiState.aspectRatioX / uiState.aspectRatioY
+                                )
                             }
                         }
                     }
@@ -700,7 +712,11 @@ fun ConstructorScreenContent(
                                 .width(310.dp)
                                 .height(50.dp),
                             onClick = {
-                                onEventDispatchers.invoke(ConstructorContract.Intent.ChangeColorForImage(controller.selectedColor.value.value))
+                                onEventDispatchers.invoke(
+                                    ConstructorContract.Intent.ChangeColorForImage(
+                                        controller.selectedColor.value.value
+                                    )
+                                )
                             },
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xff4d648d))
@@ -728,9 +744,7 @@ fun ConstructorScreenContent(
                 .align(Alignment.BottomCenter),
             onClick = {
                 if (uiState.selectedComponent == "Image") {
-                    if (uiState.selectedImageInputType == "Remote" && uiState.isExist) {
-                        onEventDispatchers(ConstructorContract.Intent.ClickCreateButton)
-                    } else if (uiState.selectedImageInputType == "Local" && uiState.selectedImageUri.isNotEmpty()) {
+                    if (uiState.selectedImageUri.isNotEmpty() || (uiState.selectedImageInputType == "Remote" && uiState.isIdInputted)) {
                         onEventDispatchers(ConstructorContract.Intent.ClickCreateButton)
                     } else {
                         myToast("Not uploading")
