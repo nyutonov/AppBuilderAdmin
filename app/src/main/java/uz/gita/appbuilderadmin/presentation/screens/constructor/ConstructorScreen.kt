@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
@@ -42,6 +43,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -236,7 +239,8 @@ fun ConstructorScreenContent(
                                     uiState.selectedImageUri,
                                     uiState.selectedImageColor,
                                     uiState.imageHeightPx.toFloat(),
-                                    if (uiState.aspectRatioY == 0f) 0f else uiState.aspectRatioX / uiState.aspectRatioY
+                                    if (uiState.aspectRatioY == 0f) 0f else uiState.aspectRatioX / uiState.aspectRatioY,
+                                    uiState
                                 )
                             }
                         }
@@ -709,7 +713,7 @@ fun ConstructorScreenContent(
                                 .width(310.dp)
                                 .height(50.dp),
                             onClick = {
-                                onEventDispatchers.invoke(ConstructorContract.Intent.ChangeColorForImage(controller.selectedColor.value))
+                                onEventDispatchers.invoke(ConstructorContract.Intent.ChangeColorForImage(controller.selectedColor.value.value))
                             },
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xff4d648d))

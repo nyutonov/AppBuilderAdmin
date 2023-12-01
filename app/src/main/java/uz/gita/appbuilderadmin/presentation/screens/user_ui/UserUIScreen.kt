@@ -41,6 +41,7 @@ import uz.gita.appbuilderadmin.presentation.components.DeleteDialog
 import uz.gita.appbuilderadmin.presentation.components.ImageComponent
 import uz.gita.appbuilderadmin.presentation.components.InputComponent
 import uz.gita.appbuilderadmin.presentation.components.MultiSelectorComponent
+import uz.gita.appbuilderadmin.presentation.components.RowComponent
 import uz.gita.appbuilderadmin.presentation.components.SampleSpinner
 import uz.gita.appbuilderadmin.presentation.components.TextComponent
 import uz.gita.appbuilderadmin.ui.theme.AppBuilderAdminTheme
@@ -290,8 +291,7 @@ private fun MainContent(
                                 it.imageUri,
                                 it.color,
                                 it.heightImage,
-                                it.aspectRatio,
-                                uiState
+                                it.aspectRatio
                             )
                         }
                     }

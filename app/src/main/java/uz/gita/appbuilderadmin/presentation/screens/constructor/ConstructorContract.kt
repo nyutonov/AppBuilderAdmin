@@ -1,7 +1,5 @@
 package uz.gita.appbuilderadmin.presentation.screens.constructor
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import kotlinx.coroutines.flow.StateFlow
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.data.model.SelectorModule
