@@ -19,13 +19,12 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.data.model.UserModel
 import uz.gita.appbuilderadmin.data.model.VisibilityTypeModule
 import uz.gita.appbuilderadmin.data.source.local.room.VisibilityDao
 import uz.gita.appbuilderadmin.domain.repository.Repository
-import uz.gita.appbuilderadmin.utils.extensions.getAll
+import uz.gita.appbuilderadmin.utils.extensions.getAllLive
 import uz.gita.appbuilderadmin.utils.mapper.toComponentData
 import uz.gita.appbuilderadmin.utils.mapper.toData
 import uz.gita.appbuilderadmin.utils.mapper.toEntity
@@ -42,13 +41,9 @@ class RepositoryImpl @Inject constructor(
     private val storage = Firebase.storage.reference
 
     init {
-
         visibilityDao.getAllVisibility()
-            .onEach {
-                listVisiblity = it.map { it.toData() }
-            }
+            .onEach { listVisiblity = it.map { it.toData() } }
             .launchIn(scope)
-
     }
 
     override fun addUser(userModel: UserModel): Flow<Boolean> = callbackFlow {
@@ -81,8 +76,8 @@ class RepositoryImpl @Inject constructor(
     override fun getAllUsers(): Flow<List<UserModel>> = callbackFlow {
         firebasePref
             .collection("users")
-            .get().getAll {
-                return@getAll UserModel(
+            .getAllLive {
+                return@getAllLive UserModel(
                     it.data?.getOrDefault("id", 0).toString().toInt(),
                     it.data?.getOrDefault("name", "") as String,
                     it.data?.getOrDefault("password", "") as String
@@ -144,9 +139,11 @@ class RepositoryImpl @Inject constructor(
                                 this.child("imageUri").setValue(component.imageUri)
                                 this.child("color").setValue(component.color.toLong())
                                 this.child("heightImage").setValue(component.heightImage)
-                                this.child("selectedImageSize").setValue(component.selectedImageSize)
+                                this.child("selectedImageSize")
+                                    .setValue(component.selectedImageSize)
                                 this.child("aspectRatio").setValue(component.aspectRatio)
-                                this.child("selectedIdForImage").setValue(component.selectedIdForImage)
+                                this.child("selectedIdForImage")
+                                    .setValue(component.selectedIdForImage)
                                 this.child("isIdInputted").setValue(component.isIdInputted)
 
                                 this.child("isMaxLengthForTextEnabled")
@@ -177,7 +174,7 @@ class RepositoryImpl @Inject constructor(
                                     .setValue(component.multiSelectDataQuestion)
                                 this.child("multiSelectorDataAnswers")
                                     .setValue(component.multiSelectorDataAnswers.joinToString(":"))
-                  this.child("rowType").setValue(component.rowType)
+                                this.child("rowType").setValue(component.rowType)
                                 this.child("datePicker").setValue(component.datePicker)
                                 this.child("id")
                                     .setValue(component.id.ifEmpty { UUID.randomUUID().toString() })

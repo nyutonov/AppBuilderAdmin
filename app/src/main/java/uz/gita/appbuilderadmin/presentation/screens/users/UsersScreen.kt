@@ -40,7 +40,8 @@ class UsersScreen : AndroidScreen() {
             val viewModel: UsersContract.ViewModel = getViewModel<UsersViewModel>()
 
             MainContent(
-                viewModel.uiState.collectAsState().value, viewModel::onEventDispatcher
+                viewModel.uiState.collectAsState().value,
+                viewModel::onEventDispatcher
             )
         }
     }
@@ -51,8 +52,6 @@ private fun MainContent(
     uiState: UsersContract.UIState = UsersContract.UIState(),
     onEventDispatcher: (UsersContract.Intent) -> Unit = {}
 ) {
-    onEventDispatcher.invoke(UsersContract.Intent.Load)
-
     Box(
         modifier = Modifier
             .fillMaxSize()

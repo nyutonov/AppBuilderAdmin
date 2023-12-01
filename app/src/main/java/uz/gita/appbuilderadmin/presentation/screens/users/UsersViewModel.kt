@@ -19,14 +19,10 @@ class UsersViewModel @Inject constructor(
 ) : UsersContract.ViewModel, ViewModel() {
     override val uiState = MutableStateFlow(UsersContract.UIState())
 
-    private fun load() {
+    init {
         getAllUserUseCase()
             .onStart { uiState.update { it.copy(progressbar = true) } }
-            .onEach { users ->
-                uiState.update {
-                    it.copy(users = users.sortedBy { it.id }, progressbar = false)
-                }
-            }
+            .onEach { users -> uiState.update { it.copy(users = users.sortedBy { it.id }, progressbar = false) } }
             .launchIn(viewModelScope)
     }
 
@@ -36,10 +32,6 @@ class UsersViewModel @Inject constructor(
                 viewModelScope.launch {
                     direction.moveToUserUI(intent.name)
                 }
-            }
-
-            UsersContract.Intent.Load -> {
-                load()
             }
 
             UsersContract.Intent.ClickAddUser -> {

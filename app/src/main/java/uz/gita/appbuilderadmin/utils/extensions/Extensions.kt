@@ -1,29 +1,32 @@
 package uz.gita.appbuilderadmin.utils.extensions
 
 import android.widget.Toast
-import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.QuerySnapshot
-import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.callbackFlow
 import uz.gita.appbuilderadmin.app.App
-import uz.gita.appbuilderadmin.presentation.screens.constructor.ConstructorContract
 
-suspend fun <T> Task<QuerySnapshot>.getAllSync(mapper: (DocumentSnapshot) -> T): Result<List<T>> {
-    val deferred = CompletableDeferred<Result<List<T>>>()
-    addOnSuccessListener {
-        val ls = it.documents.map { mapper(it) }
-        deferred.complete(Result.success(ls))
+fun <T> CollectionReference.getAllLive(mapper: (DocumentSnapshot) -> T): Flow<Result<List<T>>> =
+    callbackFlow {
+        val listenerRegistration = addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                trySend(Result.failure(error)).isSuccess
+                return@addSnapshotListener
+            }
+
+            snapshot?.let {
+                val data = snapshot.documents.map { documentSnapshot ->
+                    mapper(documentSnapshot)
+                }
+                trySend(Result.success(data)).isSuccess
+            }
+        }
+
+        awaitClose { listenerRegistration.remove() }
     }
-        .addOnFailureListener { deferred.complete(Result.failure(it)) }
-    return deferred.await()
-}
 
-fun <T> Task<QuerySnapshot>.getAll(mapper: (DocumentSnapshot) -> T): Flow<Result<List<T>>> = flow {
-    emit(getAllSync(mapper))
-}
-
-fun myToast(message : String) {
-    Toast.makeText(App.instance , message , Toast.LENGTH_LONG).show()
+fun myToast(message: String) {
+    Toast.makeText(App.instance, message, Toast.LENGTH_LONG).show()
 }

@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.hilt.getViewModel
 import uz.gita.appbuilderadmin.R
+import uz.gita.appbuilderadmin.utils.extensions.myToast
 
 class RegisterScreen : AndroidScreen() {
     @Composable
@@ -115,7 +116,9 @@ fun RegisterScreenContent(
                         )
                     },
                     onValueChange = {
-                        onEventDispatchers(RegisterContract.Intent.ChangingName(it))
+                        if (it.length < 24) {
+                            onEventDispatchers(RegisterContract.Intent.ChangingName(it))
+                        }
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
@@ -151,7 +154,9 @@ fun RegisterScreenContent(
                         )
                     },
                     onValueChange = {
-                        onEventDispatchers(RegisterContract.Intent.ChangingPassword(it))
+                        if (it.length < 12) {
+                            onEventDispatchers(RegisterContract.Intent.ChangingPassword(it))
+                        }
                     },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password
@@ -188,7 +193,11 @@ fun RegisterScreenContent(
                         .width(310.dp)
                         .height(50.dp),
                     onClick = {
-                        onEventDispatchers(RegisterContract.Intent.ClickRegisterButton)
+                        if (!uiState.isLoading) {
+                            if (uiState.name.length < 3) myToast("name 3 dan katta bo'lishi kerak")
+                            else if (uiState.password.length < 3) myToast("password 3 dan katta bo'lishi kerak")
+                            else onEventDispatchers(RegisterContract.Intent.ClickRegisterButton)
+                        }
                     },
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(

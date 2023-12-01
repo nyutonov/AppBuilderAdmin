@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
@@ -282,36 +283,74 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.ClickCreateRowComponent -> {
+                if (uiState.value.selectedComponent == "Row" && uiState.value.selectedComponentInRow == "Image" && uiState.value.selectedImageInputType == "Local") {
+                    repository.uploadImage(uiState.value.selectedImageUri.toUri())
+                        .onEach {
+                            uiState.value.selectedImageUri = it.toString()
 
-                uiState.update {
-                    val list = uiState.value.rowType
+                            reduce {
+                                val list = uiState.value.rowType
 
-                    uiState.value.apply {
-                        list.add(
-                            ComponentsModel(
-                                componentsName = selectedComponentInRow,
-                                input = selectedComponent,
-                                placeHolder = placeHolder,
-                                type = selectedInputType,
-                                text = textValue,
-                                imageUri = selectedImageUri,
-                                color = selectedImageColor,
-                                heightImage = imageHeightPx.toFloat(),
-                                aspectRatio = if (aspectRatioY != 0f) (aspectRatioX / aspectRatioY) else 1f,
-                                selectedImageSize = selectedSize,
-                                id = idValue,
-                                selectorDataQuestion = selecterAnswer,
-                                selectorDataAnswers = selectorItems,
-                                idVisibility = componentId,
-                                datePicker = selectedDate,
-                                multiSelectDataQuestion = multiSelectorAnswer,
-                                multiSelectorDataAnswers = multiSelectorItems,
-                                weight = uiState.value.weight
+                                uiState.value.apply {
+                                    list.add(
+                                        ComponentsModel(
+                                            componentsName = selectedComponentInRow,
+                                            input = selectedComponent,
+                                            placeHolder = placeHolder,
+                                            type = selectedInputType,
+                                            text = textValue,
+                                            imageUri = selectedImageUri,
+                                            color = selectedImageColor,
+                                            heightImage = imageHeightPx.toFloat(),
+                                            aspectRatio = if (aspectRatioY != 0f) (aspectRatioX / aspectRatioY) else 1f,
+                                            selectedImageSize = selectedSize,
+                                            id = idValue,
+                                            selectorDataQuestion = selecterAnswer,
+                                            selectorDataAnswers = selectorItems,
+                                            idVisibility = componentId,
+                                            datePicker = selectedDate,
+                                            multiSelectDataQuestion = multiSelectorAnswer,
+                                            multiSelectorDataAnswers = multiSelectorItems,
+                                            weight = uiState.value.weight
+                                        )
+                                    )
+                                }
+
+                                it.copy(selectedImageUri = "", rowType = list, isChanged = !uiState.value.isChanged)
+                            }
+                        }
+                        .launchIn(viewModelScope)
+                } else {
+                    uiState.update {
+                        val list = uiState.value.rowType
+
+                        uiState.value.apply {
+                            list.add(
+                                ComponentsModel(
+                                    componentsName = selectedComponentInRow,
+                                    input = selectedComponent,
+                                    placeHolder = placeHolder,
+                                    type = selectedInputType,
+                                    text = textValue,
+                                    imageUri = selectedImageUri,
+                                    color = selectedImageColor,
+                                    heightImage = imageHeightPx.toFloat(),
+                                    aspectRatio = if (aspectRatioY != 0f) (aspectRatioX / aspectRatioY) else 1f,
+                                    selectedImageSize = selectedSize,
+                                    id = idValue,
+                                    selectorDataQuestion = selecterAnswer,
+                                    selectorDataAnswers = selectorItems,
+                                    idVisibility = componentId,
+                                    datePicker = selectedDate,
+                                    multiSelectDataQuestion = multiSelectorAnswer,
+                                    multiSelectorDataAnswers = multiSelectorItems,
+                                    weight = uiState.value.weight
+                                )
                             )
-                        )
-                    }
-                    it.copy(rowType = list, isChanged = !uiState.value.isChanged)
+                        }
 
+                        it.copy(rowType = list, isChanged = !uiState.value.isChanged)
+                    }
                 }
             }
 
@@ -319,8 +358,9 @@ class ConstructorViewModelImpl @Inject constructor(
             ConstructorContract.Intent.ClickCreateButton -> {
                 if (uiState.value.selectedComponent == "Image") {
                     if (uiState.value.selectedImageInputType == "Local") {
-                        reduce { it.copy(progressBar = true) }
-                        repository.uploadImage(uiState.value.selectedImageUri.toUri()).onEach {
+                        repository.uploadImage(uiState.value.selectedImageUri.toUri())
+                            .onStart { reduce { it.copy(progressBar = true) } }
+                            .onEach {
                                 uiState.value.selectedImageUri = it.toString()
 
                                 viewModelScope.launch {
@@ -364,6 +404,8 @@ class ConstructorViewModelImpl @Inject constructor(
                                         idVisibility = componentId,
                                     )
                                 )
+                                    .onEach {  }
+                                    .launchIn(viewModelScope)
                             }
 
                             removeUiState()
@@ -436,6 +478,8 @@ class ConstructorViewModelImpl @Inject constructor(
                                         rowType = Gson().toJson(rowType)
                                     )
                                 )
+                                    .onEach {  }
+                                    .launchIn(viewModelScope)
                             }
                             list = ArrayList()
 
@@ -483,7 +527,10 @@ class ConstructorViewModelImpl @Inject constructor(
                                         multiSelectorDataAnswers = multiSelectorItems
                                     )
                                 )
+                                    .onEach {  }
+                                    .launchIn(viewModelScope)
                             }
+
                             list = ArrayList()
                             removeUiState()
 
