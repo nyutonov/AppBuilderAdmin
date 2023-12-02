@@ -1,10 +1,7 @@
 package uz.gita.appbuilderadmin.utils.mapper
 
-import androidx.compose.ui.graphics.Color
-import androidx.core.graphics.toColor
 import com.google.common.reflect.TypeToken
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.getValue
 import com.google.gson.Gson
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.data.model.VisibilityTypeModule

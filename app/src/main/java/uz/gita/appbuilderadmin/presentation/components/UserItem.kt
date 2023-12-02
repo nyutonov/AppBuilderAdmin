@@ -1,6 +1,5 @@
 package uz.gita.appbuilderadmin.presentation.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
@@ -48,6 +47,7 @@ fun UserItem(
             containerColor = Color(0xff4d648d)
         )
     ) {
+
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
@@ -68,6 +68,9 @@ fun UserItem(
                     color = Color.White
                 )
             }
+
         }
+
     }
+
 }

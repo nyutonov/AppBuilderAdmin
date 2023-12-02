@@ -14,6 +14,8 @@ interface Repository {
     fun deleteUser(id: String, name: String): Flow<Boolean>
     fun addComponent(name: String, component: ComponentsModel): Flow<Boolean>
 
+    suspend fun deleteUser(userModel: UserModel)
+
     fun uploadImage(imageUri: Uri): Flow<Uri>
 
     suspend fun deleteComponent(component: ComponentsModel, name: String)
