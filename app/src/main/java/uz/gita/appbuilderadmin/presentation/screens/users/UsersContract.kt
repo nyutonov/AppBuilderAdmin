@@ -17,11 +17,6 @@ interface UsersContract {
         ) : Intent
 
         object ClickAddUser : Intent
-
-        data class ClickDelete(
-            val userModel: UserModel
-        ):Intent
-        object  Load:Intent
         data class DeleteUser(
             val key: String,
             val name: String
