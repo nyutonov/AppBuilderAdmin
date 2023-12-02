@@ -10,12 +10,13 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import uz.gita.appbuilderadmin.domain.repository.Repository
 import uz.gita.appbuilderadmin.domain.usecases.GetAllUserUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class UsersViewModel @Inject constructor(
-    private val getAllUserUseCase: GetAllUserUseCase, private val direction: UsersContract.Direction
+    private val getAllUserUseCase: GetAllUserUseCase, private val direction: UsersContract.Direction,private val repository: Repository
 ) : UsersContract.ViewModel, ViewModel() {
     override val uiState = MutableStateFlow(UsersContract.UIState())
 
@@ -36,6 +37,11 @@ class UsersViewModel @Inject constructor(
 
             UsersContract.Intent.ClickAddUser -> {
                 viewModelScope.launch { direction.moveToRegister() }
+            }
+            is UsersContract.Intent.ClickDelete->{
+                viewModelScope.launch {
+                    Log.d("TTT", "onEventDispatcherDelete: ")
+                    repository.deleteUser(intent.userModel) }
             }
         }
     }

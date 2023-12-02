@@ -476,6 +476,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                         multiSelectDataQuestion = multiSelectorAnswer,
                                         multiSelectorDataAnswers = multiSelectorItems,
                                         rowType = Gson().toJson(rowType)
+
                                     )
                                 )
                                     .onEach {  }
@@ -490,6 +491,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                     placeHolder = "",
                                     selectedInputType = uiState.value.inputTypeList[0]
                                 )
+
                             }
                             direction.back()
                         }
@@ -553,6 +555,7 @@ class ConstructorViewModelImpl @Inject constructor(
 
         reduce {
             it.copy(
+                placeHolder = "",
                 visibilityComponentState = "",
                 enteringSelectorsList = listOf(),
                 selectorVisibilityIdCheck = false,

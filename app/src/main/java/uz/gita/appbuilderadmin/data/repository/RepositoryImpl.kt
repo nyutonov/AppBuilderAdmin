@@ -4,6 +4,7 @@ import android.net.Uri
 import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.data.model.UserModel
 import uz.gita.appbuilderadmin.data.model.VisibilityTypeModule
@@ -46,6 +48,13 @@ class RepositoryImpl @Inject constructor(
             .launchIn(scope)
     }
 
+    override suspend fun deleteUser(userModel: UserModel) {
+        val userId = userModel.id.toString()
+        val databaseReference = FirebaseDatabase.getInstance().getReference("users")
+        val userReference = databaseReference.child(userId)
+        Log.d("TTT", "deleteUser:${userId} ")
+        userReference.removeValue()
+    }
     override fun addUser(userModel: UserModel): Flow<Boolean> = callbackFlow {
         val uuid = UUID.randomUUID().toString()
         val user = userModel
@@ -109,6 +118,8 @@ class RepositoryImpl @Inject constructor(
         callbackFlow {
             val uuid = UUID.randomUUID().toString()
 
+
+            Log.d("TTT", "add: ${component.rowType}")
             firebaseDatabase
                 .getReference("users")
                 .child(name)
@@ -187,6 +198,8 @@ class RepositoryImpl @Inject constructor(
             trySend(true)
             awaitClose()
         }
+
+
 
     override fun uploadImage(imageUri: Uri): Flow<Uri> = callbackFlow {
         storage.child("images/${UUID.randomUUID()}").putFile(imageUri)
