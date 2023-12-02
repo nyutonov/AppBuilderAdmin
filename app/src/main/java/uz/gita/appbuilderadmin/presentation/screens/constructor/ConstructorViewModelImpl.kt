@@ -265,6 +265,14 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(selectedIdForImage = intent.value) }
             }
 
+            is ConstructorContract.Intent.Back -> {
+                viewModelScope.launch {
+                    removeUiState()
+
+                    direction.back()
+                }
+            }
+
             ConstructorContract.Intent.ClickAddButtonVisibility -> {
                 myToast("Visibility is added")
                 reduce { it.copy(firstClickState = false, addButtonVisibilityState = false) }

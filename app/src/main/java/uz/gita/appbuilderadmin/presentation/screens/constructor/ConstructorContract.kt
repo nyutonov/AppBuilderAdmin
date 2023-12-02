@@ -285,5 +285,7 @@ interface ConstructorContract {
         data class ProgresBar(
             var progressBar: Boolean = false
         ):Intent
+
+        object Back : Intent
     }
 }

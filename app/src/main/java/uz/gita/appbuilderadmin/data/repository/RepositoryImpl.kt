@@ -19,12 +19,14 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 import uz.gita.appbuilderadmin.data.model.ComponentsModel
 import uz.gita.appbuilderadmin.data.model.UserModel
 import uz.gita.appbuilderadmin.data.model.VisibilityTypeModule
 import uz.gita.appbuilderadmin.data.source.local.room.VisibilityDao
 import uz.gita.appbuilderadmin.domain.repository.Repository
 import uz.gita.appbuilderadmin.utils.extensions.getAllLive
+import uz.gita.appbuilderadmin.utils.extensions.myToast
 import uz.gita.appbuilderadmin.utils.mapper.toComponentData
 import uz.gita.appbuilderadmin.utils.mapper.toData
 import uz.gita.appbuilderadmin.utils.mapper.toEntity
@@ -54,19 +56,39 @@ class RepositoryImpl @Inject constructor(
             var id = it.child("userId").getValue(Int::class.java) ?: 1
 
             user.id = id
+            user.key = uuid
             id += 1
 
             firebaseDatabase.getReference("id").child("userId").setValue(id)
 
             firebasePref
                 .collection("users")
-                .document(uuid)
-                .set(user)
+                .get()
                 .addOnSuccessListener {
-                    trySend(true)
-                }
-                .addOnFailureListener {
-                    trySend(false)
+                    var isFind = false
+
+                    it.documents.onEach {
+                        if (it.data?.getOrDefault("name", "") as String == userModel.name) {
+                            isFind = true
+                        }
+                    }
+
+                    if (!isFind) {
+                        firebasePref
+                            .collection("users")
+                            .document(uuid)
+                            .set(user)
+                            .addOnSuccessListener {
+                                trySend(true)
+                            }
+                            .addOnFailureListener {
+                                trySend(false)
+                            }
+                    } else {
+                        myToast("bunday user mavjud")
+
+                        trySend(false)
+                    }
                 }
         }
 
@@ -79,6 +101,7 @@ class RepositoryImpl @Inject constructor(
             .getAllLive {
                 return@getAllLive UserModel(
                     it.data?.getOrDefault("id", 0).toString().toInt(),
+                    it.id,
                     it.data?.getOrDefault("name", "") as String,
                     it.data?.getOrDefault("password", "") as String
                 )
@@ -101,6 +124,24 @@ class RepositoryImpl @Inject constructor(
 
                 override fun onCancelled(error: DatabaseError) {}
             })
+
+        awaitClose()
+    }
+
+    override fun deleteUser(id: String, name: String): Flow<Boolean> = callbackFlow {
+        firebasePref
+            .collection("users")
+            .document(id)
+            .delete()
+            .addOnSuccessListener {
+                firebaseDatabase
+                    .getReference("users")
+                    .child(name)
+                    .removeValue()
+                    .addOnSuccessListener { trySend(true) }
+                    .addOnFailureListener {  }
+            }
+            .addOnFailureListener {  }
 
         awaitClose()
     }

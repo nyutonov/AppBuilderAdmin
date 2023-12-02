@@ -1,5 +1,6 @@
 package uz.gita.appbuilderadmin.presentation.screens.users
 
+import com.google.android.datatransport.cct.StringMerger
 import kotlinx.coroutines.flow.StateFlow
 import uz.gita.appbuilderadmin.data.model.UserModel
 
@@ -17,6 +18,10 @@ interface UsersContract {
 
         object ClickAddUser : Intent
         object  Load:Intent
+        data class DeleteUser(
+            val key: String,
+            val name: String
+        ) : Intent
     }
 
     data class UIState(

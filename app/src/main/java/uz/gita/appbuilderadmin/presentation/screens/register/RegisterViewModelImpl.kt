@@ -46,7 +46,7 @@ class RegisterViewModelImpl @Inject constructor(
             RegisterContract.Intent.ClickRegisterButton -> {
                 if (name.isNotEmpty() && password.isNotEmpty()) {
                     viewModelScope.launch {
-                        addUserUseCase(UserModel(0, name, password))
+                        addUserUseCase(UserModel(0, "", name, password))
                             .onStart { reduce { it.copy(isLoading = true) } }
                             .onEach {
                                 if (it) {

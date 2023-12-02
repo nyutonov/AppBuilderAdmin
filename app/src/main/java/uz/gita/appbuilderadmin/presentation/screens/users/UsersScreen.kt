@@ -110,9 +110,11 @@ private fun MainContent(
         
         LazyColumn(modifier = Modifier.padding(top = 56.dp)) {
             items(uiState.users) {
-                UserItem(user = it) {
-                    onEventDispatcher.invoke(UsersContract.Intent.ClickUser(it.name))
-                }
+                UserItem(
+                    user = it,
+                    onClick = { onEventDispatcher.invoke(UsersContract.Intent.ClickUser(it.name)) },
+                    onLongClick = { onEventDispatcher.invoke(UsersContract.Intent.DeleteUser(it.key, it.name)) }
+                )
                 Spacer(modifier = Modifier.height(10.dp))
             }
         }/*

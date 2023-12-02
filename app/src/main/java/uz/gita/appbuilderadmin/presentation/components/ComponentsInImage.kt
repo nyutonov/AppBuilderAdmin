@@ -94,7 +94,6 @@ fun ComponentsInImage(
             onEventDispatchers.invoke(ConstructorContract.Intent.ChangeImageUri(it.toString()))
         }
     val scope = rememberCoroutineScope()
-
     var expandedId by remember { mutableStateOf(false) }
 
     Row {
@@ -231,14 +230,18 @@ fun ComponentsInImage(
     if (uiState.selectedImageInputType == "Local") {
         if (uiState.selectedImageUri.isNotEmpty()) {
             uiState.selectedImageUri.apply {
-                if (Build.VERSION.SDK_INT < 28) {
-                    bitmap.value = MediaStore.Images
-                        .Media.getBitmap(context.contentResolver, this.toUri())
+                try {
+                    if (Build.VERSION.SDK_INT < 28) {
+                        bitmap.value = MediaStore.Images
+                            .Media.getBitmap(context.contentResolver, this.toUri())
 
-                } else {
-                    val source = ImageDecoder
-                        .createSource(context.contentResolver, this.toUri())
-                    bitmap.value = ImageDecoder.decodeBitmap(source)
+                    } else {
+                        val source = ImageDecoder
+                            .createSource(context.contentResolver, this.toUri())
+                        bitmap.value = ImageDecoder.decodeBitmap(source)
+                    }
+                } catch (_: Exception) {
+
                 }
             }
         }
@@ -467,7 +470,7 @@ fun ComponentsInImage(
                         value = if (uiState.aspectRatioX == 0f) "" else uiState.aspectRatioX.toInt().toString(),
                         onValueChange = {
                             var number = it.filter { it.isDigit() }
-                            number = if (number.length > 10) number.substring(0, 10) else number
+                            number = if (number.length > 2) number.substring(0, 2) else number
 
                             onEventDispatchers.invoke(ConstructorContract.Intent.ChangeAspectRatioX(if (number.isEmpty()) 0f else number.toFloat()))
                         },
@@ -487,7 +490,7 @@ fun ComponentsInImage(
                         value = if (uiState.aspectRatioY == 0f) "" else uiState.aspectRatioY.toInt().toString(),
                         onValueChange = {
                             var number = it.filter { it.isDigit() }
-                            number = if (number.length > 10) number.substring(0, 10) else number
+                            number = if (number.length > 2) number.substring(0, 2) else number
 
                             onEventDispatchers.invoke(ConstructorContract.Intent.ChangeAspectRatioY(if (number.isEmpty()) 0f else number.toFloat()))
                         },
