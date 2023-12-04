@@ -40,6 +40,15 @@ class ConstructorViewModelImpl @Inject constructor(
 
     override fun onEventDispatchers(intent: ConstructorContract.Intent) {
         when (intent) {
+
+            is ConstructorContract.Intent.OnChangeInList -> {
+                reduce { it.copy(inList = intent.list) }
+            }
+
+            is ConstructorContract.Intent.OnChangeChoseComponent -> {
+                reduce { it.copy(choseComponent = intent.value) }
+            }
+
             is ConstructorContract.Intent.ChangeWeight -> {
 
                 uiState.update { it.copy(weight =
@@ -56,6 +65,19 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(listAllInputId = repository.getAllListInputId()) }
                 reduce { it.copy(listAllSelectorId = repository.getAllSelectorId()) }
                 reduce { it.copy(listAllMultiSelectorId = repository.getAllMultiSelectorId()) }
+            }
+
+            is ConstructorContract.Intent.OnChangeInMultiSelectorId -> {
+                reduce {
+                    it.copy(
+                        selectedMultiSelectorList = repository.getMultiSelectorValueListById(intent.value) ,
+                        inMultiSelectorId = intent.value
+                    )
+                }
+            }
+
+            is ConstructorContract.Intent.OnChangeInMultiSelectorValue -> {
+                reduce { it.copy(inMultiSelectorValue = intent.value) }
             }
 
             is ConstructorContract.Intent.ChangeSelectedMultiSelectorId -> {
@@ -282,7 +304,10 @@ class ConstructorViewModelImpl @Inject constructor(
                             componentId,
                             visibilityComponentState,
                             operator,
-                            visibilityValue
+                            visibilityValue ,
+                            inMultiSelectorId ,
+                            inMultiSelectorValue ,
+                            inList
                         )
                     )
                 }

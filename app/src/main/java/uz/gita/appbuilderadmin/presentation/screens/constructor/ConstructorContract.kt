@@ -102,10 +102,29 @@ interface ConstructorContract {
 
         val isChanged:Boolean=false,
 
-        var progressBar: Boolean = false
+        var progressBar: Boolean = false ,
+        val inState : Boolean = false ,
+        val choseComponent : String = "" ,
+        val inMultiSelectorId : String = "" ,
+        val inMultiSelectorValue : String = "" ,
+        val inList : List<String>  = listOf()
     )
 
     interface Intent {
+
+        data class OnChangeInList(
+            val list : List<String>
+        ) : Intent
+        data class OnChangeInMultiSelectorId (
+            val value : String
+        ) : Intent
+
+        data class OnChangeInMultiSelectorValue(
+            val value : String
+        ) : Intent
+        data class OnChangeChoseComponent(
+            val value : String
+        ) : Intent
 
         object ClickVisibilityAddButton : Intent
 

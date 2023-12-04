@@ -1,5 +1,6 @@
 package uz.gita.appbuilderadmin.presentation.components
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +17,11 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +37,7 @@ import uz.gita.appbuilderadmin.data.model.VisibilityModule
 import uz.gita.appbuilderadmin.presentation.screens.constructor.ConstructorContract
 import uz.gita.appbuilderadmin.utils.extensions.myToast
 
+@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun VisibilityComponents(
     uiState : ConstructorContract.UiState ,
@@ -108,7 +115,9 @@ fun VisibilityComponents(
         val list = listOf(
             "Input" ,
             "Selector" ,
-            "Multi Selector"
+            "Multi Selector" ,
+            "in" ,
+            "!in"
         )
         Spacer(modifier = Modifier.size(10.dp))
         DemoSpinner(
@@ -125,7 +134,180 @@ fun VisibilityComponents(
 
         }
     }
-    if(uiState.visibilityState && uiState.visibilityComponentState == "Input") {
+    if(uiState.visibilityState && uiState.visibilityComponentState == "in") {
+        onEventDispatchers(ConstructorContract.Intent.LoadData)
+        onEventDispatchers(ConstructorContract.Intent.ChangingOperator("in"))
+        MyText(value = "Choose Components")
+        val list = listOf(
+            "Input" ,
+            "Selector"
+        )
+        Spacer(modifier = Modifier.size(10.dp))
+        DemoSpinner(
+            list = list,
+            preselected = "select component",
+            onSelectionChanged = {
+                  onEventDispatchers(ConstructorContract.Intent.OnChangeChoseComponent(it))
+            },
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth()
+        ) {
+
+        }
+        if (uiState.choseComponent == "Input") {
+            Spacer(modifier = Modifier.size(10.dp))
+            DemoSpinner(
+                list = uiState.listAllInputId,
+                preselected = "select input id",
+                onSelectionChanged = {
+                    onEventDispatchers(ConstructorContract.Intent.ChangingComponentId(it))
+                },
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .fillMaxWidth()
+            ) {
+
+            }
+        }else if (uiState.choseComponent == "Selector") {
+            Spacer(modifier = Modifier.size(10.dp))
+            DemoSpinner(
+                list = uiState.listAllSelectorId,
+                preselected = "select selector id",
+                onSelectionChanged = {
+                    onEventDispatchers(ConstructorContract.Intent.ChangeSelectedSelectorId(it))
+                },
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .fillMaxWidth()
+            ) {
+
+            }
+        }
+            MyText(value = "Choose Multi Selector Id")
+        Spacer(modifier = Modifier.size(10.dp))
+        DemoSpinner(
+            list = uiState.listAllMultiSelectorId,
+            preselected = "select id",
+            onSelectionChanged = {
+                onEventDispatchers(ConstructorContract.Intent.OnChangeInMultiSelectorId(it))
+            },
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth()
+        ) {
+
+        }
+        MyText(value = "Value")
+        Spacer(modifier = Modifier.size(10.dp))
+        DemoSpinner(
+            list = uiState.selectedMultiSelectorList,
+            preselected = "select value",
+            onSelectionChanged = {
+                onEventDispatchers(ConstructorContract.Intent.OnChangeInMultiSelectorValue(it))
+            },
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth()
+        ) {
+
+        }
+    }
+    else if (uiState.visibilityState && uiState.visibilityComponentState == "!in") {
+        onEventDispatchers(ConstructorContract.Intent.LoadData)
+        onEventDispatchers(ConstructorContract.Intent.ChangingOperator("!in"))
+        MyText(value = "Choose Components")
+        val list = listOf(
+            "Input" ,
+            "Selector"
+        )
+        Spacer(modifier = Modifier.size(10.dp))
+        DemoSpinner(
+            list = list,
+            preselected = "select component",
+            onSelectionChanged = {
+                onEventDispatchers(ConstructorContract.Intent.OnChangeChoseComponent(it))
+            },
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth()
+        ) {
+
+        }
+        if (uiState.choseComponent == "Input") {
+            Spacer(modifier = Modifier.size(10.dp))
+            DemoSpinner(
+                list = uiState.listAllInputId,
+                preselected = "select input id",
+                onSelectionChanged = {
+                    onEventDispatchers(ConstructorContract.Intent.ChangingComponentId(it))
+                },
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .fillMaxWidth()
+            ) {
+
+            }
+        }else if (uiState.choseComponent == "Selector") {
+            Spacer(modifier = Modifier.size(10.dp))
+            DemoSpinner(
+                list = uiState.listAllSelectorId,
+                preselected = "select selector id",
+                onSelectionChanged = {
+                    onEventDispatchers(ConstructorContract.Intent.ChangeSelectedSelectorId(it))
+                },
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .fillMaxWidth()
+            ) {
+
+            }
+        }
+        MyText(value = "You need to enter values")
+        var valuesList by remember {
+            mutableStateOf(listOf<String>())
+        }
+        val cloneList = ArrayList<String>()
+        cloneList.addAll(valuesList)
+        valuesList.forEachIndexed{index , value ->
+            Spacer(modifier = Modifier.size(10.dp))
+            MyTextField(
+                value = valuesList[index],
+                listener =  {
+                    cloneList[index] = it
+                    valuesList = cloneList
+                    onEventDispatchers(ConstructorContract.Intent.OnChangeInList(valuesList))
+                }
+            )
+        }
+        Spacer(modifier = Modifier.size(10.dp))
+        Button(
+            modifier = Modifier
+                .padding(bottom = 15.dp)
+                .width(310.dp)
+                .height(50.dp),
+            onClick = {
+                cloneList.add("")
+                valuesList = cloneList
+            },
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xff4d648d)
+            )
+        ) {
+            Text(
+                text = "Add Value",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(listOf(Font(R.font.roboto_regular))),
+                    fontWeight = FontWeight.W400,
+                    textAlign = TextAlign.Center
+                )
+            )
+        }
+
+    }
+    else if(uiState.visibilityState && uiState.visibilityComponentState == "Input") {
         MyText(value = "Component ID")
         Spacer(modifier = Modifier.size(10.dp))
         DemoSpinner(
@@ -172,7 +354,7 @@ fun VisibilityComponents(
             "<=" ,
             ">=" ,
             "<" ,
-            ">"
+            ">"  ,
         )
         DemoSpinner(
             list = list,
@@ -304,30 +486,7 @@ fun VisibilityComponents(
         }
         MyText(value = "Operator")
         Spacer(modifier = Modifier.size(10.dp))
-        Text(
-            text = "You can add only <>=",
-            style = TextStyle(
-                fontSize = 16.sp,
-                lineHeight = 24.sp,
-                fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
-                fontWeight = FontWeight.W400,
-                color = Color.White
-            )
-        )
-        if (uiState.operator.contains("<|>".toRegex())) {
-            Spacer(modifier = Modifier.size(10.dp))
-            Text(
-                text = "You enter < or >. If you enter this we can check visibility only number. REMEMBER",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    lineHeight = 24.sp,
-                    fontFamily = FontFamily(listOf(Font(R.font.helvetica))),
-                    fontWeight = FontWeight.W400,
-                    color = Color.White ,
-                    textAlign = TextAlign.Center
-                )
-            )
-        }
+
         val list = listOf(
             "==" ,
             "!="
@@ -391,7 +550,9 @@ fun VisibilityComponents(
                     }else {
                         onEventDispatchers(ConstructorContract.Intent.ClickAddButtonVisibility)
                     }
-                }
+                } else {
+                    onEventDispatchers(ConstructorContract.Intent.ClickAddButtonVisibility)
+                 }
             },
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(
