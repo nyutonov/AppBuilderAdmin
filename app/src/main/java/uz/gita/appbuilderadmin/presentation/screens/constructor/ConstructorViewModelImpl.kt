@@ -51,10 +51,13 @@ class ConstructorViewModelImpl @Inject constructor(
 
             is ConstructorContract.Intent.ChangeWeight -> {
 
-                uiState.update { it.copy(weight =
-                if (intent.weight==0f)1f else intent.weight
+                uiState.update {
+                    it.copy(
+                        weight =
+                        if (intent.weight == 0f) 1f else intent.weight
 
-                ) }
+                    )
+                }
             }
 
             ConstructorContract.Intent.ClickVisibilityAddButton -> {
@@ -220,7 +223,9 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.ChangeImageUri -> {
-                reduce { it.copy(selectedImageUri = intent.imageUri) }
+                if (intent.imageUri != "null") {
+                    reduce { it.copy(selectedImageUri = intent.imageUri) }
+                }
             }
 
             is ConstructorContract.Intent.ChangeMaxLengthForText -> {
@@ -267,12 +272,19 @@ class ConstructorViewModelImpl @Inject constructor(
                 reduce { it.copy(minValueForNumber = intent.value) }
             }
 
-            is ConstructorContract.Intent.ProgresBar ->{
+            is ConstructorContract.Intent.ProgresBar -> {
                 reduce { it.copy(progressBar = intent.progressBar) }
             }
 
             is ConstructorContract.Intent.ChangeImageSize -> {
-                reduce { it.copy(selectedSize = intent.value, imageHeightPx = uiState.value.constImageHeightPx, aspectRatioY = 1f, aspectRatioX = 1f) }
+                reduce {
+                    it.copy(
+                        selectedSize = intent.value,
+                        imageHeightPx = uiState.value.constImageHeightPx,
+                        aspectRatioY = 1f,
+                        aspectRatioX = 1f
+                    )
+                }
             }
 
             is ConstructorContract.Intent.ChangeAspectRatioX -> {
@@ -316,41 +328,42 @@ class ConstructorViewModelImpl @Inject constructor(
             }
 
             is ConstructorContract.Intent.ClickCreateRowComponent -> {
-                if (uiState.value.selectedComponent == "Row" && uiState.value.selectedComponentInRow == "Image" && uiState.value.selectedImageInputType == "Local") {
+                if (uiState.value.selectedComponentInRow == "Image" && uiState.value.selectedImageInputType == "Local") {
                     repository.uploadImage(uiState.value.selectedImageUri.toUri())
+                        .onStart { reduce { it.copy(progressBar = true) } }
                         .onEach {
-                            uiState.value.selectedImageUri = it.toString()
+                            reduce { it.copy(selectedImageUri = it.toString()) }
 
-                            reduce {
-                                val list = uiState.value.rowType
+                            uiState.value.apply {
+                                selectedImageUri = it.toString()
 
-                                uiState.value.apply {
-                                    list.add(
-                                        ComponentsModel(
-                                            componentsName = selectedComponentInRow,
-                                            input = selectedComponent,
-                                            placeHolder = placeHolder,
-                                            type = selectedInputType,
-                                            text = textValue,
-                                            imageUri = selectedImageUri,
-                                            color = selectedImageColor,
-                                            heightImage = imageHeightPx.toFloat(),
-                                            aspectRatio = if (aspectRatioY != 0f) (aspectRatioX / aspectRatioY) else 1f,
-                                            selectedImageSize = selectedSize,
-                                            id = idValue,
-                                            selectorDataQuestion = selecterAnswer,
-                                            selectorDataAnswers = selectorItems,
-                                            idVisibility = componentId,
-                                            datePicker = selectedDate,
-                                            multiSelectDataQuestion = multiSelectorAnswer,
-                                            multiSelectorDataAnswers = multiSelectorItems,
-                                            weight = uiState.value.weight
-                                        )
+                                rowType.add(
+                                    ComponentsModel(
+                                        componentsName = selectedComponentInRow,
+                                        input = selectedComponent,
+                                        placeHolder = placeHolder,
+                                        type = selectedInputType,
+                                        text = textValue,
+                                        imageUri = selectedImageUri,
+                                        color = selectedImageColor,
+                                        heightImage = imageHeightPx.toFloat(),
+                                        aspectRatio = if (aspectRatioY != 0f) (aspectRatioX / aspectRatioY) else 1f,
+                                        selectedImageSize = selectedSize,
+                                        id = idValue,
+                                        selectorDataQuestion = selecterAnswer,
+                                        selectorDataAnswers = selectorItems,
+                                        idVisibility = componentId,
+                                        datePicker = selectedDate,
+                                        multiSelectDataQuestion = multiSelectorAnswer,
+                                        multiSelectorDataAnswers = multiSelectorItems,
+                                        weight = uiState.value.weight
                                     )
-                                }
-
-                                it.copy(selectedImageUri = "", rowType = list, isChanged = !uiState.value.isChanged)
+                                )
                             }
+
+                            removeUiStateForRow()
+
+                            reduce { it.copy(isChanged = !uiState.value.isChanged, progressBar = false) }
                         }
                         .launchIn(viewModelScope)
                 } else {
@@ -385,6 +398,8 @@ class ConstructorViewModelImpl @Inject constructor(
                         it.copy(rowType = list, isChanged = !uiState.value.isChanged)
                     }
                 }
+
+                myToast("${uiState.value.selectedComponentInRow} qoshildi")
             }
 
 
@@ -437,7 +452,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                         idVisibility = componentId,
                                     )
                                 )
-                                    .onEach {  }
+                                    .onEach { }
                                     .launchIn(viewModelScope)
                             }
 
@@ -512,7 +527,7 @@ class ConstructorViewModelImpl @Inject constructor(
 
                                     )
                                 )
-                                    .onEach {  }
+                                    .onEach { }
                                     .launchIn(viewModelScope)
                             }
                             list = ArrayList()
@@ -562,7 +577,7 @@ class ConstructorViewModelImpl @Inject constructor(
                                         multiSelectorDataAnswers = multiSelectorItems
                                     )
                                 )
-                                    .onEach {  }
+                                    .onEach { }
                                     .launchIn(viewModelScope)
                             }
 
@@ -678,7 +693,8 @@ class ConstructorViewModelImpl @Inject constructor(
                 selectedSelectorList = listOf(),
                 selectedMultiSelectorList = listOf(),
                 addButtonVisibilityState = false,
-                listVisibilitiesValue = listOf()
+                listVisibilitiesValue = listOf(),
+                progressBar = false
             )
         }
     }
@@ -693,7 +709,8 @@ class ConstructorViewModelImpl @Inject constructor(
                     "Selector",
                     "MultiSelector",
                     "Date Picker",
-                    "Row"
+                    "Row",
+                    "Image",
                 ),
                 inputTypeList = listOf(
                     "Text",
@@ -711,11 +728,11 @@ class ConstructorViewModelImpl @Inject constructor(
                 selectedImageInputType = "Select",
                 selectedImageColor = 0U,
                 selectedImageUri = "",
-                selectedIdForImage = "Select Id",
                 selectorItems = listOf(),
+                selectedIdForImage = "Select Id",
+                isIdInputted = false,
                 multiSelectorItems = listOf(),
-                selectedComponent = "Row",
-                selectedInputType = "Row",
+                selectedInputType = uiState.value.inputTypeList[0],
                 placeHolder = "",
                 textValue = "",
                 name = "",
@@ -751,7 +768,8 @@ class ConstructorViewModelImpl @Inject constructor(
                 selectedSelectorList = listOf(),
                 selectedMultiSelectorList = listOf(),
                 addButtonVisibilityState = false,
-                listVisibilitiesValue = listOf()
+                listVisibilitiesValue = listOf(),
+                progressBar = false
             )
         }
     }

@@ -751,7 +751,9 @@ fun ConstructorScreenContent(
             onClick = {
                 if (uiState.selectedComponent == "Image") {
                     if (uiState.selectedImageUri.isNotEmpty() || (uiState.selectedImageInputType == "Remote" && uiState.isIdInputted)) {
-                        onEventDispatchers(ConstructorContract.Intent.ClickCreateButton)
+                        if (!uiState.progressBar) {
+                            onEventDispatchers(ConstructorContract.Intent.ClickCreateButton)
+                        }
                     } else {
                         myToast("Not uploading")
                     }

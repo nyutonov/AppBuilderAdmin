@@ -53,17 +53,29 @@ fun ImageComponent(
             }
         }
     ) {
-
-
-        AsyncImage(
-            modifier = Modifier
-                .align(Alignment.Center),
-            model = uri.toUri(),
-            contentDescription = "",
-            onLoading = { loader = true },
-            onSuccess = { loader = false },
-            onError = { loader = false }
-        )
+        if (uiState.selectedImageInputType == "Remote") {
+            if (uri.startsWith("http")) {
+                AsyncImage(
+                    modifier = Modifier
+                        .align(Alignment.Center),
+                    model = uri.toUri(),
+                    contentDescription = "",
+                    onLoading = { loader = true },
+                    onSuccess = { loader = false },
+                    onError = { loader = false }
+                )
+            }
+        } else {
+            AsyncImage(
+                modifier = Modifier
+                    .align(Alignment.Center),
+                model = uri.toUri(),
+                contentDescription = "",
+                onLoading = { loader = true },
+                onSuccess = { loader = false },
+                onError = { loader = false }
+            )
+        }
 
         if (loader || uiState.progressBar) {
             CircularProgressIndicator(
